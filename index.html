@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lindbach Årshjul</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  :root{--bg:#eceeea;--card:#fff;--ink:#303030;--muted:#5b686c;--line:#d3d8d1;--accent:#1d6a84;
+    --disc:#303030;--track:rgba(255,255,255,.16);--s1:#62b4d0;--s2:#e09a62;--s3:#86c463}
+  @media (prefers-color-scheme: dark){:root{--bg:#111517;--card:#192024;--ink:#e4eae7;--muted:#97a5aa;--line:#2b353a;--accent:#62b4d0;
+    --disc:#e4eae7;--track:rgba(48,48,48,.14);--s1:#1d6a84;--s2:#b9692f;--s3:#4f8a35}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+  main{max-width:780px;margin:0 auto;padding:48px 24px}
+  .logo{display:flex;align-items:center;gap:22px;margin:0 0 28px}
+  .logo svg{width:116px;height:116px;flex:none}
+  .logo .disc{fill:var(--disc)} .logo .track{stroke:var(--track)}
+  .logo .s1{stroke:var(--s1)} .logo .s2{stroke:var(--s2)} .logo .s3{stroke:var(--s3)}
+  .word{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
+  .word img{height:58px;width:auto;display:block;margin:0 0 -2px -4px}
+  .word img.d{display:none}
+  @media (prefers-color-scheme: dark){.word img.l{display:none}.word img.d{display:block}}
+  h1{margin:0;font-family:"Barlow Condensed","Roboto Condensed","Arial Narrow",Arial,sans-serif;font-stretch:condensed;
+    font-size:64px;font-weight:700;letter-spacing:.04em;line-height:.95}
+  p.lead{color:var(--muted);margin:0 0 32px;font-size:18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  a.card{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+  a.card:hover{border-color:var(--accent)}
+  a.card h2{margin:0 0 6px;font-size:22px;color:var(--accent)}
+  a.card p{margin:0;color:var(--muted);font-size:15px}
+  .note{margin-top:32px;font-size:14px;color:var(--muted)}
+  footer{margin-top:40px;font-size:13px;color:var(--muted)}
+  footer a{color:var(--muted)}
+  @media (max-width:520px){.logo svg{width:84px;height:84px}.word img{height:42px}h1{font-size:46px}}
+</style>
+</head>
+<body>
+<main>
+  <div class="logo">
+    <svg viewBox="0 0 64 64" aria-hidden="true"><circle class="disc" cx="32" cy="32" r="31"/><circle class="track" cx="32" cy="32" r="19" fill="none" stroke-width="11"/><circle class="s1" cx="32" cy="32" r="19" fill="none" stroke-width="11" stroke-dasharray="34 86" transform="rotate(-70 32 32)"/><circle class="s2" cx="32" cy="32" r="19" fill="none" stroke-width="11" stroke-dasharray="22 98" transform="rotate(45 32 32)"/><circle class="s3" cx="32" cy="32" r="19" fill="none" stroke-width="11" stroke-dasharray="14 106" transform="rotate(150 32 32)"/><path d="M32 3v24" stroke="#f83030" stroke-width="5" stroke-linecap="round"/></svg>
+    <div class="word">
+      <img class="l" src="bilder/lindbach-lys.png" alt="Lindbach">
+      <img class="d" src="bilder/lindbach-mork.png" alt="">
+      <h1>ÅRSHJUL</h1>
+    </div>
+  </div>
+  <p class="lead">Planlegg året som en sirkel. Legg inn oppgaver på uker, kryss av når de er gjort, og ta med faste oppgaver til neste år.</p>
+  <div class="grid">
+    <a class="card" href="arshjul-enkel.html">
+      <h2>Årshjul enkel</h2>
+      <p>For deg som planlegger alene. Sikkerhetskopi til fil.</p>
+    </a>
+    <a class="card" href="arshjul-team.html">
+      <h2>Årshjul team</h2>
+      <p>For flere som deler årshjul. Eksport og import med sammenslåing.</p>
+    </a>
+  </div>
+  <p class="note">Oppgavene lagres bare i din egen nettleser. Ingenting sendes til andre. Ta sikkerhetskopi av og til under Innstillinger.</p>
+  <footer>Lindbach instrumenter · © 2026 A. Lindbach · MIT-lisens</footer>
+</main>
+</body>
+</html>

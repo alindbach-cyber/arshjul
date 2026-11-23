@@ -1,0 +1,2684 @@
+<!DOCTYPE html>
+<html lang="no">
+<!--
+  Årshjul – versjon __VERSION__ (__EDITION__)
+  Copyright (c) 2026 A. Lindbach
+  Lisens: MIT – fri bruk, endring og deling, også kommersielt, så lenge denne merknaden følger med.
+  Programvaren leveres «som den er», uten garantier av noe slag. Full lisenstekst: LICENSE.
+-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Årshjul</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='31' fill='%23303030'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23ffffff' stroke-opacity='.16' stroke-width='11'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%2362b4d0' stroke-width='11' stroke-dasharray='34 86' transform='rotate(-70 32 32)'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23e09a62' stroke-width='11' stroke-dasharray='22 98' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%2386c463' stroke-width='11' stroke-dasharray='14 106' transform='rotate(150 32 32)'/%3E%3Cpath d='M32 3v24' stroke='%23f83030' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --bg:#f5f3ee; --card:#ffffff; --ink:#1d2430; --muted:#6b7280; --line:#e4e0d8;
+    --accent:#1f4e79; --today:#d97706; --ring:#ece8df; --ring-alt:#f4f1ea; --cell:#f1eee7;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#14181f; --card:#1c222b; --ink:#e8eaee; --muted:#9aa3af; --line:#2c3440;
+      --accent:#7fb3e6; --ring:#262e3a; --ring-alt:#202731; --cell:#222a34; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--sans)}
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    padding:18px 28px;border-bottom:1px solid var(--line)}
+  h1{font-family:var(--serif);font-weight:650;font-size:26px;margin:0;letter-spacing:-.01em}
+  /* logo: wheel symbol + «Lindbach» + ÅRSHJUL */
+  h1.brand{display:flex;align-items:center;gap:10px;font-weight:400;letter-spacing:0}
+  h1.brand svg{width:42px;height:42px;max-width:none;flex:none}
+  .brand .disc{fill:#303030} .brand .track{stroke:#ffffff;stroke-opacity:.16}
+  .brand .s1{stroke:#62b4d0} .brand .s2{stroke:#e09a62} .brand .s3{stroke:#86c463}
+  .brand .bt{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
+  .brand .bt img{height:22px;width:auto;display:block;margin:0 0 -1px -2px}
+  .brand .bt span{font-family:"Barlow Condensed","Roboto Condensed","Arial Narrow","Helvetica Neue",Arial,sans-serif;font-stretch:condensed;
+    font-weight:700;font-size:27px;letter-spacing:.05em;color:var(--ink)}
+  .brand .bt img.lg-d{display:none}
+  @media (prefers-color-scheme: dark){
+    .brand .disc{fill:#e4eae7} .brand .track{stroke:#303030;stroke-opacity:.14}
+    .brand .s1{stroke:#1d6a84} .brand .s2{stroke:#b9692f} .brand .s3{stroke:#4f8a35}
+    .brand .bt img.lg-l{display:none} .brand .bt img.lg-d{display:block}
+  }
+  .hright{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .yearnav span{font-family:var(--serif);font-size:22px;min-width:64px;text-align:center;display:inline-block}
+  button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);
+    border-radius:8px;padding:6px 12px}
+  button:hover{border-color:var(--muted)}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  @media (prefers-color-scheme: dark){ button.primary{color:#0e1520} }
+  button.danger{color:#b91c1c}
+  button.icon{padding:4px 9px;line-height:1}
+  main{display:grid;grid-template-columns:minmax(320px,1fr) 410px;gap:24px;padding:24px 28px;max-width:1320px;margin:0 auto}
+  @media (max-width:960px){ main{grid-template-columns:1fr} }
+  .wheelwrap{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;
+    display:flex;flex-direction:column;align-items:center}
+  svg{width:100%;max-width:700px;height:auto;display:block;user-select:none}
+  .cell,.mseg,.wseg{cursor:pointer}
+  .cell:hover{filter:brightness(.95)}
+  .arc{cursor:pointer}
+  .arc:hover{filter:brightness(1.08)}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 8px;margin-top:12px;justify-content:center}
+  .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;
+    padding:3px 10px 3px 6px;font-size:13px;background:var(--card);cursor:pointer}
+  .chip.off{opacity:.4}
+  .dot{width:11px;height:11px;border-radius:3px;flex:none;display:inline-block}
+  aside{display:flex;flex-direction:column;gap:16px;align-self:start}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .card h2{font-family:var(--serif);font-weight:500;font-size:23px;margin:0 0 2px}
+  .card h3{font-size:15px;font-weight:600;margin:0 0 10px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:14px}
+  .tasks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+  .task{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:10px}
+  .task.editing{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .task input[type=checkbox]{width:17px;height:17px;accent-color:var(--accent);flex:none;cursor:pointer}
+  .task .t{flex:1;min-width:0;cursor:pointer}
+  .task .t b{font-weight:500;display:block;overflow-wrap:anywhere}
+  .task .t small{color:var(--muted);font-size:12px}
+  .task.done .t b{text-decoration:line-through;color:var(--muted)}
+  .task .acts{display:flex;gap:2px;flex:none}
+  .task .acts button{padding:2px 7px;font-size:13px;border-color:transparent;background:transparent;color:var(--muted)}
+  .task .acts button:hover{border-color:var(--line);color:var(--ink)}
+  .empty{color:var(--muted);font-size:14px;padding:4px 0}
+  form{display:flex;flex-direction:column;gap:10px}
+  label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+  label.inline{flex-direction:row;align-items:center;gap:8px;color:var(--ink);font-size:14px}
+  input[type=text],select{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;
+    background:var(--bg);color:var(--ink);width:100%}
+  .row{display:flex;gap:8px;align-items:end}
+  .row > *{flex:1;min-width:0}
+  .newtype{display:none;gap:8px;align-items:end;padding:10px;border:1px dashed var(--line);border-radius:10px}
+  .newtype.show{display:flex}
+  input[type=color]{width:44px;height:38px;border:1px solid var(--line);border-radius:8px;padding:2px;background:var(--bg);flex:none}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap}
+  .btnrow .primary{flex:1}
+  .status{font-size:12px;color:var(--muted);text-align:center;margin-top:10px;min-height:16px}
+  .summary{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:4px;flex-wrap:wrap;justify-content:center}
+  .summary b{color:var(--ink);font-weight:600}
+  .notice{display:none;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:10px;
+    background:color-mix(in srgb, var(--accent) 10%, var(--card));border:1px solid color-mix(in srgb, var(--accent) 30%, var(--line));font-size:14px}
+  .notice.show{display:flex}
+  #ringsCard{display:none}
+  #ringsCard.show{display:block}
+  .ringnames{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+  #catsCard,#dataCard,#wheelCard,#settingsCard,#downloadCard,#icsCard{display:none}
+  #catsCard.show,#dataCard.show,#wheelCard.show,#settingsCard.show,#downloadCard.show,#icsCard.show{display:block}
+  .icslist{list-style:none;margin:8px 0 0;padding:0;max-height:320px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+  .icslist li{padding:6px 10px;border-bottom:1px solid var(--line)}
+  .icslist li:last-child{border-bottom:0}
+  .icslist label{align-items:flex-start}
+  .icslist label input{margin-top:3px}
+  .icslist b{font-weight:500}
+  .icslist small{display:block;color:var(--muted);font-size:12px}
+  .icslist .tag{font-style:normal;font-size:11px;color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:0 6px;margin-left:4px}
+  #icsFails{font-size:13px;color:var(--muted);margin-top:8px}
+  #icsFails ul{padding-left:18px;margin:6px 0 0}
+  .menu{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .menu button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:10px 12px}
+  .menu button b{font-weight:600}
+  .menu button small{color:var(--muted);font-size:12px}
+  .dlsec{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-top:1px solid var(--line)}
+  .dlsec:first-of-type{border-top:0;padding-top:4px}
+  .dlhead{display:flex;flex-direction:column;gap:2px}
+  #pngPreview{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;aspect-ratio:1/1.1;object-fit:contain}
+  .tablewrap{max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+  .tablewrap table{border-collapse:collapse;width:100%;font-size:12.5px}
+  .tablewrap th{position:sticky;top:0;background:var(--accent);color:#fff;text-align:left;font-weight:600;padding:6px 8px;white-space:nowrap}
+  @media (prefers-color-scheme: dark){ .tablewrap th{color:#0e1520} }
+  .tablewrap td{padding:5px 8px;border-top:1px solid var(--line);vertical-align:top}
+  .tablewrap td.n{white-space:nowrap}
+  .ver{font-size:11px;color:var(--muted);margin-top:6px}
+  /* help */
+  .overlay{position:fixed;inset:0;background:rgba(10,14,20,.45);display:none;align-items:flex-start;justify-content:center;padding:32px 16px;z-index:50;overflow:auto}
+  .overlay.show{display:flex}
+  .helpbox{background:var(--card);color:var(--ink);border-radius:16px;max-width:680px;width:100%;padding:26px 28px;box-shadow:0 20px 60px rgba(0,0,0,.25);position:relative}
+  .helpbox h2{font-family:var(--serif);font-weight:600;font-size:26px;margin:0 0 4px}
+  .helpbox h3{font-size:16px;margin:20px 0 6px}
+  .helpbox p,.helpbox li{font-size:15px;line-height:1.55}
+  .helpbox p{margin:0 0 8px}
+  .helpbox ol,.helpbox ul{margin:0 0 8px;padding-left:22px}
+  .helpbox .start{background:color-mix(in srgb, var(--accent) 8%, var(--card));border:1px solid color-mix(in srgb, var(--accent) 25%, var(--line));border-radius:12px;padding:12px 16px;margin:14px 0 4px}
+  .helpbox .close{position:absolute;top:14px;right:14px}
+  .helpbox .foot{margin-top:22px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+  .key{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:2px}
+  header h1{flex:none}
+  .tabs{flex:1 1 320px;min-width:0;display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:thin;padding:2px 2px 4px}
+  .tab{flex:none;white-space:nowrap;border-radius:999px;padding:6px 14px;background:transparent;border-color:transparent;color:var(--muted);font-weight:500}
+  .tab:hover{border-color:var(--line);color:var(--ink)}
+  .tab.on{background:var(--card);border-color:var(--accent);color:var(--ink);box-shadow:0 0 0 1px var(--accent) inset}
+  .tab.add{color:var(--accent);border-style:dashed;border-color:var(--line)}
+  .tabedit{flex:none;display:inline-flex;flex-direction:column;gap:2px}
+  .tabedit input{font:inherit;width:190px;padding:5px 12px;border-radius:999px;border:1px solid var(--accent);background:var(--card);color:var(--ink)}
+  .tabedit small{color:#b91c1c;font-size:11px;padding-left:12px;max-width:260px;white-space:normal}
+  .tabedit small:empty{display:none}
+  .exportwhich{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 10px}
+  /* repeats in the form */
+  .flabel{font-size:13px;color:var(--muted);margin-bottom:4px}
+  .flabel span{font-size:12px}
+  .days{display:flex;gap:4px;flex-wrap:wrap}
+  .days button{padding:5px 0;width:44px;font-size:13px;border-radius:8px;background:var(--bg)}
+  .days button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  @media (prefers-color-scheme: dark){ .days button.on{color:#0e1520} }
+  input[type=time]{font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%}
+  .rulehint{font-size:13px;color:var(--accent);min-height:0}
+  .rulehint:empty{display:none}
+  /* panel header + week view */
+  .phead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:2px;flex:none;margin-top:4px}
+  .seg button{border:0;border-radius:999px;padding:4px 12px;font-size:13px;background:transparent;color:var(--muted)}
+  .seg button.on{background:var(--accent);color:#fff}
+  @media (prefers-color-scheme: dark){ .seg button.on{color:#0e1520} }
+  .segs{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
+  .segs .seg{margin-top:0}
+  .nocheck{width:17px;height:17px;flex:none;display:inline-flex;align-items:center;justify-content:center}
+  .nocheck::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--line)}
+  .witem .nocheck{width:16px;height:16px}
+  label.todo{font-size:14px}
+  .prog{flex:none;font-size:12px;font-weight:600;color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:1px 7px;min-width:38px;text-align:center}
+  .weekview{display:flex;flex-direction:column;gap:2px}
+  .wnav{display:flex;align-items:center;justify-content:center;gap:12px;margin:-4px 0 8px;font-size:14px;color:var(--muted)}
+  .wday{border-top:1px solid var(--line);padding:6px 0}
+  .wday.today .wdh b,.wday.today .wdh em{color:var(--today)}
+  .wday.weekend .wdh{opacity:.75}
+  .wdh{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:baseline}
+  .wdh b{color:var(--ink);font-weight:600;min-width:30px}
+  .wdh em{font-style:normal;font-size:12px;font-weight:600}
+  .wday ul{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
+  .wempty{font-size:13px;color:var(--line);padding-left:36px}
+  .witem{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);border-radius:9px}
+  .witem input{width:16px;height:16px;accent-color:var(--accent);flex:none;cursor:pointer}
+  .witem .time{font-size:12px;font-variant-numeric:tabular-nums;color:var(--muted);min-width:0;white-space:nowrap}
+  .witem .time:empty{display:none}
+  .witem .t{flex:1;min-width:0;cursor:pointer}
+  .witem .t b{font-weight:500;display:block;font-size:14px;overflow-wrap:anywhere}
+  .witem .t small{color:var(--muted);font-size:12px}
+  .witem.done .t b{text-decoration:line-through;color:var(--muted)}
+  .tick{cursor:pointer}
+  .wheelrow{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+  .wheelrow.cur{border-color:var(--accent)}
+  .wheelrow span{flex:1;min-width:0;overflow-wrap:anywhere}
+  .wheelrow small{color:var(--muted)}
+  .newtype{flex-direction:column;align-items:stretch}
+  .swatches{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .sw{width:26px;height:26px;border-radius:7px;border:2px solid transparent;padding:0;cursor:pointer;position:relative}
+  .sw.sel{border-color:var(--ink);box-shadow:0 0 0 2px var(--card) inset}
+  .sw.used{cursor:not-allowed;opacity:.28}
+  .sw.used::after{content:"";position:absolute;left:3px;right:3px;top:50%;height:2px;background:var(--ink);transform:rotate(-45deg)}
+  .sw-custom{width:34px;height:28px}
+  .err{color:#b91c1c;font-size:13px;min-height:0}
+  .err:empty{display:none}
+  .catlist{list-style:none;margin:0 0 6px;padding:0;display:flex;flex-direction:column;gap:8px}
+  .cat{border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:8px}
+  .cat .top{display:flex;align-items:center;gap:8px}
+  .cat .top input[type=text]{flex:1}
+  .cat .swbtn{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);flex:none;cursor:pointer;padding:0}
+  .cat small{color:var(--muted);font-size:12px;white-space:nowrap}
+  .cat .pick{display:none}
+  .cat.open .pick{display:flex}
+  .cat button.icon{flex:none}
+</style>
+</head>
+<body>
+<header>
+  <h1 class="brand" aria-label="Lindbach Årshjul">
+    <svg viewBox="0 0 64 64" aria-hidden="true"><circle class="disc" cx="32" cy="32" r="31"/><circle class="track" cx="32" cy="32" r="19" fill="none" stroke-width="11"/><circle class="s1" cx="32" cy="32" r="19" fill="none" stroke-width="11" stroke-dasharray="34 86" transform="rotate(-70 32 32)"/><circle class="s2" cx="32" cy="32" r="19" fill="none" stroke-width="11" stroke-dasharray="22 98" transform="rotate(45 32 32)"/><circle class="s3" cx="32" cy="32" r="19" fill="none" stroke-width="11" stroke-dasharray="14 106" transform="rotate(150 32 32)"/><path d="M32 3v24" stroke="#f83030" stroke-width="5" stroke-linecap="round"/></svg>
+    <span class="bt" aria-hidden="true">
+      <img class="lg-l" src="__LOGO_LYS__" alt="" width="54" height="22">
+      <img class="lg-d" src="__LOGO_MORK__" alt="" width="54" height="22">
+      <span>ÅRSHJUL</span>
+    </span>
+  </h1>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Dine årshjul"></nav>
+  <div class="hright">
+    <span class="yearnav">
+      <button class="icon" id="prevYear" aria-label="Forrige år">‹</button>
+      <span id="yearLabel"></span>
+      <button class="icon" id="nextYear" aria-label="Neste år">›</button>
+    </span>
+    <button id="thisYear">I dag</button>
+    <button id="downloadBtn">Last ned</button>
+    <button id="settingsBtn">Innstillinger</button>
+    <button id="helpBtn" aria-label="Hjelp">? Hjelp</button>
+  </div>
+</header>
+
+<main>
+  <section class="wheelwrap">
+    <svg id="wheel" viewBox="0 0 720 720" role="img" aria-label="Årshjul med måneder, uker og aktivitetsringer"></svg>
+    <div class="summary" id="summary"></div>
+    <div class="legend" id="legend"></div>
+    <div class="status" id="status"></div>
+    <div class="ver" id="verLabel"></div>
+  </section>
+
+  <aside>
+    <div class="card" id="settingsCard">
+      <h3>Innstillinger</h3>
+      <div class="menu">
+        <button id="wheelBtn" data-card><b>Dette årshjulet</b><small>Navn eller slett</small></button>
+        <button id="catsBtn" data-card><b>Kategorier</b><small>Navn og farger</small></button>
+        <button id="ringsBtn" data-card><b>Ringer</b><small>Antall og navn</small></button>
+        <!--@enkel--><button id="dataBtn" data-card><b>Sikkerhetskopi</b><small>Lagre eller hente inn alt</small></button><!--@/enkel-->
+        <!--@team--><button id="dataBtn" data-card><b>Eksport og import</b><small>Dele og slå sammen</small></button><!--@/team-->
+        <button id="icsBtn" data-card><b>Hent fra kalender</b><small>Avtaler fra Outlook eller Google (.ics)</small></button>
+      </div>
+      <div class="btnrow" style="margin-top:12px"><button id="closeSettings">Lukk</button></div>
+    </div>
+
+    <div class="card" id="downloadCard">
+      <h3>Last ned</h3>
+      <div class="dlsec">
+        <div class="dlhead"><b>Bilde av hjulet</b><span class="sub" style="margin:0">PNG – til PowerPoint, Word og rapporter</span></div>
+        <img id="pngPreview" alt="Forhåndsvisning av bildet">
+        <label class="inline"><input type="checkbox" id="optTitle" checked> Ta med tittel og fargeforklaring</label>
+        <label class="inline" id="optJanTopRow"><input type="checkbox" id="optJanTop"> Januar øverst (i stedet for dagens dato)</label>
+        <label class="inline" id="optTodayRow"><input type="checkbox" id="optToday" checked> Vis dagens dato</label>
+        <div class="btnrow"><button class="primary" id="pngBtn">Last ned bilde (PNG)</button></div>
+        <div class="sub" id="pngNote" style="margin:0"></div>
+      </div>
+      <div class="dlsec">
+        <div class="dlhead"><b>Oppgaver i tabell</b><span class="sub" style="margin:0" id="tableCount"></span></div>
+        <label class="inline"><input type="checkbox" id="optDone" checked> Ta med fullførte oppgaver</label>
+        <div class="tablewrap" id="tablePreview"></div>
+        <div class="btnrow">
+          <button class="primary" id="csvBtn">Last ned tabell (Excel)</button>
+          <button id="copyBtn">Kopier tabell</button>
+        </div>
+        <div class="sub" style="margin:0">«Kopier tabell» kan limes rett inn i Word, PowerPoint eller e-post.</div>
+      </div>
+      <div class="dlsec">
+        <div class="dlhead"><b>Til kalenderen</b><span class="sub" style="margin:0">.ics – for Outlook, Google og iPhone</span></div>
+        <label class="inline"><input type="checkbox" id="optIcsDone" checked> Ta med fullførte oppgaver</label>
+        <div class="btnrow"><button class="primary" id="icsExportBtn">Last ned kalenderfil (.ics)</button></div>
+        <div class="sub" style="margin:0">Oppgaver med klokkeslett blir avtaler. Resten blir heldagshendelser som ikke viser deg som opptatt.</div>
+      </div>
+      <div class="err" id="dlErr"></div>
+      <div class="sub" id="dlMsg" style="margin:8px 0 0;color:var(--ink)"></div>
+      <div class="btnrow" style="margin-top:10px"><button id="closeDownload">Lukk</button></div>
+    </div>
+
+    <div class="notice" id="recurNotice">
+      <span id="recurText"></span>
+      <button class="primary" id="recurBtn">Hent</button>
+    </div>
+
+    <div class="card" id="ringsCard">
+      <h3>Aktivitetsringer</h3>
+      <label>Antall ringer
+        <select id="ringCount">
+          <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+        </select>
+      </label>
+      <div class="ringnames" id="ringNames"></div>
+      <div class="btnrow">
+        <button class="primary" id="saveRings">Lagre</button>
+        <button id="closeRings">Lukk</button>
+      </div>
+      <div class="sub" style="margin:10px 0 0">Ring 1 er ytterst, rett innenfor uketallene.</div>
+    </div>
+
+    <div class="card" id="wheelCard">
+      <h3>Dette årshjulet</h3>
+      <div class="row">
+        <label>Navn <input type="text" id="wheelNameInput" maxlength="40" placeholder="F.eks. Team Drift"></label>
+        <button type="button" id="saveWheelName" style="flex:none">Lagre navn</button>
+      </div>
+      <div class="sub" id="wheelIdText" style="margin:6px 0 0"></div>
+
+      <div class="sub" style="margin:10px 0 0">Navnet vises i fanen øverst, på bildet du laster ned og i navnet på sikkerhetskopien. Du kan også dobbeltklikke på fanen for å gi nytt navn.</div>
+      <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--line)">
+        <button type="button" class="danger" id="deleteWheel">Slett dette årshjulet</button>
+        <div class="sub" id="deleteWheelNote" style="margin:6px 0 0"></div>
+      </div>
+
+      <div class="err" id="wheelErr" style="margin-top:10px"></div>
+      <div class="sub" id="wheelMsg" style="margin:10px 0 0;color:var(--ink)"></div>
+      <div class="btnrow" style="margin-top:12px"><button id="closeWheel">Lukk</button></div>
+    </div>
+
+    <div class="card" id="dataCard">
+      <!--@team-->
+      <h3>Eksport og import</h3>
+      <p class="sub" style="margin:0 0 12px">Lagre alt – oppgaver, kategorier og ringer – i en datafil, eller hent inn en fil. Import slår sammen med det du har, så to personer kan dele samme fil.</p>
+      <!--@/team-->
+      <!--@enkel-->
+      <h3>Sikkerhetskopi</h3>
+      <p class="sub" style="margin:0 0 12px">Lagre alt – oppgaver, kategorier og ringer – i en fil på maskinen din. Filen kan hentes inn igjen senere, eller på en annen maskin.</p>
+      <!--@/enkel-->
+      <div class="exportwhich">
+        <label class="inline"><input type="radio" name="exportWhich" value="one" checked> <span id="exportOneLabel">Dette årshjulet</span></label>
+        <label class="inline"><input type="radio" name="exportWhich" value="all"> <span id="exportAllLabel">Alle årshjul</span></label>
+      </div>
+      <div class="btnrow">
+        <button class="primary" id="exportBtn">Lagre sikkerhetskopi</button>
+        <button id="importBtn">Hent inn fra fil …</button>
+        <input type="file" id="importFile" accept=".json,application/json" hidden>
+      </div>
+      <div id="importChoice" style="display:none;margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:10px">
+        <div id="importInfo" style="font-size:14px;margin-bottom:10px"></div>
+        <!--@team-->
+        <div class="btnrow">
+          <button class="primary" id="importMerge">Slå sammen</button>
+          <button id="importReplace">Erstatt alt</button>
+          <button id="importCancel">Avbryt</button>
+        </div>
+        <div class="sub" style="margin:8px 0 0"><b>Slå sammen</b> beholder begges endringer – nyeste versjon av hver oppgave vinner, og slettinger følger med. <b>Erstatt alt</b> gjør årshjulene likt filen. Årshjul som ikke finnes fra før, blir lagt til som nye faner.</div>
+        <!--@/team-->
+        <!--@enkel-->
+        <div class="sub" style="margin:0 0 10px">Årshjul som finnes fra før, blir erstattet med innholdet i filen. Det som ligger der nå, forsvinner. Andre årshjul i filen blir lagt til som nye faner.</div>
+        <div class="btnrow">
+          <button class="primary" id="importReplace">Erstatt med filen</button>
+          <button id="importCancel">Avbryt</button>
+        </div>
+        <!--@/enkel-->
+      </div>
+      <div class="err" id="dataErr" style="margin-top:10px"></div>
+      <div class="sub" id="dataMsg" style="margin:10px 0 0;color:var(--ink)"></div>
+      <!--@team-->
+      <details style="margin-top:12px;font-size:13px;color:var(--muted)">
+        <summary style="cursor:pointer">Slik deler to personer samme årshjul</summary>
+        <ol style="padding-left:18px;margin:8px 0 0">
+          <li>Før du starter: importer den nyeste filen fra den andre («Slå sammen»).</li>
+          <li>Gjør endringene dine.</li>
+          <li>Eksporter og del filen (e-post, Teams, felles mappe).</li>
+        </ol>
+        <p style="margin:6px 0 0">Har dere endret hver deres oppgaver samtidig, beholdes begge. Har dere endret <i>samme</i> oppgave, vinner den som ble endret sist.</p>
+      </details>
+      <!--@/team-->
+      <div class="btnrow" style="margin-top:12px"><button id="closeData">Lukk</button></div>
+    </div>
+
+    <div class="card" id="icsCard">
+      <h3>Hent fra kalender</h3>
+      <p class="sub" style="margin:0 0 12px">Hent avtaler fra en kalenderfil (.ics) fra Outlook, Google eller Teams. Avtaler merket <b>privat</b> eller <b>konfidensiell</b> blir aldri tatt med.</p>
+      <div class="btnrow">
+        <button class="primary" id="icsPick">Velg kalenderfil …</button>
+        <input type="file" id="icsFile" accept=".ics,text/calendar" hidden>
+      </div>
+      <div id="icsPreview" style="display:none;margin-top:14px">
+        <div id="icsInfo" style="font-size:14px"></div>
+        <div class="row" style="margin-top:10px">
+          <label>År <select id="icsYear"></select></label>
+          <label>Ring <select id="icsRing"></select></label>
+        </div>
+        <label style="margin-top:8px">Kategori <select id="icsType"></select></label>
+        <label class="inline" style="margin-top:8px"><input type="checkbox" id="icsTodo"> Skal krysses av (gjøremål)</label>
+        <label class="inline" style="margin-top:8px"><input type="checkbox" id="icsAll"> Velg alle</label>
+        <ul class="icslist" id="icsList"></ul>
+        <div id="icsFails"></div>
+        <div class="btnrow" style="margin-top:10px">
+          <button class="primary" id="icsGo">Legg inn</button>
+          <button id="icsCancel">Avbryt</button>
+        </div>
+        <div class="sub" style="margin:8px 0 0">Avtaler du har hentet før, blir oppdatert – kategori, ring og avkrysninger beholdes.</div>
+      </div>
+      <div class="err" id="icsErr" style="margin-top:10px"></div>
+      <div class="sub" id="icsMsg" style="margin:10px 0 0;color:var(--ink)"></div>
+      <div class="btnrow" style="margin-top:12px"><button id="closeIcs">Lukk</button></div>
+    </div>
+
+    <div class="card" id="catsCard">
+      <h3 id="catsTitle">Kategorier</h3>
+      <ul class="catlist" id="catList"></ul>
+      <div class="err" id="catErr"></div>
+      <div class="btnrow" style="margin-top:8px"><button id="closeCats">Lukk</button></div>
+    </div>
+
+    <div class="card">
+      <div class="phead">
+        <h2 id="periodTitle"></h2>
+        <div class="segs">
+          <div class="seg" role="tablist" aria-label="Visning">
+            <button type="button" data-view="month" role="tab">Måned</button>
+            <button type="button" data-view="week" role="tab">Uke</button>
+          </div>
+          <div class="seg" role="group" aria-label="Vis">
+            <button type="button" data-filter="all" title="Vis alt">Alle</button>
+            <button type="button" data-filter="todo" title="Vis bare det som skal krysses av">Gjøremål</button>
+          </div>
+        </div>
+      </div>
+      <div class="sub" id="periodSub"></div>
+      <ul class="tasks" id="taskList"></ul>
+      <div class="weekview" id="weekView"></div>
+    </div>
+
+    <div class="card">
+      <h3 id="formTitle">Ny oppgave</h3>
+      <form id="taskForm" autocomplete="off">
+        <label>Oppgave
+          <input type="text" id="fTitle" placeholder="F.eks. Levere årsregnskap" maxlength="120" required>
+        </label>
+        <div class="row">
+          <label>Kategori <select id="fType"></select></label>
+          <label id="fRingWrap">Ring <select id="fRing"></select></label>
+        </div>
+        <div class="newtype" id="newTypeBox">
+          <label>Ny kategori
+            <input type="text" id="newTypeName" placeholder="F.eks. Økonomi" maxlength="40">
+          </label>
+          <div>
+            <div style="font-size:13px;color:var(--muted);margin-bottom:6px">Farge – brukte farger kan ikke velges</div>
+            <div class="swatches" id="newTypeSwatches"></div>
+          </div>
+          <div class="err" id="newTypeErr"></div>
+          <div class="btnrow"><button type="button" class="primary" id="saveType">Lagre kategori</button></div>
+        </div>
+        <div class="row">
+          <label>Fra uke <select id="fFrom"></select></label>
+          <label>Til uke <select id="fTo"></select></label>
+        </div>
+        <div class="row">
+          <label>Gjentakelse
+            <select id="fRep">
+              <option value="none">Ingen</option>
+              <option value="w1">Hver uke</option>
+              <option value="w2">Hver 2. uke</option>
+              <option value="w3">Hver 3. uke</option>
+              <option value="w4">Hver 4. uke</option>
+              <option value="monthly">Hver måned</option>
+              <option value="yearly">Hvert år</option>
+            </select>
+          </label>
+          <label id="fNthWrap">Hvilken i måneden
+            <select id="fNth">
+              <option value="1">Første</option><option value="2">Andre</option><option value="3">Tredje</option>
+              <option value="4">Fjerde</option><option value="-1">Siste</option>
+            </select>
+          </label>
+        </div>
+        <div>
+          <div class="flabel">Ukedag <span id="fDaysHint">(valgfritt – uten ukedag gjelder oppgaven hele uka)</span></div>
+          <div class="days" id="fDays">
+            <button type="button" data-d="1">Man</button><button type="button" data-d="2">Tir</button><button type="button" data-d="3">Ons</button>
+            <button type="button" data-d="4">Tor</button><button type="button" data-d="5">Fre</button><button type="button" data-d="6">Lør</button><button type="button" data-d="7">Søn</button>
+          </div>
+        </div>
+        <div class="row" id="fTimeRow">
+          <label>Fra kl. <input type="time" id="fTimeFrom"></label>
+          <label>Til kl. <input type="time" id="fTimeTo"></label>
+        </div>
+        <div class="rulehint" id="fRuleHint"></div>
+        <label class="inline todo"><input type="checkbox" id="fTodo" checked> Skal krysses av (gjøremål)</label>
+        <div class="sub" style="margin:-6px 0 0;font-size:12px">Ta bort haken for hendelser som bare skal vises, f.eks. ferie eller en konferanse.</div>
+        <div class="err" id="fErr"></div>
+        <div class="btnrow">
+          <button class="primary" type="submit" id="fSubmit">Legg til oppgave</button>
+          <button type="button" id="fCancel" style="display:none">Avbryt</button>
+          <button type="button" id="fDelete" class="danger" style="display:none">Slett</button>
+        </div>
+      </form>
+    </div>
+  </aside>
+</main>
+
+<div class="overlay" id="helpOverlay" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="helpbox">
+    <button class="close" id="helpClose" aria-label="Lukk hjelp">Lukk ✕</button>
+    <h2 id="helpTitle">Slik bruker du årshjulet</h2>
+    <p>Årshjulet viser hele året som en sirkel. Du legger inn oppgaver på de ukene de skal gjøres, og ser med en gang hva som kommer.</p>
+
+    <div class="start">
+      <b>Kom i gang på ett minutt</b>
+      <ol style="margin:6px 0 0">
+        <li>Klikk på en uke i hjulet.</li>
+        <li>Skriv hva som skal gjøres i feltet <b>Oppgave</b> til høyre.</li>
+        <li>Velg en kategori. Første gang lager du en ny: gi den et navn og velg en farge.</li>
+        <li>Trykk <b>Legg til oppgave</b>. Nå vises oppgaven som et farget felt i hjulet.</li>
+      </ol>
+    </div>
+
+    <h3>Slik leser du hjulet</h3>
+    <ul>
+      <li><b>Ytterst</b> står månedene. <b>Innenfor</b> står ukenumrene.</li>
+      <li><b>Ringene inne i hjulet</b> viser oppgavene. Hver oppgave fyller de ukene den gjelder, i fargen til kategorien.</li>
+      <li><b>Den oransje viseren</b> peker på dagens dato. I år står den alltid øverst, klokken tolv. Det du ser til høyre for viseren, er det som kommer snart.</li>
+      <li><b>Bleke felt med hake (✓)</b> er oppgaver som er fullført.</li>
+      <li><b>Hendelser</b> – det som ikke skal krysses av, som ferie eller en konferanse – blir aldri bleke.</li>
+      <li>Hold musepekeren over et felt for å se hele navnet på oppgaven.</li>
+    </ul>
+
+    <h3>Legge inn en oppgave</h3>
+    <ul>
+      <li>Klikk på en <b>uke</b> for å legge inn en oppgave den uka, eller på en <b>måned</b> for å velge hele måneden.</li>
+      <li>Vil du at oppgaven skal gå over flere uker, velger du <b>Fra uke</b> og <b>Til uke</b>.</li>
+      <li>Velg hvilken <b>ring</b> oppgaven skal ligge i. Ringene kan du bruke til å skille ulike typer arbeid.</li>
+    </ul>
+
+    <h3>Gjentakelser, ukedag og klokkeslett</h3>
+    <ul>
+      <li><b>Gjentakelse:</b> velg hver uke, hver 2., 3. eller 4. uke, hver måned eller hvert år.</li>
+      <li><b>Ukedag:</b> klikk på dagene oppgaven gjelder, for eksempel <b>Tir</b> for ledermøtet. Da kan du også fylle inn klokkeslett.</li>
+      <li><b>Hver måned:</b> velg ukedag og hvilken i måneden – for eksempel <i>første tirsdag i måneden</i> eller <i>siste fredag i måneden</i>.</li>
+      <li>Under skjemaet ser du hvordan regelen blir, og hvor mange ganger den gjentas.</li>
+      <li><b>Faste møter</b> (hver uke eller hver måned) vises som små streker i en smal stripe rett innenfor ukenumrene. Klikk på en strek for å se den uka.</li>
+    </ul>
+
+    <h3>Gjøremål og hendelser</h3>
+    <p>Nederst i skjemaet står <b>Skal krysses av (gjøremål)</b>. La haken stå for ting som skal gjøres. Ta den bort for <b>hendelser</b> som bare skal vises – for eksempel ferie, en konferanse eller fridager. Hendelser får ingen avkrysningsrute og telles ikke med i «fullført» og «gjenstår».</p>
+    <p>Trykk <b>Gjøremål</b> øverst i panelet til høyre for å se bare det som skal krysses av – en gjøremålsliste for måneden eller uka. <b>Alle</b> viser alt igjen.</p>
+
+    <h3>Ukesoversikt</h3>
+    <p>Trykk <b>Uke</b> øverst i panelet til høyre. Da ser du uka fra mandag til søndag, med oppgavene under riktig dag, sortert etter klokkeslett. Oppgaver uten ukedag står under <b>Hele uka</b>. Bla med pilene. Hvert møte krysses av for seg her.</p>
+
+    <h3>Endre, flytte og fullføre</h3>
+    <ul>
+      <li><b>Klikk på en oppgave</b> – i hjulet eller i listen – for å endre den. Trykk <b>Lagre endringer</b> når du er ferdig.</li>
+      <li><b>Flytt en uke frem eller tilbake</b> med pilene ‹ og › i listen.</li>
+      <li><b>Kryss av</b> i ruten foran oppgaven når den er gjort.</li>
+      <li><b>Slette:</b> åpne oppgaven og trykk <b>Slett</b> to ganger.</li>
+    </ul>
+
+    <h3>Kategorier og farger</h3>
+    <p>Du lager kategoriene selv, og hver kategori har sin farge. To kategorier kan ikke ha samme farge, og du kan ha opptil 10. Under <b>Innstillinger → Kategorier</b> kan du endre navn og farge eller slette en kategori.</p>
+    <p>Klikk på en kategori i fargeforklaringen under hjulet for å skjule den. Klikk igjen for å vise den.</p>
+
+    <h3>Ringer</h3>
+    <p>Under <b>Innstillinger → Ringer</b> velger du hvor mange ringer du vil ha (1–4) og hva de skal hete. Ring 1 er ytterst.</p>
+
+    <h3>Oppgaver som kommer hvert år</h3>
+    <p>Velg <b>Gjentakelse → Hvert år</b> når du legger inn oppgaven. Når du blar til neste år, får du et spørsmål om å hente inn de faste oppgavene. Faste møter (hver uke eller måned) blir også med.</p>
+
+    <h3>Bytte år</h3>
+    <p>Bruk pilene ved årstallet øverst. Andre år enn i år starter med uke 1 øverst. <b>I dag</b> tar deg tilbake til dagens dato.</p>
+    <p>Noen år starter uke 1 først et par dager ut i januar. De første dagene hører da til siste uke i året før, og vises som grå felt.</p>
+
+    <h3>Flere årshjul</h3>
+    <p>Du kan ha flere årshjul, for eksempel ett for vanlig drift og ett for et prosjekt. De vises som faner øverst.</p>
+    <ul>
+      <li><b>Lage nytt:</b> trykk <b>+ Nytt årshjul</b>, skriv et navn og trykk Enter.</li>
+      <li><b>Bytte:</b> klikk på fanen. Hvert årshjul har sine egne oppgaver, kategorier og ringer.</li>
+      <li><b>Gi nytt navn:</b> dobbeltklikk på fanen.</li>
+      <li><b>Slette:</b> <b>Innstillinger → Dette årshjulet → Slett dette årshjulet</b>.</li>
+    </ul>
+
+    <h3>Bilde og tabell til presentasjoner</h3>
+    <ul>
+      <li>Trykk <b>Last ned</b> øverst.</li>
+      <li><b>Bilde (PNG):</b> et bilde av hjulet med tittel og fargeforklaring. Sett det inn i PowerPoint eller Word som et vanlig bilde. Vil du ha januar øverst i stedet for dagens dato, krysser du av for det.</li>
+      <li><b>Tabell (Excel):</b> alle årets oppgaver i en fil som åpnes i Excel.</li>
+      <li><b>Kopier tabell:</b> lim tabellen rett inn i Word, PowerPoint eller en e-post.</li>
+      <li><b>Kalenderfil (.ics):</b> årets oppgaver som en fil du kan åpne i Outlook, Google Kalender eller på iPhone. Oppgaver med ukedag og klokkeslett blir vanlige avtaler, faste møter blir gjentakende avtaler, og oppgaver som gjelder hele uker blir heldagshendelser som ikke viser deg som opptatt.</li>
+      <li>Skjulte kategorier kommer ikke med på bildet.</li>
+    </ul>
+
+    <h3>Hente avtaler fra kalenderen</h3>
+    <ol>
+      <li>Lagre kalenderen din som en .ics-fil. I Outlook: <b>Fil → Lagre kalender</b>. I Google Kalender: <b>Innstillinger → Importer og eksporter → Eksporter</b>. Du kan også lagre en enkelt møteinnkalling som .ics.</li>
+      <li>Gå til <b>Innstillinger → Hent fra kalender</b> og velg filen.</li>
+      <li>Velg år, kategori og ring. Kryss av for avtalene du vil ha med, og trykk <b>Legg inn</b>.</li>
+    </ol>
+    <ul>
+      <li><b>Private og konfidensielle avtaler blir aldri hentet.</b> Du ser bare hvor mange som ble hoppet over – aldri hva de handler om.</li>
+      <li>Avlyste avtaler blir heller ikke tatt med.</li>
+      <li>Avtalene blir hendelser uten avkrysning. Vil du krysse dem av, krysser du av for <b>Skal krysses av</b> før du legger dem inn.</li>
+      <li>Klokkeslett vises i norsk tid, også for møter som er satt opp i en annen tidssone.</li>
+      <li>Henter du samme fil igjen senere, blir avtaler som er endret, oppdatert – du får ikke dobbelt opp.</li>
+      <li>Noen gjentakelser kan ikke vises i årshjulet, for eksempel «den 15. hver måned» eller «hver 3. dag». De står i en egen liste, så du ser hva som ikke ble med.</li>
+    </ul>
+
+    <!--@enkel-->
+    <h3>Hvor lagres oppgavene?</h3>
+    <p>Oppgavene lagres automatisk i nettleseren på denne maskinen. Ingenting sendes til andre. Det betyr også at oppgavene kan forsvinne hvis noen tømmer nettleserens data.</p>
+    <p><b>Ta en sikkerhetskopi av og til:</b> <b>Innstillinger → Sikkerhetskopi → Lagre sikkerhetskopi</b>. Du velger om du vil lagre årshjulet du har åpent, eller alle årshjulene. Filen kan hentes inn igjen senere, eller på en annen maskin. Hvert årshjul havner da i sin egen fane.</p>
+    <p><b>Hvor havner filen?</b> I Chrome og Edge får du et «Lagre som»-vindu der du velger mappe selv, for eksempel OneDrive. Neste gang foreslås samme mappe. I andre nettlesere havner filen der nettleseren lagrer nedlastinger. Vil du velge sted også der, kan du slå på at nettleseren skal spørre hvor filer skal lagres. Det finner du i nettleserens innstillinger under <b>Nedlastinger</b>.</p>
+    <!--@/enkel-->
+    <!--@team-->
+    <h3>Dele årshjulet med andre</h3>
+    <ol>
+      <li>Før du starter: hent inn den nyeste filen fra de andre under <b>Innstillinger → Eksport og import</b>, og velg <b>Slå sammen</b>.</li>
+      <li>Gjør endringene dine.</li>
+      <li>Trykk <b>Lagre sikkerhetskopi</b> og del filen, for eksempel i en felles mappe.</li>
+    </ol>
+    <p>Endringer fra flere personer blir slått sammen. Har to endret samme oppgave, vinner den som ble endret sist.</p>
+    <p>Hvert årshjul har sin egen ID. Når du henter inn en fil, havner hvert årshjul i sin egen fane – så teamets hjul og HRs hjul blandes aldri.</p>
+    <!--@/team-->
+
+    <div class="foot" id="helpFoot"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  /* ---------------- Edition & version (filled in by build.py) ---------------- */
+  const EDITION = "__EDITION__";            // "enkel" or "team"
+  const TEAM = EDITION === "team";
+  const VERSION = "__VERSION__";
+
+  /* ---------------- Constants ---------------- */
+  const MONTHS = ["Januar","Februar","Mars","April","Mai","Juni","Juli","August","September","Oktober","November","Desember"];
+  const SHORT = ["JAN","FEB","MAR","APR","MAI","JUN","JUL","AUG","SEP","OKT","NOV","DES"];
+  // Categories from the first prototype. They only show up if existing tasks still use them,
+  // and are saved as normal categories the first time they are edited.
+  const LEGACY_TYPES = [
+    {id:"okonomi",       name:"Økonomi",        color:"#2f6fb0"},
+    {id:"frister",       name:"Frister",        color:"#c0392b"},
+    {id:"vedlikehold",   name:"Vedlikehold",    color:"#d97706"},
+    {id:"moter",         name:"Møter",          color:"#7c3aed"},
+    {id:"hms",           name:"HMS",            color:"#15803d"},
+    {id:"arrangement",   name:"Arrangement",    color:"#db2777"},
+    {id:"administrasjon",name:"Administrasjon", color:"#0e7490"},
+  ];
+  // Ten clearly different colours that all carry white text
+  const PALETTE = ["#2f6fb0","#c0392b","#d97706","#7c3aed","#15803d","#db2777","#0e7490","#8d5524","#475569","#6b8e23"];
+  const MAX_CATS = 10;
+  const MIN_COLOR_DIST = 60;               // closer than this counts as "the same colour" (palette pairs are ≥ 73 apart)
+  const DEFAULT_RINGS = ["Ring 1","Ring 2","Ring 3","Ring 4"];
+  const NEW_TYPE = "__new__";
+  const DAY = 86400000;
+
+  /* ---------------- Date helpers (UTC, ISO 8601 weeks) ---------------- */
+  const utc = (y,m,d) => Date.UTC(y,m,d);
+  function isoWeekOf(t){                    // t = UTC ms → {year, week}
+    const d = new Date(t);
+    const day = (d.getUTCDay() + 6) % 7;    // Mon=0
+    const thu = t + (3 - day) * DAY;
+    const ty = new Date(thu).getUTCFullYear();
+    return {year: ty, week: 1 + Math.floor((thu - utc(ty,0,1)) / (7*DAY))};
+  }
+  const weeksInYear = y => isoWeekOf(utc(y,11,28)).week;
+  function mondayOfWeek(y, w){
+    const jan4 = utc(y,0,4), day = (new Date(jan4).getUTCDay() + 6) % 7;
+    return jan4 - day*DAY + (w-1)*7*DAY;
+  }
+  const yearStart = y => utc(y,0,1);
+  const yearLen = y => utc(y+1,0,1) - utc(y,0,1);
+  function weekRange(y, w){                  // clamped to calendar year
+    const s = mondayOfWeek(y,w);
+    return [Math.max(s, yearStart(y)), Math.min(s + 7*DAY, yearStart(y+1))];
+  }
+  const fmtDM = t => { const d = new Date(t); return `${d.getUTCDate()}.${d.getUTCMonth()+1}.`; };
+  function monthWeeks(y, m){                 // first/last ISO week (in year y) touching month m
+    const a = isoWeekOf(utc(y,m,1)), b = isoWeekOf(utc(y,m+1,1) - DAY), W = weeksInYear(y);
+    return [a.year < y ? 1 : a.week, b.year > y ? W : b.week];
+  }
+  const monthOfWeek = (y, w) => new Date(Math.min(Math.max(mondayOfWeek(y,w) + 3*DAY, yearStart(y)), yearStart(y+1)-DAY)).getUTCMonth();
+
+  const nowD = new Date();
+  const todayUTC = utc(nowD.getFullYear(), nowD.getMonth(), nowD.getDate()) + (nowD.getHours()*60 + nowD.getMinutes()) * 60000;
+  const today = isoWeekOf(todayUTC);
+  const THIS_YEAR = nowD.getFullYear();
+  // rotation: the current moment of the year sits at 12 o'clock
+  const ROT = (todayUTC - yearStart(THIS_YEAR)) / yearLen(THIS_YEAR) * 360;
+
+  /* ---------------- State ---------------- */
+  const state = {
+    year: THIS_YEAR,
+    selWeek: today.year === THIS_YEAR ? today.week : (today.year < THIS_YEAR ? 1 : weeksInYear(THIS_YEAR)),
+    tasks: [], customTypes: [],      // live (not deleted) records
+    taskRecs: [], typeRecs: [],       // all records incl. deletion markers
+    ringsUpdatedAt: 0,
+    wheel: null,                      // {id, name} – the årshjul that is open
+    wheels: [],                       // all årshjul
+    cloud: false,
+    rings: DEFAULT_RINGS.slice(),
+    hidden: new Set(),
+    editId: null,
+    readOnly: false,
+  };
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2));
+  function allTypes(){
+    const stored = state.customTypes.slice().sort((a,b) => (a.createdAt||0) - (b.createdAt||0) || a.name.localeCompare(b.name, "no"));
+    const ids = new Set(stored.map(t => t.id));
+    const used = new Set(state.tasks.map(t => t.typeId));
+    const legacy = LEGACY_TYPES.filter(t => used.has(t.id) && !ids.has(t.id));
+    return [...stored, ...legacy];
+  }
+  const typeById = id => allTypes().find(t => t.id === id) || {id, name:"Uten kategori", color:"#9ca3af"};
+  const taskCountByType = id => state.tasks.filter(t => t.typeId === id).length;
+
+  /* ---------------- Colour rules ---------------- */
+  const hexRgb = h => { const m = /^#?([0-9a-f]{6})$/i.exec(h || ""); if (!m) return null; const n = parseInt(m[1],16); return [n>>16 & 255, n>>8 & 255, n & 255]; };
+  function colorDist(a, b){               // "redmean" distance – close to how the eye judges colour difference
+    const x = hexRgb(a), y = hexRgb(b); if (!x || !y) return 999;
+    const r = (x[0]+y[0])/2, dr = x[0]-y[0], dg = x[1]-y[1], db = x[2]-y[2];
+    return Math.sqrt((2 + r/256)*dr*dr + 4*dg*dg + (2 + (255-r)/256)*db*db);
+  }
+  // returns the category whose colour is the same as / too close to `hex`, ignoring `exceptId`
+  const colorConflict = (hex, exceptId) => allTypes().find(t => t.id !== exceptId && colorDist(t.color, hex) < MIN_COLOR_DIST) || null;
+  const firstFreeColor = exceptId => PALETTE.find(c => !colorConflict(c, exceptId)) || null;
+
+  // swatch picker: palette + custom colour; colours used by other categories are disabled
+  function swatchHTML(selected, exceptId){
+    let h = PALETTE.map(c => {
+      const conflict = colorConflict(c, exceptId);
+      return `<button type="button" class="sw ${conflict ? 'used' : ''} ${c === selected ? 'sel' : ''}" data-c="${c}" style="background:${c}"
+        title="${conflict ? 'Brukes av ' + esc(conflict.name) : 'Velg farge'}" ${conflict ? 'aria-disabled="true"' : ''}></button>`;
+    }).join("");
+    const custom = selected && !PALETTE.includes(selected) ? selected : "#888888";
+    h += `<input type="color" class="sw-custom" value="${custom}" title="Egen farge">`;
+    return h;
+  }
+  function wireSwatches(container, exceptId, onPick, onError){
+    container.querySelectorAll(".sw").forEach(b => b.addEventListener("click", () => {
+      const c = b.dataset.c, conflict = colorConflict(c, exceptId);
+      if (conflict) return onError(`Fargen brukes allerede av «${conflict.name}».`);
+      onPick(c);
+    }));
+    const inp = container.querySelector(".sw-custom");
+    inp.addEventListener("change", () => {
+      const c = inp.value.toLowerCase(), conflict = colorConflict(c, exceptId);
+      if (conflict) return onError(`Fargen er for lik «${conflict.name}». Velg en annen.`);
+      onPick(c);
+    });
+  }
+  const setStatus = msg => { $("status").textContent = msg || ""; };
+  const ringCount = () => Math.min(4, Math.max(1, state.rings.length));
+
+  /* ---------------- Repeats (version 9) ----------------
+     rep:      "none" | "weekly" | "monthly" | "yearly"   (older data: recurring:true = "yearly")
+     interval: 1–4 for weekly (every 1st/2nd/3rd/4th week, counted from the start week)
+     days:     ISO weekdays 1 (Mon) … 7 (Sun); empty = the whole week
+     nth:      monthly: 1–4 or -1 (last) – e.g. 1 + [2] = first Tuesday of the month
+     timeFrom, timeTo: "HH:MM" or ""
+     doneDates: weekly/monthly series are ticked off per occurrence: {"2026-11-24": timestamp, "w47": timestamp}  */
+  const DAY_NAMES = ["mandag","tirsdag","onsdag","torsdag","fredag","lørdag","søndag"];
+  const DAY_SHORT = ["Man","Tir","Ons","Tor","Fre","Lør","Søn"];
+  const NTH_NAMES = {1: "første", 2: "andre", 3: "tredje", 4: "fjerde", "-1": "siste"};
+  const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+  const isSeries = t => t.rep === "weekly" || t.rep === "monthly";
+  const dateKey = ms => new Date(ms).toISOString().slice(0, 10);
+
+  // Older tasks were stored per month – show them as the weeks of that month.
+  function norm(t){
+    const W = weeksInYear(t.year);
+    let from = t.weekFrom, to = t.weekTo;
+    if (!from || !to){ [from, to] = monthWeeks(t.year, t.month || 0); }
+    from = Math.min(Math.max(1, from), W); to = Math.min(Math.max(1, to), W);
+    if (from > to) [from, to] = [to, from];
+    const repv = ["weekly","monthly","yearly","none"].includes(t.rep) ? t.rep : (t.recurring ? "yearly" : "none");
+    const days = [...new Set((Array.isArray(t.days) ? t.days : []).map(Number).filter(d => d >= 1 && d <= 7))].sort((a,b) => a-b);
+    const tf = TIME_RE.test(t.timeFrom || "") ? t.timeFrom : "", tt = TIME_RE.test(t.timeTo || "") && tf && t.timeTo >= tf ? t.timeTo : "";
+    // todo: false = an event that is not ticked off (no checkbox, not counted)
+    const todo = t.todo !== false;
+    return {...t, weekFrom: from, weekTo: to, ring: Math.max(0, Math.min(3, t.ring || 0)), todo, done: todo && !!t.done,
+      rep: repv, recurring: repv === "yearly", interval: Math.max(1, Math.min(4, +t.interval || 1)), days,
+      nth: [1,2,3,4,-1].includes(+t.nth) ? +t.nth : 1, timeFrom: tf, timeTo: tt,
+      doneDates: t.doneDates && typeof t.doneDates === "object" ? t.doneDates : {}};
+  }
+  const tasksOfYear = y => state.tasks.filter(t => t.year === y).map(norm);
+  function stripTask(t){
+    const repv = t.rep || (t.recurring ? "yearly" : "none");
+    return {id:t.id, title:t.title, typeId:t.typeId, ring:t.ring, year:t.year, weekFrom:t.weekFrom, weekTo:t.weekTo,
+      done:!!t.done, todo: t.todo !== false, recurring: repv === "yearly", seriesId:t.seriesId || null, createdAt:t.createdAt || Date.now(),
+      completedAt:t.completedAt || null, updatedAt: Date.now(),
+      rep: repv, interval: t.interval || 1, days: t.days || [], nth: t.nth || 1,
+      timeFrom: t.timeFrom || "", timeTo: t.timeTo || "", doneDates: t.doneDates || {}, icsUid: t.icsUid || null};
+  }
+  // the date of the n-th (1–4, or -1 = last) weekday d (1–7) in month m of year y
+  function nthWeekday(y, m, d, nth){
+    if (nth > 0){
+      const first = utc(y, m, 1), dow = (new Date(first).getUTCDay() + 6) % 7 + 1;
+      return first + (((d - dow + 7) % 7) + (nth - 1) * 7) * DAY;
+    }
+    const last = utc(y, m + 1, 1) - DAY, dow = (new Date(last).getUTCDay() + 6) % 7 + 1;
+    return last - ((dow - d + 7) % 7) * DAY;
+  }
+  // The week a date belongs to in year y. Dates at the very start/end of the calendar year that ISO places
+  // in the neighbouring year (e.g. 1–3 Jan 2027 = week 53 of 2026) count as week 1 / the last week of y.
+  function weekInYear(ms, y){ const iw = isoWeekOf(ms); return iw.year === y ? iw.week : (iw.year < y ? 1 : weeksInYear(y)); }
+  // All occurrences of a weekly/monthly series within its calendar year: [{key, date, week, day}]
+  // (memoised per task version, since the wheel, panel and summary all ask for them)
+  const occCache = new Map();
+  function occurrences(t){
+    const sig = [t.id, t.year, t.rep, t.interval, t.nth, t.weekFrom, t.weekTo, t.days.join("")].join("|");
+    if (occCache.has(sig)) return occCache.get(sig);
+    const y = t.year, out = [];
+    if (t.rep === "weekly"){
+      if (!t.days.length){
+        // no weekday: one occurrence per week (dated Thursday, which always lies in the ISO year)
+        for (let w = t.weekFrom; w <= t.weekTo; w += t.interval) out.push({key: "w" + w, date: mondayOfWeek(y, w) + 3 * DAY, week: w, day: 0});
+      } else {
+        for (let dt = yearStart(y); dt < yearStart(y + 1); dt += DAY){
+          const d = (new Date(dt).getUTCDay() + 6) % 7 + 1;
+          if (!t.days.includes(d)) continue;
+          const week = weekInYear(dt, y);
+          if (week < t.weekFrom || week > t.weekTo || (week - t.weekFrom) % t.interval) continue;
+          out.push({key: dateKey(dt), date: dt, week, day: d});
+        }
+      }
+    } else if (t.rep === "monthly"){
+      const days = t.days.length ? t.days : [1];
+      for (let m = 0; m < 12; m++) for (const d of days){
+        const dt = nthWeekday(y, m, d, t.nth), week = weekInYear(dt, y);
+        if (week >= t.weekFrom && week <= t.weekTo) out.push({key: dateKey(dt), date: dt, week, day: d});
+      }
+      out.sort((a, b) => a.date - b.date);
+    }
+    if (occCache.size > 500) occCache.clear();
+    occCache.set(sig, out);
+    return out;
+  }
+  const timeText = t => t.timeFrom ? ` kl. ${t.timeFrom}${t.timeTo ? "–" + t.timeTo : ""}` : "";
+  const daysText = days => days.length === 1 ? DAY_NAMES[days[0]-1]
+    : days.slice(0, -1).map(d => DAY_NAMES[d-1]).join(", ") + " og " + DAY_NAMES[days[days.length-1]-1];
+  function ruleText(t, noTime){             // e.g. "Hver tirsdag kl. 09:00–10:00", "Første mandag i måneden"
+    const tm = noTime ? "" : timeText(t);
+    if (t.rep === "weekly"){
+      const every = t.interval === 1 ? "Hver" : `Hver ${t.interval}. uke:`;
+      if (!t.days.length) return (t.interval === 1 ? "Hver uke" : `Hver ${t.interval}. uke`) + tm;
+      return t.interval === 1 ? `Hver ${daysText(t.days)}${tm}` : `${every} ${daysText(t.days)}${tm}`;
+    }
+    if (t.rep === "monthly"){
+      const n = NTH_NAMES[t.nth]; const days = t.days.length ? t.days : [1];
+      return `${n[0].toUpperCase() + n.slice(1)} ${daysText(days)} i måneden${tm}`;
+    }
+    const base = t.days.length ? daysText(t.days)[0].toUpperCase() + daysText(t.days).slice(1) + tm : (tm ? tm.trim() : "");
+    if (t.rep === "yearly") return base ? `${base} · hvert år` : "Hvert år";
+    return base;
+  }
+  const occDone = (t, key) => t.todo !== false && !!t.doneDates[key];
+  const isTodo = t => t.todo !== false;
+  // Every record carries updatedAt. Deletions are kept as small "tombstones" ({id, deleted:true, updatedAt})
+  // so that a deletion travels with an export and wins over an older copy when two files are merged.
+  const stamp = r => r.updatedAt || r.createdAt || 0;
+  function syncLive(){
+    state.tasks = state.taskRecs.filter(r => !r.deleted);
+    state.customTypes = state.typeRecs.filter(r => !r.deleted);
+  }
+
+  /* ---------------- Storage: Claude db when available, else this browser ---------------- */
+  // Several årshjul ("wheels"), each {id, name, createdAt}.
+  //  - Standalone file: the list in localStorage, each wheel's data under its own key.
+  //  - Inside Claude: the list in the db document "settings/wheels". The first wheel ("root") keeps its data
+  //    where earlier versions stored it (tasks, types, settings/main) – nothing is moved. Other wheels live
+  //    under w/<id>/tasks, w/<id>/types and w/<id>/settings/main.
+  const LS_OLD = "arshjul.v1", LS_WHEELS = "arshjul.wheels", LS_CUR = "arshjul.current", LS_CLOUD_CUR = "arshjul.cloud.current";
+  const MAX_WHEELS = 20;
+  const dataKey = id => "arshjul.w." + id;
+  const lsGet = k => { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch(e){ return null; } };
+  const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ return false; } };
+  const newWheelId = () => "hjul-" + uid().replace(/-/g,"").slice(0,10);
+  const sameName = (a, b) => String(a).trim().toLowerCase() === String(b).trim().toLowerCase();
+  function uniqueName(name0, exceptId){
+    let name = name0, n = 2;
+    while (state.wheels.some(w => w.id !== exceptId && sameName(w.name, name))) name = `${name0} (${n++})`;
+    return name;
+  }
+  let db = null;
+  function resetWheelState(){
+    state.taskRecs = []; state.typeRecs = []; state.rings = DEFAULT_RINGS.slice(); state.ringsUpdatedAt = 0;
+    state.hidden = new Set(); state.editId = null; syncLive();
+  }
+  const emptyData = () => ({tasks: [], types: [], settings: {rings: DEFAULT_RINGS.slice(), updatedAt: 0}});
+
+  const local = {
+    list(){ return lsGet(LS_WHEELS) || []; },
+    setList(ws){ lsSet(LS_WHEELS, ws); state.wheels = ws.map(w => ({...w})); },
+    init(){
+      let wheels = local.list();
+      if (!wheels.length){
+        // first start (or upgrade from the single-wheel version): keep existing data as "Mitt årshjul"
+        const w = {id: newWheelId(), name: "Mitt årshjul", createdAt: Date.now()};
+        const old = lsGet(LS_OLD);
+        if (old) lsSet(dataKey(w.id), old);
+        wheels = [w]; lsSet(LS_WHEELS, wheels); lsSet(LS_CUR, w.id);
+      }
+      let cur = lsGet(LS_CUR);
+      if (!wheels.some(w => w.id === cur)) cur = wheels[0].id;
+      local.open(cur);
+    },
+    open(id){
+      const list = local.list(), w = list.find(x => x.id === id); if (!w) return;
+      state.wheels = list.map(x => ({...x}));
+      state.wheel = {id: w.id, name: w.name, createdAt: w.createdAt};
+      lsSet(LS_CUR, w.id);
+      resetWheelState();
+      const d = lsGet(dataKey(w.id));
+      if (d){
+        state.taskRecs = d.tasks || []; state.typeRecs = d.types || [];
+        if (d.rings && d.rings.length){ state.rings = d.rings; state.ringsUpdatedAt = d.ringsUpdatedAt || 0; }
+        syncLive();
+      }
+    },
+    readData(id){
+      const d = lsGet(dataKey(id)); if (!d) return emptyData();
+      return {tasks: d.tasks || [], types: d.types || [], settings: {rings: d.rings && d.rings.length ? d.rings : DEFAULT_RINGS.slice(), updatedAt: d.ringsUpdatedAt || 0}};
+    },
+    save(){
+      if (!state.wheel) return;
+      lsSet(dataKey(state.wheel.id), {tasks:state.taskRecs, types:state.typeRecs, rings:state.rings, ringsUpdatedAt:state.ringsUpdatedAt});
+    }
+  };
+
+  const cloud = {
+    registry: null,      // list from settings/wheels (null until the first wheel is created or renamed)
+    legacy: null,        // settings/wheel: name and id of the first wheel, as earlier versions stored it
+    unsubs: [],
+    prefix: w => (!w || w.root) ? "" : `w/${w.id}/`,
+    // the list of wheels to show; before anything is written, the first wheel is derived from earlier versions
+    derive(){
+      if (cloud.registry && cloud.registry.length) return cloud.registry.map(w => ({...w}));
+      const L = cloud.legacy;
+      return [{id: L ? L.id : "hjul-hoved", name: L ? L.name : "Årshjul", createdAt: (L && L.createdAt) || 0, root: true, unsaved: !L}];
+    },
+    async persist(list){
+      const clean = list.map(w => {
+        const c = {id: w.unsaved ? newWheelId() : w.id, name: w.name, createdAt: w.createdAt || Date.now()};
+        if (w.root) c.root = true;
+        return c;
+      });
+      const root = clean.find(w => w.root);
+      if (root) await db.doc("settings/wheel").set({id: root.id, name: root.name, createdAt: root.createdAt});
+      await db.doc("settings/wheels").set({list: clean});
+      cloud.registry = clean;
+      applyWheelList(clean);
+      return clean;
+    },
+    open(w){
+      cloud.unsubs.forEach(u => { try { u(); } catch(e){} }); cloud.unsubs = [];
+      state.wheel = {...w}; resetWheelState();
+      try { localStorage.setItem(LS_CLOUD_CUR, w.id); } catch(e){}
+      const P = cloud.prefix(w), loaded = {tasks:false, types:false, settings:false};
+      let done; const ready = new Promise(r => { done = r; });
+      setStatus("Henter oppgaver …");
+      const timer = setTimeout(() => { setStatus("Får ikke kontakt med lagringen ennå – det som vises kan være utdatert."); done(); }, 10000);
+      const settle = (key, snap) => {
+        if (!snap.metadata.fromCache) loaded[key] = true;
+        if (loaded.tasks && loaded.types && loaded.settings && !loaded.done){
+          loaded.done = true; clearTimeout(timer); done();
+          setStatus(state.readOnly ? "Du har bare lesetilgang til dette årshjulet." : "Lagret i skyen ✓");
+        }
+      };
+      const onErr = () => { clearTimeout(timer); setStatus("Lagringen er ikke tilgjengelig akkurat nå."); done(); };
+      cloud.unsubs.push(db.collection(P + "tasks").onSnapshot(s => { state.taskRecs = s.docs.map(x => ({...x.data(), id:x.id})); syncLive(); settle("tasks", s); render(); }, onErr));
+      cloud.unsubs.push(db.collection(P + "types").onSnapshot(s => { state.typeRecs = s.docs.map(x => ({...x.data(), id:x.id})); syncLive(); settle("types", s); render(); }, onErr));
+      cloud.unsubs.push(db.doc(P + "settings/main").onSnapshot(s => {
+        const data = s.exists ? s.data() : {}, r = data.rings;
+        state.rings = (Array.isArray(r) && r.length) ? r.slice(0,4).map(String) : DEFAULT_RINGS.slice();
+        state.ringsUpdatedAt = data.updatedAt || 0;
+        settle("settings", s); render();
+      }, onErr));
+      return ready;
+    },
+    async readData(w){
+      const P = cloud.prefix(w);
+      const [t, ty, se] = await Promise.all([db.collection(P + "tasks").get(), db.collection(P + "types").get(), db.doc(P + "settings/main").get()]);
+      const sd = se.exists ? se.data() : {};
+      return {tasks: t.docs.map(x => ({...x.data(), id:x.id})), types: ty.docs.map(x => ({...x.data(), id:x.id})),
+              settings: {rings: Array.isArray(sd.rings) && sd.rings.length ? sd.rings : DEFAULT_RINGS.slice(), updatedAt: sd.updatedAt || 0}};
+    },
+    async wipe(w){                            // delete every document of a wheel
+      const P = cloud.prefix(w);
+      for (const coll of ["tasks", "types"]){
+        const s = await db.collection(P + coll).get();
+        for (const d of s.docs) await db.collection(P + coll).doc(d.id).delete();
+      }
+      await db.doc(P + "settings/main").delete();
+    }
+  };
+
+  // a new list of wheels arrived (or was written): keep the open wheel in step with it
+  function applyWheelList(list){
+    state.wheels = list.map(w => ({...w}));
+    if (!state.wheel) return;
+    const w = list.find(x => x.id === state.wheel.id) || (state.wheel.root && list.find(x => x.root));
+    if (w) state.wheel = {...w};
+    else if (list.length) openWheel(list[0].id).then(() => gotoYear(state.year));   // removed on another device
+  }
+  function readWheelData(w){
+    if (state.wheel && w.id === state.wheel.id) return Promise.resolve({tasks: state.taskRecs, types: state.typeRecs, settings: {rings: state.rings, updatedAt: state.ringsUpdatedAt || 0}});
+    return db ? cloud.readData(w) : Promise.resolve(local.readData(w.id));
+  }
+  // open a wheel; resolves when its data is loaded
+  function openWheel(id){
+    const w = state.wheels.find(x => x.id === id); if (!w) return Promise.resolve();
+    if (!db){ local.open(id); return Promise.resolve(); }
+    return cloud.open(w);
+  }
+
+  function handleWriteError(e){
+    if (e && e.code === "invalid_argument"){ state.readOnly = true; setStatus("Du har bare lesetilgang til dette årshjulet."); render(); }
+    else if (e && e.code === "quota_exceeded") setStatus("Lagringsplassen er full – slett noen gamle oppgaver.");
+    else setStatus("Kunne ikke lagre endringen. Prøv igjen.");
+  }
+  const upsert = (arr, rec) => { const i = arr.findIndex(x => x.id === rec.id); if (i >= 0) arr[i] = rec; else arr.push(rec); };
+  async function writeRec(coll, rec){       // one record into the open wheel → db or local arrays (no render)
+    if (db){ await db.collection(cloud.prefix(state.wheel) + coll).doc(rec.id).set(rec); return; }
+    upsert(coll === "tasks" ? state.taskRecs : state.typeRecs, rec);
+  }
+  const store = {
+    async putTask(t){
+      try { await writeRec("tasks", stripTask(t)); } catch(e){ handleWriteError(e); return; }
+      if (!db){ syncLive(); local.save(); render(); }
+    },
+    async putTasks(list){                    // many at once (calendar import): one save and one redraw
+      try { for (const t of list) await writeRec("tasks", stripTask(t)); } catch(e){ handleWriteError(e); }
+      if (!db){ syncLive(); local.save(); render(); }
+    },
+    async deleteTask(id){
+      try { await writeRec("tasks", {id, deleted:true, updatedAt: Date.now()}); } catch(e){ handleWriteError(e); return; }
+      if (!db){ syncLive(); local.save(); render(); }
+    },
+    async putType(ty){
+      ty = {id: ty.id, name: ty.name, color: ty.color, createdAt: ty.createdAt || Date.now(), updatedAt: Date.now()};
+      try { await writeRec("types", ty); } catch(e){ handleWriteError(e); return false; }
+      if (!db){ syncLive(); local.save(); render(); }
+      return true;
+    },
+    async deleteType(id){
+      try { await writeRec("types", {id, deleted:true, updatedAt: Date.now()}); } catch(e){ handleWriteError(e); return; }
+      if (!db){ syncLive(); local.save(); render(); }
+    },
+    async putRings(rings, updatedAt){
+      const at = updatedAt || Date.now();
+      if (db){ try { await db.doc(cloud.prefix(state.wheel) + "settings/main").set({rings, updatedAt: at}); } catch(e){ handleWriteError(e); } }
+      else { state.rings = rings; state.ringsUpdatedAt = at; local.save(); render(); }
+    },
+    // ----- the list of wheels -----
+    async createWheel(name, id){
+      const w = {id: id || newWheelId(), name, createdAt: Date.now()};
+      if (db){ try { await cloud.persist([...state.wheels, w]); } catch(e){ handleWriteError(e); return null; } }
+      else local.setList([...local.list(), w]);
+      return w;
+    },
+    async renameWheel(id, name){
+      const list = state.wheels.map(w => w.id === id ? {...w, name} : w);
+      if (db){ try { await cloud.persist(list); } catch(e){ handleWriteError(e); return false; } }
+      else { local.setList(list.map(({id, name, createdAt}) => ({id, name, createdAt}))); }
+      if (state.wheel && state.wheel.id === id) state.wheel.name = name;
+      render(); return true;
+    },
+    async deleteWheel(id){
+      const w = state.wheels.find(x => x.id === id); if (!w || state.wheels.length < 2) return false;
+      const rest = state.wheels.filter(x => x.id !== id);
+      if (db){ try { await cloud.wipe(w); await cloud.persist(rest); } catch(e){ handleWriteError(e); return false; } }
+      else { local.setList(rest.map(({id, name, createdAt}) => ({id, name, createdAt}))); try { localStorage.removeItem(dataKey(id)); } catch(e){} }
+      return true;
+    },
+    // an empty wheel takes over the name and id of an imported file
+    async adoptIdentity(oldId, newId, name){
+      const list = state.wheels.map(w => w.id === oldId ? {...w, id: newId, name, unsaved: false} : w);
+      if (db){ try { await cloud.persist(list); } catch(e){ handleWriteError(e); return false; } }
+      else {
+        const d = lsGet(dataKey(oldId));
+        local.setList(list.map(({id, name, createdAt}) => ({id, name, createdAt})));
+        if (d) lsSet(dataKey(newId), d);
+        try { localStorage.removeItem(dataKey(oldId)); } catch(e){}
+        lsSet(LS_CUR, newId);
+      }
+      if (state.wheel && state.wheel.id === oldId) state.wheel = {...state.wheel, id: newId, name, unsaved: false};
+      return true;
+    },
+    // bulk write used by import; records are written exactly as given (their own updatedAt is kept)
+    async applyImport(taskRecs, typeRecs){
+      let n = 0;
+      for (const r of typeRecs){ await writeRec("types", r); n++; }
+      for (const r of taskRecs){ await writeRec("tasks", r); n++; }
+      if (!db){ syncLive(); local.save(); render(); }
+      return n;
+    }
+  };
+
+  async function initStore(){
+    let d = null;
+    if (window.claude && typeof window.claude.use === "function"){
+      render();
+      try { d = await window.claude.use("db"); } catch(e){ d = null; }
+    }
+    if (!d){ local.init(); render(); setStatus("Lagres i denne nettleseren."); maybeShowHelpFirstTime(); return; }
+    db = d;
+    state.cloud = true;
+    setStatus("Henter årshjul …");
+    // first the list of wheels (and the first wheel's name from earlier versions), then the chosen wheel
+    const seen = {reg: false, leg: false};
+    let started = false;
+    const afterMeta = () => {
+      if (!seen.reg || !seen.leg) return;
+      const list = cloud.derive();
+      if (!started){
+        started = true;
+        state.wheels = list;
+        let cur = null; try { cur = localStorage.getItem(LS_CLOUD_CUR); } catch(e){}
+        const w = list.find(x => x.id === cur) || list[0];
+        cloud.open(w).then(() => { gotoYear(state.year); maybeShowHelpFirstTime(); });
+      } else { applyWheelList(list); render(); }
+    };
+    db.doc("settings/wheels").onSnapshot(s => {
+      const l = s.exists && Array.isArray(s.data().list) ? s.data().list.filter(w => w && typeof w.id === "string") : null;
+      cloud.registry = l && l.length ? l : null; seen.reg = true; afterMeta();
+    }, () => { seen.reg = true; afterMeta(); });
+    db.doc("settings/wheel").onSnapshot(s => {
+      const w = s.exists ? s.data() : null;
+      cloud.legacy = (w && w.id) ? {id: String(w.id), name: String(w.name || "Årshjul"), createdAt: w.createdAt || 0} : null;
+      seen.leg = true; afterMeta();
+    }, () => { seen.leg = true; afterMeta(); });
+  }
+
+  /* ---------------- Wheel geometry ---------------- */
+  const C = 360, R_OUT = 344, R_MONTH_IN = 314, R_WEEK_IN = 288, R_HUB = 92, RING_GAP = 3;
+  const polar = (r, deg) => { const a = deg * Math.PI/180; return [C + r*Math.sin(a), C - r*Math.cos(a)]; };
+  const ang = (y, t, rot = ROT) => (t - yearStart(y)) / yearLen(y) * 360 - rot;   // degrees clockwise from 12 o'clock
+  // Resting rotation: the current year has "now" at 12 o'clock; every other year starts with week 1 at 12 o'clock.
+  const restRot = y => y === THIS_YEAR ? ROT : (weekRange(y, 1)[0] - yearStart(y)) / yearLen(y) * 360;
+  const normDeg = a => ((a % 360) + 360) % 360;
+  const lowerHalf = a => { const n = normDeg(a); return n > 90 && n < 270; };
+  function arcPath(r1, r2, a0, a1){
+    const [x0,y0] = polar(r2,a0), [x1,y1] = polar(r2,a1), [x2,y2] = polar(r1,a1), [x3,y3] = polar(r1,a0);
+    const L = (a1-a0) > 180 ? 1 : 0;
+    return `M${x0.toFixed(2)},${y0.toFixed(2)} A${r2},${r2} 0 ${L} 1 ${x1.toFixed(2)},${y1.toFixed(2)} L${x2.toFixed(2)},${y2.toFixed(2)} A${r1},${r1} 0 ${L} 0 ${x3.toFixed(2)},${y3.toFixed(2)} Z`;
+  }
+  function textArc(r, a0, a1){              // path for <textPath>, reversed on the lower half so text reads upright
+    const flip = lowerHalf((a0+a1)/2);
+    const [s, e] = flip ? [a1, a0] : [a0, a1];
+    const [x0,y0] = polar(r,s), [x1,y1] = polar(r,e);
+    return `M${x0.toFixed(2)},${y0.toFixed(2)} A${r},${r} 0 0 ${flip?0:1} ${x1.toFixed(2)},${y1.toFixed(2)}`;
+  }
+  // Weekly/monthly series are drawn as small marks in a thin stripe just inside the week numbers.
+  const STRIPE_OUT = R_WEEK_IN - 3, STRIPE_IN = R_WEEK_IN - 15;
+  function ringBounds(i, n, top = R_WEEK_IN - RING_GAP){   // ring i (0 = outermost) of n, below `top`
+    const w = (top - R_HUB - 6) / n;
+    const outer = top - i*w;
+    return [outer - w + RING_GAP, outer];
+  }
+
+  // Builds the wheel as SVG markup. Used both for the screen and for the PNG download.
+  //   opts.rot     – rotation in degrees (default: "now" at 12 o'clock)
+  //   opts.exp     – export mode: no selection/edit highlights, no click targets
+  //   opts.showNow – show today's week and the "now" pointer
+  function wheelMarkup(opts = {}){
+    const y = state.year;
+    const rot = opts.rot ?? restRot(y), exp = !!opts.exp, showNow = (opts.showNow ?? true) && y === THIS_YEAR;
+    const A = (yy, t) => ang(yy, t, rot);
+    const W = weeksInYear(y), n = ringCount();
+    // Days at the start/end of the calendar year that belong to the neighbouring year's ISO week
+    // (e.g. 1–3 Jan 2027 are week 53 of 2026). Shown as grey cells so the ring has no gap.
+    const spill = [];
+    { const first = weekRange(y, 1)[0], last = weekRange(y, W)[1];
+      if (first > yearStart(y)) spill.push([yearStart(y), first, weeksInYear(y-1), y-1]);
+      if (last < yearStart(y+1)) spill.push([last, yearStart(y+1), 1, y+1]); }
+    const visible = tasksOfYear(y).filter(t => !state.hidden.has(t.typeId));
+    const tasks = visible.filter(t => !isSeries(t));          // drawn as filled weeks
+    const series = visible.filter(isSeries);                  // drawn as marks in the stripe
+    const ringTop = series.length ? STRIPE_IN - RING_GAP : R_WEEK_IN - RING_GAP;
+    const selWeek = exp ? -1 : state.selWeek;
+    const selMonth = exp ? -1 : monthOfWeek(y, state.selWeek);
+    const idp = exp ? "x" : "tp";
+    let defs = "", out = "";
+
+    // Month ring
+    for (let m = 0; m < 12; m++){
+      const a0 = A(y, utc(y,m,1)), a1 = A(y, utc(y,m+1,1)), mid = (a0+a1)/2;
+      const sel = m === selMonth;
+      out += `<path class="mseg" data-m="${m}" d="${arcPath(R_MONTH_IN, R_OUT, a0, a1)}" fill="${sel ? 'var(--accent)' : (m%2 ? 'var(--ring)' : 'var(--ring-alt)')}" stroke="var(--card)" stroke-width="2"/>`;
+      const [lx, ly] = polar((R_MONTH_IN+R_OUT)/2, mid);
+      const rot = lowerHalf(mid) ? mid + 180 : mid;
+      out += `<text x="${lx}" y="${ly}" transform="rotate(${rot} ${lx} ${ly})" text-anchor="middle" dominant-baseline="central" pointer-events="none"
+        font-weight="600" font-size="13" letter-spacing="1.5" fill="${sel ? '#fff' : 'var(--ink)'}">${SHORT[m]}</text>`;
+    }
+
+    // Week number ring
+    for (let w = 1; w <= W; w++){
+      const [s, e] = weekRange(y, w), a0 = A(y, s), a1 = A(y, e), mid = (a0+a1)/2;
+      const sel = w === selWeek, cur = showNow && y === today.year && w === today.week;
+      const fill = sel ? 'color-mix(in srgb, var(--accent) 22%, var(--card))' : (w%2 ? 'var(--ring-alt)' : 'var(--ring)');
+      out += `<path class="wseg" data-w="${w}" d="${arcPath(R_WEEK_IN, R_MONTH_IN - 2, a0, a1)}" fill="${fill}" stroke="var(--card)" stroke-width="1"/>`;
+      const [lx, ly] = polar((R_WEEK_IN + R_MONTH_IN - 2)/2, mid);
+      const rot = lowerHalf(mid) ? mid + 180 : mid;
+      out += `<text x="${lx}" y="${ly}" transform="rotate(${rot} ${lx} ${ly})" text-anchor="middle" dominant-baseline="central" pointer-events="none"
+        font-size="10.5" font-weight="${cur||sel ? 700 : 500}" fill="${cur ? 'var(--today)' : 'var(--ink)'}">${w}</text>`;
+    }
+
+    for (const [s, e, wn, wy] of spill){
+      const a0 = A(y, s), a1 = A(y, e), mid = (a0+a1)/2;
+      out += `<path d="${arcPath(R_WEEK_IN, R_MONTH_IN - 2, a0, a1)}" fill="var(--bg)" stroke="var(--card)" stroke-width="1"><title>Uke ${wn} hører til ${wy}</title></path>`;
+      if ((e - s) / DAY >= 3){
+        const [lx, ly] = polar((R_WEEK_IN + R_MONTH_IN - 2)/2, mid), r = lowerHalf(mid) ? mid + 180 : mid;
+        out += `<text x="${lx}" y="${ly}" transform="rotate(${r} ${lx} ${ly})" text-anchor="middle" dominant-baseline="central" pointer-events="none" font-size="9" fill="var(--muted)">${wn}</text>`;
+      }
+    }
+
+    // Activity rings: empty week cells, then filled task arcs
+    let tp = 0;
+    for (let i = 0; i < n; i++){
+      const [r1, r2] = ringBounds(i, n, ringTop);
+      for (const [s, e] of spill) out += `<path d="${arcPath(r1, r2, A(y,s), A(y,e))}" fill="var(--bg)" stroke="var(--card)" stroke-width="1"/>`;
+      for (let w = 1; w <= W; w++){
+        const [s, e] = weekRange(y, w);
+        const sel = w === selWeek;
+        out += `<path class="cell" data-w="${w}" d="${arcPath(r1, r2, A(y,s), A(y,e))}" fill="${sel ? 'color-mix(in srgb, var(--accent) 10%, var(--cell))' : 'var(--cell)'}" stroke="var(--card)" stroke-width="1"/>`;
+      }
+      // lane packing so overlapping tasks in the same ring share the width
+      const rt = tasks.filter(t => Math.min(t.ring, n-1) === i).sort((a,b) => a.weekFrom - b.weekFrom || a.weekTo - b.weekTo);
+      const lanesEnd = [];
+      const placed = rt.map(t => {
+        let l = lanesEnd.findIndex(end => end < t.weekFrom);
+        if (l < 0){ l = lanesEnd.length; lanesEnd.push(0); }
+        lanesEnd[l] = t.weekTo;
+        return [t, l];
+      });
+      const L = Math.max(1, lanesEnd.length), lw = (r2 - r1) / L;
+      for (const [t, l] of placed){
+        const a0 = A(y, weekRange(y, t.weekFrom)[0]), a1 = A(y, weekRange(y, t.weekTo)[1]);
+        const lr2 = r2 - l*lw, lr1 = lr2 - lw + (L > 1 ? 1 : 0);
+        const col = typeById(t.typeId).color;
+        const editing = !exp && t.id === state.editId;
+        out += `<path class="arc" data-id="${esc(t.id)}" d="${arcPath(lr1 + 1, lr2 - 1, a0 + 0.25, a1 - 0.25)}" fill="${esc(col)}"
+          fill-opacity="${t.done ? 0.35 : 1}" stroke="${editing ? 'var(--ink)' : 'none'}" stroke-width="2"><title>${esc(t.title)} · uke ${t.weekFrom}${t.weekTo!==t.weekFrom?'–'+t.weekTo:''}${t.done?' (fullført)':''}</title></path>`;
+        // title along the arc when there is room
+        const rm = (lr1 + lr2)/2, arcLen = (a1 - a0) * Math.PI/180 * rm, fs = Math.min(12, lw - 6);
+        if (fs >= 8){
+          const maxChars = Math.floor((arcLen - 10) / (fs * 0.58));
+          if (maxChars >= 3){
+            let label = (t.done ? "✓ " : "") + t.title;
+            if (label.length > maxChars) label = label.slice(0, maxChars - 1) + "…";
+            const id = `${idp}${tp++}`;
+            defs += `<path id="${id}" d="${textArc(rm, a0, a1)}"/>`;
+            out += `<text font-size="${fs}" font-weight="600" fill="${t.done ? 'var(--ink)' : '#fff'}" pointer-events="none" dominant-baseline="central">
+              <textPath href="#${id}" startOffset="50%" text-anchor="middle">${esc(label)}</textPath></text>`;
+          }
+        }
+      }
+    }
+
+    // Stripe with one mark per occurrence of a weekly/monthly series
+    if (series.length){
+      out += `<circle cx="${C}" cy="${C}" r="${(STRIPE_IN + STRIPE_OUT)/2}" fill="none" stroke="var(--cell)" stroke-width="${STRIPE_OUT - STRIPE_IN}"/>`;
+      const y0 = yearStart(y), y1 = yearStart(y + 1);
+      series.forEach((t, si) => {
+        const col = esc(typeById(t.typeId).color), lane = series.length > 1 ? (si % 2) : -1;
+        // with several series the marks alternate between the outer and inner half of the stripe, so they stay apart
+        const ra = lane < 0 ? STRIPE_IN + 1.5 : lane === 0 ? (STRIPE_IN + STRIPE_OUT)/2 + 0.5 : STRIPE_IN + 1.5;
+        const rb = lane < 0 ? STRIPE_OUT - 1.5 : lane === 0 ? STRIPE_OUT - 1.5 : (STRIPE_IN + STRIPE_OUT)/2 - 0.5;
+        for (const o of occurrences(t)){
+          const mid = o.date + DAY/2;
+          if (mid < y0 || mid >= y1) continue;
+          const a = A(y, mid), [x1, y1p] = polar(ra, a), [x2, y2p] = polar(rb, a), d = occDone(t, o.key);  // false for events
+          out += `<line class="${exp ? "" : "tick"}" data-id="${esc(t.id)}" data-w="${o.week}" x1="${x1.toFixed(2)}" y1="${y1p.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2p.toFixed(2)}"
+            stroke="${col}" stroke-width="${exp ? 2.4 : 2.2}" stroke-linecap="round" stroke-opacity="${d ? 0.35 : 1}"><title>${esc(t.title)} · ${esc(fmtDM(o.date))} (uke ${o.week})${d ? " – gjennomført" : ""}</title></line>`;
+        }
+      });
+    }
+
+    // Hub
+    const all = tasksOfYear(y), done = all.filter(t => t.done).length;   // events are never done
+    out += `<circle cx="${C}" cy="${C}" r="${R_HUB}" fill="var(--card)" stroke="var(--line)"/>`;
+    out += `<text x="${C}" y="${C-12}" text-anchor="middle" font-family="Iowan Old Style, Palatino Linotype, Palatino, Georgia, serif" font-size="38" font-weight="650" fill="var(--ink)">${y}</text>`;
+    out += `<text x="${C}" y="${C+18}" text-anchor="middle" font-size="13" fill="var(--muted)">${showNow && y === THIS_YEAR ? 'Uke ' + today.week + ' · ' : ''}${all.length} oppgave${all.length===1?'':'r'}</text>`;
+    out += `<text x="${C}" y="${C+36}" text-anchor="middle" font-size="13" fill="var(--muted)">${done} fullført</text>`;
+
+    // "Now" pointer – current year only. On screen it sits at 12 o'clock; in an export it follows the rotation.
+    if (showNow){
+      const pa = A(y, todayUTC);
+      const [x1, y1] = polar(R_HUB, pa), [x2, y2] = polar(R_OUT + 4, pa);
+      out += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--today)" stroke-width="2" pointer-events="none"/>`;
+      out += `<path d="M${C-7},${C - R_OUT - 12} L${C+7},${C - R_OUT - 12} L${C},${C - R_OUT - 2} Z" transform="rotate(${pa} ${C} ${C})" fill="var(--today)" pointer-events="none"/>`;
+    }
+    return `<defs>${defs}</defs>${out}`;
+  }
+
+  function renderWheel(){
+    const svg = $("wheel");
+    svg.innerHTML = wheelMarkup();
+    svg.querySelectorAll(".mseg").forEach(el => el.addEventListener("click", () => selectMonth(+el.dataset.m)));
+    svg.querySelectorAll(".wseg,.cell").forEach(el => el.addEventListener("click", () => selectWeek(+el.dataset.w)));
+    svg.querySelectorAll(".arc").forEach(el => el.addEventListener("click", () => startEdit(el.dataset.id)));
+    // a mark in the stripe opens that week in the week view
+    svg.querySelectorAll(".tick").forEach(el => el.addEventListener("click", () => { setPanelView("week"); selectWeek(+el.dataset.w); }));
+  }
+
+  /* ---------------- Selection ---------------- */
+  // Clicking an empty week or a month always means "new task here": leave edit mode first.
+  function resetFormForNew(){
+    state.editId = null;
+    $("fTitle").value = ""; $("fTodo").checked = true; writeRule(null);
+  }
+  function selectWeek(w){
+    state.selWeek = w;
+    resetFormForNew();
+    renderSelects(); $("fFrom").value = w; $("fTo").value = w;
+    render();
+    $("fTitle").focus({preventScroll:true});
+  }
+  function selectMonth(m){
+    const [a, b] = monthWeeks(state.year, m);
+    state.selWeek = Math.min(Math.max(a, state.year === today.year && monthOfWeek(state.year, today.week) === m ? today.week : a), b);
+    resetFormForNew();
+    renderSelects(); $("fFrom").value = a; $("fTo").value = b;
+    render();
+  }
+
+  /* ---------------- Legend, summary, recurring ---------------- */
+  function renderLegend(){
+    const yt = tasksOfYear(state.year);
+    $("legend").innerHTML = allTypes().map(t => {
+      const c = yt.filter(x => x.typeId === t.id).length;
+      return `<span class="chip ${state.hidden.has(t.id)?'off':''}" data-id="${esc(t.id)}" title="Vis/skjul i hjulet">
+        <span class="dot" style="background:${esc(t.color)}"></span>${esc(t.name)}${c ? ` · ${c}` : ""}</span>`;
+    }).join("");
+    $("legend").querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => {
+      const id = c.dataset.id; state.hidden.has(id) ? state.hidden.delete(id) : state.hidden.add(id); render(true);
+    }));
+    const plain = yt.filter(t => !isSeries(t) && isTodo(t)), total = plain.length, done = plain.filter(t => t.done).length;
+    const occ = yt.filter(t => isSeries(t) && isTodo(t)).flatMap(t => occurrences(t).map(o => occDone(t, o.key)));
+    $("summary").innerHTML = `<span>Fullført <b>${done}</b></span><span>Gjenstår <b>${total-done}</b></span>`
+      + (total ? `<span><b>${Math.round(done/total*100)} %</b> ferdig</span>` : "")
+      + (occ.length ? `<span>Faste møter: <b>${occ.filter(Boolean).length}</b> av ${occ.length} gjennomført</span>` : "");
+  }
+  function pendingRecurring(){
+    const y = state.year;
+    const have = new Set(tasksOfYear(y).map(t => t.seriesId || t.id));
+    return tasksOfYear(y-1).filter(t => t.rep !== "none" && !have.has(t.seriesId || t.id));
+  }
+  function renderRecurring(){
+    const p = state.readOnly ? [] : pendingRecurring();
+    $("recurNotice").classList.toggle("show", p.length > 0);
+    if (p.length) $("recurText").textContent = `${p.length} fast${p.length===1?'':'e'} oppgave${p.length===1?'':'r'} og møte${p.length===1?'':'r'} fra ${state.year-1} er ikke lagt inn for ${state.year}.`;
+  }
+  $("recurBtn").onclick = async () => {
+    const y = state.year, W = weeksInYear(y);
+    const list = pendingRecurring();
+    $("recurBtn").disabled = true;
+    for (const t of list){
+      // a series that ran to the end of last year runs to the end of this year too
+      const toEnd = isSeries(t) && t.weekTo === weeksInYear(y - 1);
+      await store.putTask({...t, id: uid(), year: y, seriesId: t.seriesId || t.id, done:false, completedAt:null, doneDates: {},
+        weekFrom: Math.min(t.weekFrom, W), weekTo: toEnd ? W : Math.min(t.weekTo, W), createdAt: Date.now()});
+    }
+    $("recurBtn").disabled = false;
+    setStatus(`${list.length} faste oppgaver lagt inn for ${y}.`);
+  };
+
+  /* ---------------- Panel: month view or week view ---------------- */
+  const VIEW_KEY = "arshjul.panelView";
+  let panelView = (() => { try { return localStorage.getItem(VIEW_KEY) === "week" ? "week" : "month"; } catch(e){ return "month"; } })();
+  function setPanelView(v){ panelView = v; try { localStorage.setItem(VIEW_KEY, v); } catch(e){} }
+  document.querySelectorAll(".seg [data-view]").forEach(b => b.addEventListener("click", () => { setPanelView(b.dataset.view); render(); }));
+  // "Alle" shows everything; "Gjøremål" shows only what is ticked off (a to-do list)
+  const FILTER_KEY = "arshjul.panelFilter";
+  let panelFilter = (() => { try { return localStorage.getItem(FILTER_KEY) === "todo" ? "todo" : "all"; } catch(e){ return "all"; } })();
+  document.querySelectorAll(".seg [data-filter]").forEach(b => b.addEventListener("click", () => {
+    panelFilter = b.dataset.filter; try { localStorage.setItem(FILTER_KEY, panelFilter); } catch(e){} render();
+  }));
+  const passFilter = t => panelFilter === "all" || isTodo(t);
+
+  function renderPanel(){
+    document.querySelectorAll(".seg [data-view]").forEach(b => { const on = b.dataset.view === panelView; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); });
+    document.querySelectorAll(".seg [data-filter]").forEach(b => { const on = b.dataset.filter === panelFilter; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
+    $("taskList").style.display = panelView === "month" ? "" : "none";
+    $("weekView").style.display = panelView === "week" ? "" : "none";
+    panelView === "week" ? renderWeekView() : renderMonthView();
+  }
+
+  // tick off one occurrence of a series
+  function toggleOcc(t, key, on){
+    const dd = {...t.doneDates};
+    if (on) dd[key] = Date.now(); else delete dd[key];
+    store.putTask({...t, doneDates: dd});
+  }
+
+  function renderMonthView(){
+    const y = state.year, m = monthOfWeek(y, state.selWeek), [a, b] = monthWeeks(y, m);
+    const [ws, we] = weekRange(y, state.selWeek);
+    $("periodTitle").textContent = `${MONTHS[m]} ${y}`;
+    const list = tasksOfYear(y).filter(t => t.weekTo >= a && t.weekFrom <= b && passFilter(t))
+      .sort((p,q) => (isSeries(p) - isSeries(q)) || (p.done - q.done) || p.weekFrom - q.weekFrom || (p.createdAt||0) - (q.createdAt||0));
+    const done = list.filter(t => !isSeries(t) && t.done).length, nTodo = list.filter(isTodo).length;
+    const empty = panelFilter === "todo" ? "ingen gjøremål" : "ingen oppgaver";
+    $("periodSub").textContent = `Uke ${a}–${b} · valgt uke ${state.selWeek} (${fmtDM(ws)}–${fmtDM(we - DAY)}) · `
+      + (list.length ? `${list.length} oppgave${list.length===1?'':'r'}` + (nTodo ? `, ${done} fullført` : "") : empty);
+    const ro = state.readOnly;
+    $("taskList").innerHTML = list.length ? list.map(t => {
+      const ty = typeById(t.typeId);
+      const weeks = t.weekFrom === t.weekTo ? `uke ${t.weekFrom}` : `uke ${t.weekFrom}–${t.weekTo}`;
+      const rule = ruleText(t);
+      let check;
+      if (!isTodo(t)) check = `<span class="nocheck" title="Hendelse – krysses ikke av"></span>`;
+      else if (isSeries(t)){
+        // a series shows how many of this month's occurrences are done
+        const occ = occurrences(t).filter(o => o.week >= a && o.week <= b), n = occ.filter(o => occDone(t, o.key)).length;
+        check = `<span class="prog" title="Gjennomført denne måneden">${n}/${occ.length}</span>`;
+      } else check = `<input type="checkbox" ${t.done?"checked":""} ${ro?"disabled":""} aria-label="Fullført">`;
+      const where = isSeries(t) ? "merker i hjulet" : esc(state.rings[Math.min(t.ring, ringCount()-1)] || '');
+      return `<li class="task ${!isSeries(t) && t.done?'done':''} ${t.id===state.editId?'editing':''}" data-id="${esc(t.id)}">
+        ${check}
+        <span class="dot" style="background:${esc(ty.color)}"></span>
+        <span class="t" title="Klikk for å redigere"><b>${esc(t.title)}</b><small>${esc(ty.name)} · ${weeks}${rule ? " · " + esc(rule) : ""} · ${where}</small></span>
+        ${ro ? "" : `<span class="acts">
+          <button data-act="-1" title="Flytt en uke tilbake">‹</button>
+          <button data-act="1" title="Flytt en uke frem">›</button></span>`}
+      </li>`;
+    }).join("") : `<li class="empty">${panelFilter === "todo" && tasksOfYear(y).some(t => t.weekTo >= a && t.weekFrom <= b)
+      ? "Ingen gjøremål denne måneden. Velg «Alle» for å se hendelser." : "Klikk på en uke i hjulet og legg til en oppgave under."}</li>`;
+
+    $("taskList").querySelectorAll(".task").forEach(li => {
+      const id = li.dataset.id;
+      const get = () => tasksOfYear(state.year).find(x => x.id === id);
+      const cb = li.querySelector("input[type=checkbox]");
+      if (cb) cb.addEventListener("change", e => store.putTask({...get(), done: e.target.checked, completedAt: e.target.checked ? Date.now() : null}));
+      li.querySelector(".t").addEventListener("click", () => startEdit(id));
+      li.querySelectorAll("button[data-act]").forEach(btn => btn.addEventListener("click", () => shiftTask(get(), +btn.dataset.act)));
+    });
+  }
+
+  // Week view: Monday–Sunday, each day's items sorted by time; tasks without a weekday under "Hele uka"
+  function renderWeekView(){
+    const y = state.year, w = state.selWeek, W = weeksInYear(y), mon = mondayOfWeek(y, w);
+    $("periodTitle").textContent = `Uke ${w} · ${y}`;
+    const items = [];                       // {t, day (0 = whole week), key|null, done}
+    for (const t of tasksOfYear(y).filter(passFilter)){
+      if (isSeries(t)){
+        occurrences(t).filter(o => o.day ? (o.date >= mon && o.date < mon + 7*DAY) : o.week === w)
+          .forEach(o => items.push({t, day: o.day, key: o.key, done: occDone(t, o.key)}));
+      } else if (t.weekFrom <= w && t.weekTo >= w){
+        if (t.days.length) t.days.forEach(d => items.push({t, day: d, key: null, done: t.done}));
+        else items.push({t, day: 0, key: null, done: t.done});
+      }
+    }
+    const doneN = items.filter(i => i.done).length, todoN = items.filter(i => isTodo(i.t)).length;
+    $("periodSub").innerHTML = `${fmtDM(mon)}–${fmtDM(mon + 6*DAY)} · ${items.length ? `${items.length} på programmet` + (todoN ? `, ${doneN} av ${todoN} gjort` : "") : (panelFilter === "todo" ? "ingen gjøremål" : "ingenting planlagt")}`;
+    const ro = state.readOnly, todayKey = dateKey(utc(nowD.getFullYear(), nowD.getMonth(), nowD.getDate()));
+    const row = i => {
+      const ty = typeById(i.t.typeId), tm = i.day && i.t.timeFrom ? `${i.t.timeFrom}${i.t.timeTo ? "–" + i.t.timeTo : ""}` : "";
+      const sub = isSeries(i.t) ? ruleText(i.t, true) : (i.t.weekFrom === i.t.weekTo ? `uke ${i.t.weekFrom}` : `uke ${i.t.weekFrom}–${i.t.weekTo}`);
+      return `<li class="witem ${i.done ? "done" : ""}" data-id="${esc(i.t.id)}" data-key="${i.key || ""}">
+        ${isTodo(i.t) ? `<input type="checkbox" ${i.done ? "checked" : ""} ${ro ? "disabled" : ""} aria-label="Gjort">` : `<span class="nocheck" title="Hendelse – krysses ikke av"></span>`}
+        <span class="time">${tm}</span>
+        <span class="dot" style="background:${esc(ty.color)}"></span>
+        <span class="t" title="Klikk for å redigere"><b>${esc(i.t.title)}</b><small>${esc(ty.name)} · ${esc(sub)}</small></span>
+      </li>`;
+    };
+    const byTime = (p, q) => (p.t.timeFrom || "99") < (q.t.timeFrom || "99") ? -1 : (p.t.timeFrom || "99") > (q.t.timeFrom || "99") ? 1 : p.t.title.localeCompare(q.t.title, "no");
+    let h = `<div class="wnav"><button type="button" class="icon" id="wPrev" ${w <= 1 ? "disabled" : ""} aria-label="Forrige uke">‹</button>
+      <span>Uke ${w}</span><button type="button" class="icon" id="wNext" ${w >= W ? "disabled" : ""} aria-label="Neste uke">›</button></div>`;
+    const whole = items.filter(i => i.day === 0).sort(byTime);
+    if (whole.length) h += `<div class="wday"><div class="wdh"><b>Hele uka</b></div><ul>${whole.map(row).join("")}</ul></div>`;
+    for (let d = 1; d <= 7; d++){
+      const date = mon + (d - 1) * DAY, list = items.filter(i => i.day === d).sort(byTime);
+      h += `<div class="wday ${dateKey(date) === todayKey ? "today" : ""} ${d >= 6 ? "weekend" : ""}">
+        <div class="wdh"><b>${DAY_SHORT[d-1]}</b> <span>${fmtDM(date)}</span>${dateKey(date) === todayKey ? ' <em>i dag</em>' : ""}</div>
+        ${list.length ? `<ul>${list.map(row).join("")}</ul>` : `<div class="wempty">–</div>`}</div>`;
+    }
+    $("weekView").innerHTML = h;
+    $("wPrev").onclick = () => selectWeek(w - 1);
+    $("wNext").onclick = () => selectWeek(w + 1);
+    $("weekView").querySelectorAll(".witem").forEach(li => {
+      const t = tasksOfYear(state.year).find(x => x.id === li.dataset.id), key = li.dataset.key;
+      li.querySelector("input")?.addEventListener("change", e => {
+        if (key) toggleOcc(t, key, e.target.checked);
+        else store.putTask({...t, done: e.target.checked, completedAt: e.target.checked ? Date.now() : null});
+      });
+      li.querySelector(".t").addEventListener("click", () => startEdit(t.id));
+    });
+  }
+
+  function shiftTask(t, d){
+    const W = weeksInYear(t.year);
+    let from = t.weekFrom + d, to = t.weekTo + d, year = t.year;
+    if (from >= 1 && to <= W) return store.putTask({...t, weekFrom: from, weekTo: to});
+    if (d > 0 && from > W){ year++; from -= W; to -= W; }
+    else if (d < 0 && to < 1){ year--; const W2 = weeksInYear(year); from += W2; to += W2; }
+    else { setStatus("En oppgave kan ikke gå over årsskiftet – kort den ned først."); return; }
+    store.putTask({...t, year, weekFrom: from, weekTo: to});
+  }
+
+  /* ---------------- Form ---------------- */
+  function renderSelects(){
+    const y = state.year, W = weeksInYear(y);
+    const typeSel = $("fType"), prevType = typeSel.value, types = allTypes(), full = types.length >= MAX_CATS;
+    typeSel.innerHTML = (types.length ? "" : `<option value="" disabled>Ingen kategorier ennå</option>`)
+      + types.map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("")
+      + `<option value="${NEW_TYPE}" ${full ? "disabled" : ""}>${full ? `Maks ${MAX_CATS} kategorier nådd` : `+ Ny kategori … (${types.length}/${MAX_CATS})`}</option>`;
+    // keep "+ Ny kategori" only if the user picked it themselves (not when it was the default for an empty wheel)
+    const keepPrev = prevType && (prevType !== NEW_TYPE || userChoseNewType || !types.length);
+    if (keepPrev && [...typeSel.options].some(o => o.value === prevType && !o.disabled)) typeSel.value = prevType;
+    else if (!types.length && !full) typeSel.value = NEW_TYPE;
+    else if (types.length) typeSel.value = types[0].id;
+    toggleNewTypeBox(typeSel.value === NEW_TYPE);
+
+    const ringSel = $("fRing"), prevRing = ringSel.value;
+    ringSel.innerHTML = state.rings.slice(0, ringCount()).map((r,i) => `<option value="${i}">${esc(r)}</option>`).join("");
+    if (prevRing !== "" && +prevRing < ringCount()) ringSel.value = prevRing;
+
+    for (const id of ["fFrom","fTo"]){
+      const sel = $(id), prev = sel.value || String(state.selWeek);
+      if (sel.dataset.year !== String(y)){
+        let h = "";
+        for (let w = 1; w <= W; w++) h += `<option value="${w}">Uke ${w} (${fmtDM(mondayOfWeek(y,w))})</option>`;
+        sel.innerHTML = h; sel.dataset.year = String(y);
+      }
+      sel.value = String(Math.min(+prev, W));
+    }
+  }
+
+  function startEdit(id){
+    const t = tasksOfYear(state.year).find(x => x.id === id);
+    if (!t || state.readOnly) return;
+    state.editId = id;
+    renderSelects();
+    $("fTitle").value = t.title;
+    if (allTypes().some(x => x.id === t.typeId)){ $("fType").value = t.typeId; toggleNewTypeBox(false); }
+    $("fRing").value = String(Math.min(t.ring, ringCount()-1));
+    $("fFrom").value = t.weekFrom; $("fTo").value = t.weekTo;
+    $("fTodo").checked = isTodo(t);
+    writeRule(t);
+    if (state.selWeek < t.weekFrom || state.selWeek > t.weekTo) state.selWeek = t.weekFrom;
+    render(true);
+    $("fTitle").focus();
+  }
+  function stopEdit(){
+    state.editId = null;
+    $("fTitle").value = ""; $("fTodo").checked = true; writeRule(null);
+    $("fFrom").value = state.selWeek; $("fTo").value = state.selWeek;
+    render(true);
+  }
+  function renderFormMode(){
+    const e = !!state.editId;
+    $("formTitle").textContent = e ? "Rediger oppgave" : "Ny oppgave";
+    $("fSubmit").textContent = e ? "Lagre endringer" : "Legg til oppgave";
+    $("fCancel").style.display = e ? "" : "none";
+    $("fDelete").style.display = e ? "" : "none";
+    $("taskForm").closest(".card").style.display = state.readOnly ? "none" : "";
+    renderRuleControls();
+  }
+
+  /* repeats in the form: Gjentakelse, Hvilken i måneden, Ukedag, Fra/Til kl. */
+  let formDays = new Set();
+  function readRule(){
+    const v = $("fRep").value, repv = v.startsWith("w") ? "weekly" : v;
+    return {rep: repv, interval: repv === "weekly" ? +v.slice(1) : 1, days: [...formDays].sort((a, b) => a - b),
+      nth: +$("fNth").value, timeFrom: formDays.size ? $("fTimeFrom").value : "", timeTo: formDays.size ? $("fTimeTo").value : ""};
+  }
+  function writeRule(t){                   // t: a normalised task, or null for an empty form
+    $("fRep").value = !t || t.rep === "none" ? "none" : t.rep === "weekly" ? "w" + t.interval : t.rep;
+    $("fNth").value = String(t ? t.nth : 1);
+    formDays = new Set(t ? t.days : []);
+    $("fTimeFrom").value = t ? t.timeFrom : ""; $("fTimeTo").value = t ? t.timeTo : "";
+    $("fErr").textContent = "";
+    renderRuleControls();
+  }
+  function renderRuleControls(){
+    const r = readRule(), series = r.rep === "weekly" || r.rep === "monthly";
+    $("fDays").querySelectorAll("button").forEach(b => { const on = formDays.has(+b.dataset.d); b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
+    $("fNthWrap").style.visibility = r.rep === "monthly" ? "" : "hidden";
+    $("fTimeRow").style.display = formDays.size ? "" : "none";
+    $("fRingWrap").style.visibility = series ? "hidden" : "";
+    $("fDaysHint").textContent = r.rep === "monthly" ? "(velg minst én)" : "(valgfritt – uten ukedag gjelder oppgaven hele uka)";
+    let hint = "";
+    if (r.rep === "monthly" && !formDays.size) hint = "Velg ukedag – for eksempel tirsdag for «første tirsdag i måneden».";
+    else if (series || formDays.size){
+      const tmp = norm({year: state.year, weekFrom: +$("fFrom").value || 1, weekTo: +$("fTo").value || 1, ...r});
+      hint = ruleText(tmp);
+      if (series){ const n = occurrences(tmp).length; hint += ` · uke ${tmp.weekFrom}–${tmp.weekTo} · ${n} gang${n === 1 ? "" : "er"} · vises som merker i hjulet`; }
+    }
+    $("fRuleHint").textContent = hint;
+  }
+  $("fDays").querySelectorAll("button").forEach(b => b.onclick = () => {
+    const d = +b.dataset.d; formDays.has(d) ? formDays.delete(d) : formDays.add(d);
+    $("fErr").textContent = ""; renderRuleControls();
+  });
+  $("fRep").onchange = () => {
+    const r = readRule();
+    // a new series normally runs for the rest of the year
+    if ((r.rep === "weekly" || r.rep === "monthly") && $("fFrom").value === $("fTo").value) $("fTo").value = String(weeksInYear(state.year));
+    $("fErr").textContent = ""; renderRuleControls();
+  };
+  ["fNth", "fTimeFrom", "fTimeTo"].forEach(id => $(id).addEventListener("change", renderRuleControls));
+
+  /* new category inline in the task form */
+  let newColor = null;
+  function toggleNewTypeBox(show){
+    const box = $("newTypeBox"), wasShown = box.classList.contains("show");
+    box.classList.toggle("show", show);
+    if (!show) return;
+    if (!wasShown) $("newTypeErr").textContent = "";
+    if (!newColor || colorConflict(newColor)) newColor = firstFreeColor();
+    renderNewTypeSwatches();
+  }
+  function renderNewTypeSwatches(){
+    const c = $("newTypeSwatches");
+    c.innerHTML = swatchHTML(newColor);
+    wireSwatches(c, null, col => { newColor = col; $("newTypeErr").textContent = ""; renderNewTypeSwatches(); },
+                 msg => { $("newTypeErr").textContent = msg; });
+  }
+  let userChoseNewType = false;
+  $("fType").onchange = e => {
+    userChoseNewType = e.target.value === NEW_TYPE;
+    toggleNewTypeBox(e.target.value === NEW_TYPE);
+    if (e.target.value === NEW_TYPE) $("newTypeName").focus();
+  };
+  $("fFrom").onchange = () => { if (+$("fTo").value < +$("fFrom").value) $("fTo").value = $("fFrom").value; renderRuleControls(); };
+  $("fTo").onchange = () => { if (+$("fTo").value < +$("fFrom").value) $("fFrom").value = $("fTo").value; renderRuleControls(); };
+  $("saveType").onclick = async () => {
+    const err = m => { $("newTypeErr").textContent = m; };
+    const name = $("newTypeName").value.trim();
+    if (!name){ $("newTypeName").focus(); return err("Skriv inn et navn på kategorien."); }
+    const types = allTypes();
+    if (types.length >= MAX_CATS) return err(`Du kan ha maks ${MAX_CATS} kategorier.`);
+    const same = types.find(t => t.name.toLowerCase() === name.toLowerCase());
+    if (same) return err(`Kategorien «${same.name}» finnes allerede.`);
+    if (!newColor) return err("Velg en farge.");
+    const conflict = colorConflict(newColor);
+    if (conflict) return err(`Fargen brukes allerede av «${conflict.name}».`);
+    const ty = {id: "kat-" + uid().slice(0,8), name, color: newColor, createdAt: Date.now()};
+    $("saveType").disabled = true;
+    const ok = await store.putType(ty);
+    $("saveType").disabled = false;
+    if (!ok) return;
+    $("newTypeName").value = ""; err(""); newColor = null; userChoseNewType = false;
+    // the new category may arrive via the live update a moment later
+    const choose = () => { renderSelects(); if ([...$("fType").options].some(o => o.value === ty.id)){ $("fType").value = ty.id; toggleNewTypeBox(false); return true; } };
+    if (!choose()) setTimeout(choose, 400);
+    $("fTitle").focus();
+  };
+  $("taskForm").onsubmit = e => {
+    e.preventDefault();
+    const title = $("fTitle").value.trim(), typeId = $("fType").value;
+    if (!title) return;
+    if (!typeId || typeId === NEW_TYPE){ $("newTypeName").focus(); $("newTypeErr").textContent = "Lagre kategorien før du legger til oppgaven."; return; }
+    let from = +$("fFrom").value, to = +$("fTo").value;
+    if (from > to) [from, to] = [to, from];
+    const rule = readRule(), fErr = m => { $("fErr").textContent = m; };
+    if (rule.rep === "monthly" && !rule.days.length) return fErr("Velg ukedag for månedlig gjentakelse – for eksempel tirsdag.");
+    if (rule.timeTo && !rule.timeFrom) return fErr("Fyll inn fra-klokkeslett, eller ta bort til-klokkeslettet.");
+    if (rule.timeTo && rule.timeTo < rule.timeFrom) return fErr("Til-klokkeslettet må være etter fra-klokkeslettet.");
+    fErr("");
+    const base = {title, typeId, ring: +$("fRing").value, weekFrom: from, weekTo: to, ...rule, recurring: rule.rep === "yearly", todo: $("fTodo").checked};
+    if (state.editId){
+      const t = tasksOfYear(state.year).find(x => x.id === state.editId);
+      if (t) store.putTask({...t, ...base, seriesId: t.seriesId || (rule.rep !== "none" ? t.id : null)});
+      state.selWeek = from;
+      stopEdit();
+    } else {
+      const id = uid();
+      store.putTask({id, ...base, year: state.year, seriesId: rule.rep !== "none" ? id : null, done:false, createdAt: Date.now(), completedAt:null, doneDates: {}});
+      $("fTitle").value = ""; $("fTitle").focus();
+      state.selWeek = from; render(true);
+    }
+  };
+  $("fCancel").onclick = stopEdit;
+  $("fDelete").onclick = () => {
+    const id = state.editId; if (!id) return;
+    const btn = $("fDelete");
+    if (btn.dataset.confirm !== "1"){ btn.dataset.confirm = "1"; btn.textContent = "Bekreft sletting"; setTimeout(() => { btn.dataset.confirm = ""; btn.textContent = "Slett"; }, 3000); return; }
+    btn.dataset.confirm = ""; btn.textContent = "Slett";
+    store.deleteTask(id); stopEdit();
+  };
+
+  /* ---------------- Category manager ---------------- */
+  let openCat = null;   // id of the category whose colour picker is open
+  function renderCats(force){
+    const card = $("catsCard");
+    if (!card.classList.contains("show")) return;
+    if (!force && card.contains(document.activeElement) && document.activeElement.tagName === "INPUT") return; // don't disturb typing
+    const types = allTypes();
+    $("catsTitle").textContent = `Kategorier (${types.length}/${MAX_CATS})`;
+    $("catList").innerHTML = types.length ? types.map(t => {
+      const n = taskCountByType(t.id);
+      return `<li class="cat ${openCat === t.id ? 'open' : ''}" data-id="${esc(t.id)}">
+        <div class="top">
+          <button type="button" class="swbtn" style="background:${esc(t.color)}" title="Endre farge"></button>
+          <input type="text" maxlength="40" value="${esc(t.name)}" aria-label="Navn">
+          <small>${n} oppg.</small>
+          <button type="button" class="icon danger" title="${n ? 'Brukes av ' + n + ' oppgave' + (n===1?'':'r') : 'Slett kategori'}">✕</button>
+        </div>
+        <div class="swatches pick"></div>
+      </li>`;
+    }).join("") : `<li class="empty">Ingen kategorier ennå. Lag den første når du legger til en oppgave, under «Kategori».</li>`;
+
+    $("catList").querySelectorAll(".cat").forEach(li => {
+      const id = li.dataset.id, t = allTypes().find(x => x.id === id);
+      const err = m => { $("catErr").textContent = m; };
+      li.querySelector(".swbtn").onclick = () => { openCat = openCat === id ? null : id; err(""); renderCats(true); };
+      if (openCat === id){
+        const pick = li.querySelector(".pick");
+        pick.innerHTML = swatchHTML(t.color, id);
+        wireSwatches(pick, id, async col => { err(""); openCat = null; await store.putType({...t, color: col}); renderCats(true); }, err);
+      }
+      const inp = li.querySelector("input[type=text]");
+      inp.onchange = async () => {
+        const name = inp.value.trim();
+        if (!name){ inp.value = t.name; return err("Kategorien må ha et navn."); }
+        const same = allTypes().find(x => x.id !== id && x.name.toLowerCase() === name.toLowerCase());
+        if (same){ inp.value = t.name; return err(`Kategorien «${same.name}» finnes allerede.`); }
+        err(""); if (name !== t.name) await store.putType({...t, name});
+      };
+      inp.onkeydown = e => { if (e.key === "Enter"){ e.preventDefault(); inp.blur(); } };
+      li.querySelector(".danger").onclick = async e => {
+        const n = taskCountByType(id);
+        if (n) return err(`«${t.name}» brukes av ${n} oppgave${n===1?'':'r'}. Flytt dem til en annen kategori før du sletter.`);
+        const btn = e.currentTarget;
+        if (btn.dataset.confirm !== "1"){ btn.dataset.confirm = "1"; btn.textContent = "Slett?"; setTimeout(() => { if (btn.isConnected){ btn.dataset.confirm = ""; btn.textContent = "✕"; } }, 3000); return; }
+        err(""); await store.deleteType(id); state.hidden.delete(id); renderCats(true);
+      };
+    });
+  }
+  $("catsBtn").onclick = () => {
+    const card = $("catsCard"), show = !card.classList.contains("show");
+    card.classList.toggle("show", show); $("catErr").textContent = ""; openCat = null;
+    renderCats(true);
+  };
+  $("closeCats").onclick = () => $("catsCard").classList.remove("show");
+
+  /* ---------------- Wheels: tabs, name, new, delete ---------------- */
+  const wheelName = () => (state.wheel && state.wheel.name) || "Årshjul";
+  const isEmptyWheel = () => state.taskRecs.length === 0 && state.typeRecs.length === 0;   // nothing at all, not even deletions
+  const wErr = m => { $("wheelErr").textContent = m || ""; };
+  const wMsg = m => { $("wheelMsg").textContent = m || ""; };
+  async function ensureWheel(){            // Claude: the first wheel gets a stored id the first time it is needed
+    if (db && state.wheel && state.wheel.unsaved){ try { await cloud.persist(state.wheels); } catch(e){ handleWriteError(e); } }
+    return state.wheel;
+  }
+  async function switchWheel(id){
+    if (state.wheel && state.wheel.id === id) return;
+    await openWheel(id);
+    gotoYear(state.year);
+  }
+  function wheelNameProblem(name, exceptId){
+    if (!name) return "Gi årshjulet et navn.";
+    if (state.wheels.some(w => w.id !== exceptId && sameName(w.name, name))) return `Du har allerede et årshjul som heter «${name}».`;
+    return "";
+  }
+  async function createWheel(name){
+    const p = wheelNameProblem(name);
+    if (p) return p;
+    if (state.wheels.length >= MAX_WHEELS) return `Du kan ha opptil ${MAX_WHEELS} årshjul.`;
+    await ensureWheel();
+    const w = await store.createWheel(name);
+    if (!w) return "Årshjulet kunne ikke lagres.";
+    await openWheel(w.id); gotoYear(state.year);
+    setStatus(`«${name}» er opprettet. Klikk på en uke for å legge inn den første oppgaven.`);
+    return "";
+  }
+  async function renameWheel(id, name){
+    const p = wheelNameProblem(name, id);
+    if (p) return p;
+    return (await store.renameWheel(id, name)) ? "" : "Navnet kunne ikke lagres.";
+  }
+
+  // the tab bar in the header
+  function renderTabs(){
+    const bar = $("tabs");
+    if (bar.querySelector("input")) return;  // someone is typing a name
+    const cur = state.wheel && state.wheel.id, ro = state.readOnly;
+    bar.innerHTML = state.wheels.map(w =>
+      `<button type="button" class="tab ${w.id === cur ? "on" : ""}" role="tab" aria-selected="${w.id === cur}" data-id="${esc(w.id)}"
+        title="${ro ? esc(w.name) : "Dobbeltklikk for å gi nytt navn"}">${esc(w.name)}</button>`).join("")
+      + (ro || state.wheels.length >= MAX_WHEELS ? "" : `<button type="button" class="tab add" id="addWheel" title="Lag et nytt årshjul">+ Nytt årshjul</button>`);
+    bar.querySelectorAll(".tab[data-id]").forEach(b => {
+      b.onclick = () => switchWheel(b.dataset.id);
+      if (!ro) b.ondblclick = () => inlineEdit(b, (state.wheels.find(w => w.id === b.dataset.id) || {}).name || "", name => renameWheel(b.dataset.id, name));
+    });
+    const add = $("addWheel");
+    if (add) add.onclick = () => inlineEdit(add, "", name => createWheel(name), "Navn på nytt årshjul");
+    // keep the open tab in view (horizontal scroll only)
+    const on = bar.querySelector(".tab.on");
+    if (on && (on.offsetLeft < bar.scrollLeft || on.offsetLeft + on.offsetWidth > bar.scrollLeft + bar.clientWidth))
+      bar.scrollLeft = on.offsetLeft - 8;
+  }
+  // replace a tab with a small text field; Enter saves, Esc cancels
+  function inlineEdit(btn, value, onSave, placeholder){
+    const box = document.createElement("span"); box.className = "tabedit";
+    box.innerHTML = `<input type="text" maxlength="40"><small></small>`;
+    const inp = box.querySelector("input"), msg = box.querySelector("small");
+    inp.value = value; inp.placeholder = placeholder || "";
+    btn.replaceWith(box); inp.focus(); inp.select();
+    let busy = false;
+    const close = () => { box.remove(); renderTabs(); };
+    const save = async () => {
+      if (busy) return; const v = inp.value.trim();
+      if (!v || v === value) return close();
+      busy = true; const problem = await onSave(v); busy = false;
+      if (problem){ msg.textContent = problem; inp.focus(); return; }
+      close();
+    };
+    inp.onkeydown = e => { if (e.key === "Enter"){ e.preventDefault(); save(); } else if (e.key === "Escape"){ e.preventDefault(); close(); } };
+    inp.onblur = () => setTimeout(() => { if (box.isConnected && !busy && document.activeElement !== inp){ if (msg.textContent) close(); else save(); } }, 120);
+  }
+
+  function renderWheelHeader(){
+    document.title = state.wheel ? `Årshjul – ${state.wheel.name}` : "Årshjul";
+    renderTabs();
+  }
+  function renderWheelCard(force){
+    const card = $("wheelCard"); if (!card.classList.contains("show")) return;
+    if (!force && card.contains(document.activeElement) && document.activeElement.tagName === "INPUT") return;
+    $("wheelNameInput").value = state.wheel ? state.wheel.name : "";
+    $("wheelIdText").textContent = state.wheel && !state.wheel.unsaved ? `ID: ${state.wheel.id}` : "";
+    const only = state.wheels.length < 2;
+    $("deleteWheel").disabled = only;
+    $("deleteWheelNote").textContent = only ? "Du må ha minst ett årshjul. Lag et nytt før du sletter dette." : "";
+  }
+  $("wheelBtn").onclick = () => { const c = $("wheelCard"); c.classList.toggle("show"); wErr(""); wMsg(""); renderWheelCard(true); };
+  $("closeWheel").onclick = () => $("wheelCard").classList.remove("show");
+  $("saveWheelName").onclick = async () => {
+    const problem = await renameWheel(state.wheel.id, $("wheelNameInput").value.trim());
+    if (problem) return wErr(problem);
+    wErr(""); wMsg("Navnet er lagret."); renderWheelCard(true);
+  };
+  $("deleteWheel").onclick = async () => {
+    const b = $("deleteWheel");
+    if (b.dataset.confirm !== "1"){
+      b.dataset.confirm = "1"; b.textContent = `Ja, slett «${wheelName()}»`;
+      wErr("Alle oppgavene i dette årshjulet slettes, og det kan ikke angres. Ta en sikkerhetskopi først hvis du vil ta vare på dem.");
+      setTimeout(() => { if (b.dataset.confirm === "1"){ b.dataset.confirm = ""; b.textContent = "Slett dette årshjulet"; wErr(""); } }, 6000);
+      return;
+    }
+    b.dataset.confirm = ""; b.textContent = "Slett dette årshjulet";
+    const name = wheelName(), id = state.wheel.id, next = state.wheels.find(w => w.id !== id);
+    if (!next) return;
+    b.disabled = true;
+    if (await store.deleteWheel(id)){ await openWheel(next.id); gotoYear(state.year); wErr(""); wMsg(`«${name}» er slettet.`); }
+    b.disabled = false; renderWheelCard(true);
+  };
+
+  const wheelSlug = () => wheelName().toLowerCase().replace(/[æ]/g,"ae").replace(/[ø]/g,"o").replace(/[å]/g,"a").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"") || "hjul";
+
+  /* ---------------- Settings menu ---------------- */
+  const cardIds = ["settingsCard","downloadCard","wheelCard","catsCard","ringsCard","dataCard","icsCard"];
+  function openOnly(id){                    // show one side panel at a time
+    cardIds.forEach(c => { if (c !== id) $(c).classList.remove("show"); });
+    $(id).classList.add("show");
+    $(id).scrollIntoView({behavior:"smooth", block:"nearest"});
+  }
+  $("settingsBtn").onclick = () => { $("settingsCard").classList.contains("show") ? $("settingsCard").classList.remove("show") : openOnly("settingsCard"); };
+  $("closeSettings").onclick = () => $("settingsCard").classList.remove("show");
+  // the four menu buttons keep their own handlers (set further down); close the menu when one is used
+  document.querySelectorAll("#settingsCard [data-card]").forEach(b => b.addEventListener("click", () => {
+    $("settingsCard").classList.remove("show");
+    setTimeout(() => { const open = cardIds.find(c => c !== "settingsCard" && $(c).classList.contains("show")); if (open) openOnly(open); }, 0);
+  }));
+
+  /* ---------------- Download: PNG of the wheel ---------------- */
+  // Exports always use the light colours, so the picture looks right on slides and paper.
+  const LIGHT = {bg:"#f5f3ee", card:"#ffffff", ink:"#1d2430", muted:"#6b7280", line:"#e4e0d8", accent:"#1f4e79",
+                 today:"#d97706", ring:"#ece8df", "ring-alt":"#f4f1ea", cell:"#f1eee7"};
+  const SANS = "Segoe UI, system-ui, -apple-system, Roboto, Helvetica Neue, Arial, sans-serif";
+  const SERIF = "Iowan Old Style, Palatino Linotype, Palatino, Book Antiqua, Georgia, serif";
+  const dlErr = m => { $("dlErr").textContent = m || ""; };
+  const dlMsg = m => { $("dlMsg").textContent = m || ""; };
+  const fmtDate = t => { const d = new Date(t); return `${String(d.getUTCDate()).padStart(2,"0")}.${String(d.getUTCMonth()+1).padStart(2,"0")}.${d.getUTCFullYear()}`; };
+  const fmtLocalDate = t => { const d = new Date(t); return `${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.${d.getFullYear()}`; };
+
+  function exportSVG(){
+    const y = state.year, janTop = y === THIS_YEAR && $("optJanTop").checked, withTitle = $("optTitle").checked;
+    const showNow = y === THIS_YEAR && $("optToday").checked;
+    const W = 1600, M = 80, WHEEL = W - 2*M, scale = WHEEL / 720;
+    const tasks = tasksOfYear(y).filter(t => !state.hidden.has(t.typeId));
+    let top = M, head = "", legend = "";
+    if (withTitle){
+      const done = tasks.filter(t => t.done).length;   // events are never done
+      head += `<text x="${M}" y="${M + 44}" font-family="${SERIF}" font-size="56" font-weight="700" fill="${LIGHT.ink}">${esc(wheelName())} ${y}</text>`;
+      head += `<text x="${M}" y="${M + 88}" font-family="${SANS}" font-size="24" fill="${LIGHT.muted}">${tasks.length} oppgave${tasks.length===1?"":"r"} · ${done} fullført · laget ${fmtLocalDate(Date.now())}</text>`;
+      top = M + 130;
+    }
+    let H = top + WHEEL + M/2;
+    if (withTitle){
+      // legend: the categories that appear in the picture, then the ring names
+      const used = allTypes().filter(t => tasks.some(x => x.typeId === t.id));
+      let x = M, yy = H + 10;
+      const rowH = 44;
+      used.forEach(t => {
+        const w = 40 + t.name.length * 12.5 + 34;
+        if (x + w > W - M){ x = M; yy += rowH; }
+        legend += `<rect x="${x}" y="${yy}" width="28" height="28" rx="6" fill="${esc(t.color)}"/>`;
+        legend += `<text x="${x + 40}" y="${yy + 21}" font-family="${SANS}" font-size="24" fill="${LIGHT.ink}">${esc(t.name)}</text>`;
+        x += w;
+      });
+      if (used.length) yy += rowH;
+      if (ringCount() > 1){
+        const names = state.rings.slice(0, ringCount()).map((r,i) => `${i+1} ${r}`).join("  ·  ");
+        legend += `<text x="${M}" y="${yy + 26}" font-family="${SANS}" font-size="22" fill="${LIGHT.muted}">Ringer utenfra og inn: ${esc(names)}</text>`;
+        yy += rowH;
+      }
+      H = yy + M/2;
+    }
+    const rot = janTop ? 0 : restRot(y);
+    const wheel = wheelMarkup({rot, exp: true, showNow});
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${Math.ceil(H)}" viewBox="0 0 ${W} ${Math.ceil(H)}" font-family="${SANS}">`
+      + `<rect width="100%" height="100%" fill="#ffffff"/>${head}`
+      + `<g transform="translate(${M} ${top}) scale(${scale})">${wheel}</g>${legend}</svg>`;
+    // resolve the page's CSS variables to fixed light colours
+    svg = svg.replace(/var\(--([a-z-]+)\)/g, (_, k) => LIGHT[k] || "#888888");
+    return {svg, W, H: Math.ceil(H)};
+  }
+  const svgDataUrl = svg => "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  let previewTimer = null;
+  function renderDownloadCard(){
+    if (!$("downloadCard").classList.contains("show")) return;
+    $("optTodayRow").style.display = state.year === THIS_YEAR ? "" : "none";
+    $("optJanTopRow").style.display = state.year === THIS_YEAR ? "" : "none";
+    clearTimeout(previewTimer);
+    previewTimer = setTimeout(() => { $("pngPreview").src = svgDataUrl(exportSVG().svg); }, 60);
+    const hidden = allTypes().filter(t => state.hidden.has(t.id)).length;
+    $("pngNote").textContent = hidden ? `${hidden} skjult${hidden===1?"":"e"} kategori${hidden===1?"":"er"} er ikke med på bildet.` : "";
+    renderTablePreview();
+  }
+  $("downloadBtn").onclick = () => {
+    if ($("downloadCard").classList.contains("show")) return $("downloadCard").classList.remove("show");
+    dlErr(""); dlMsg(""); openOnly("downloadCard"); renderDownloadCard();
+  };
+  $("closeDownload").onclick = () => $("downloadCard").classList.remove("show");
+  ["optTitle","optJanTop","optToday"].forEach(id => $(id).addEventListener("change", renderDownloadCard));
+  $("pngBtn").onclick = async () => {
+    dlErr(""); dlMsg("Lager bilde …");
+    try {
+      const {svg, W, H} = exportSVG(), S = 1.5;           // 2400 px wide
+      const img = new Image();
+      await new Promise((ok, bad) => { img.onload = ok; img.onerror = bad; img.src = svgDataUrl(svg); });
+      const c = document.createElement("canvas"); c.width = Math.round(W*S); c.height = Math.round(H*S);
+      const g = c.getContext("2d"); g.scale(S, S); g.drawImage(img, 0, 0, W, H);
+      const blob = await new Promise(r => c.toBlob(r, "image/png"));
+      if (!blob) throw new Error("toBlob");
+      const name = `arshjul-${wheelSlug()}-${state.year}.png`;
+      const res = await saveFile(name, blob, "image/png");
+      dlMsg(res === "declined" ? "Nedlastingen ble avbrutt." : res === "busy" ? "" : res === "picked" ? `Bildet er lagret som «${savedAs(res, name)}».` : `Bildet er lastet ned: «${name}».`);
+      if (res === "busy") dlErr("Vent litt og prøv igjen.");
+    } catch(e){ dlMsg(""); dlErr("Bildet kunne ikke lages i denne nettleseren. Prøv Chrome eller Edge."); }
+  };
+
+  /* ---------------- Download: task table ---------------- */
+  const TABLE_COLS = ["Uke","Fra dato","Til dato","Dag og tid","Oppgave","Kategori","Ring","Gjentakelse","Status","Fullført dato"];
+  const CAT_COL = 4 + 1;                    // the column that gets the colour key
+  function tableRows(){
+    const y = state.year, withDone = $("optDone").checked;
+    return tasksOfYear(y).filter(t => withDone || !t.done)
+      .sort((a,b) => a.weekFrom - b.weekFrom || a.weekTo - b.weekTo || a.title.localeCompare(b.title, "no"))
+      .map(t => {
+        const ty = typeById(t.typeId);
+        const dayTime = t.days.length ? t.days.map(d => DAY_SHORT[d-1]).join(", ") + (t.timeFrom ? ` ${t.timeFrom}${t.timeTo ? "–" + t.timeTo : ""}` : "") : "";
+        const repTxt = t.rep === "weekly" ? (t.interval === 1 ? "Hver uke" : `Hver ${t.interval}. uke`)
+                     : t.rep === "monthly" ? `${NTH_NAMES[t.nth][0].toUpperCase() + NTH_NAMES[t.nth].slice(1)} ${t.days.map(d => DAY_NAMES[d-1]).join("/")} i måneden`
+                     : t.rep === "yearly" ? "Hvert år" : "";
+        let status = t.done ? "Fullført" : "Ikke fullført", doneDate = t.done && t.completedAt ? fmtLocalDate(t.completedAt) : "";
+        if (!isTodo(t)){ status = "Hendelse"; doneDate = ""; }
+        else if (isSeries(t)){ const occ = occurrences(t); status = `${occ.filter(o => occDone(t, o.key)).length} av ${occ.length} gjennomført`; doneDate = ""; }
+        return {color: ty.color, cells: [
+          t.weekFrom === t.weekTo ? String(t.weekFrom) : `${t.weekFrom}–${t.weekTo}`,
+          fmtDate(weekRange(y, t.weekFrom)[0]), fmtDate(weekRange(y, t.weekTo)[1] - DAY), dayTime,
+          t.title, ty.name, isSeries(t) ? "Merker" : (state.rings[Math.min(t.ring, ringCount()-1)] || ""),
+          repTxt, status, doneDate]};
+      });
+  }
+  function renderTablePreview(){
+    const rows = tableRows(), all = tasksOfYear(state.year).length;
+    $("tableCount").textContent = `${rows.length} av ${all} oppgave${all===1?"":"r"} i ${state.year}`;
+    $("tablePreview").innerHTML = rows.length
+      ? `<table><thead><tr>${TABLE_COLS.map(c => `<th>${c}</th>`).join("")}</tr></thead><tbody>`
+        + rows.map(r => `<tr>${r.cells.map((c,i) => `<td class="${i<4?'n':''}">${i===CAT_COL ? `<span class="key" style="background:${esc(r.color)}"></span> ` : ""}${esc(c)}</td>`).join("")}</tr>`).join("")
+        + `</tbody></table>`
+      : `<div class="empty" style="padding:10px">Ingen oppgaver å vise for ${state.year}.</div>`;
+  }
+  $("optDone").addEventListener("change", renderTablePreview);
+  $("csvBtn").onclick = async () => {
+    dlErr(""); dlMsg("");
+    const rows = tableRows();
+    if (!rows.length) return dlErr("Det er ingen oppgaver å laste ned.");
+    // semicolon + BOM: opens directly in Norwegian Excel with æ, ø and å intact
+    const q = v => /[;"\n\r]/.test(v) ? `"${v.replace(/"/g,'""')}"` : v;
+    const csv = "﻿" + [TABLE_COLS, ...rows.map(r => r.cells)].map(r => r.map(q).join(";")).join("\r\n");
+    const name = `arshjul-${wheelSlug()}-${state.year}-oppgaver.csv`;
+    const res = await saveFile(name, csv, "text/csv");
+    if (res === "busy") return dlErr("Vent litt og prøv igjen.");
+    dlMsg(res === "declined" ? "Nedlastingen ble avbrutt." : `Tabellen er ${res === "picked" ? "lagret som" : "lastet ned:"} «${savedAs(res, name)}». Åpne den i Excel.`);
+  };
+  $("copyBtn").onclick = async () => {
+    dlErr(""); dlMsg("");
+    const rows = tableRows();
+    if (!rows.length) return dlErr("Det er ingen oppgaver å kopiere.");
+    const td = "border:1px solid #c9c4b8;padding:4px 8px;vertical-align:top;";
+    const html = `<table style="border-collapse:collapse;font-family:Calibri,Arial,sans-serif;font-size:11pt">`
+      + `<caption style="text-align:left;font-weight:bold;padding:0 0 6px">${esc(wheelName())} – oppgaver ${state.year}</caption>`
+      + `<tr>${TABLE_COLS.map(c => `<th style="${td}background:#1f4e79;color:#ffffff;text-align:left">${c}</th>`).join("")}</tr>`
+      + rows.map(r => `<tr>${r.cells.map((c,i) => `<td style="${td}${i<4?'white-space:nowrap;':''}">${i===CAT_COL ? `<span style="color:${esc(r.color)}">■</span> ` : ""}${esc(c)}</td>`).join("")}</tr>`).join("")
+      + `</table>`;
+    const tsv = [TABLE_COLS, ...rows.map(r => r.cells)].map(r => r.join("\t")).join("\n");
+    try {
+      await navigator.clipboard.write([new ClipboardItem({"text/html": new Blob([html], {type:"text/html"}), "text/plain": new Blob([tsv], {type:"text/plain"})})]);
+      dlMsg("Tabellen er kopiert. Lim den inn i Word, PowerPoint eller en e-post.");
+    } catch(e){
+      try { await navigator.clipboard.writeText(tsv); dlMsg("Tabellen er kopiert som tekst. I Excel blir den til celler; i Word kan du gjøre den om til tabell."); }
+      catch(e2){ dlErr("Kopiering er ikke tillatt her. Bruk «Last ned tabell (Excel)» i stedet."); }
+    }
+  };
+
+  /* ---------------- Help ---------------- */
+  const HELP_KEY = "arshjul.helpSeen";
+  function openHelp(){ $("helpOverlay").classList.add("show"); $("helpClose").focus(); }
+  function closeHelp(){ $("helpOverlay").classList.remove("show"); try { localStorage.setItem(HELP_KEY, "1"); } catch(e){} }
+  $("helpBtn").onclick = openHelp;
+  $("helpClose").onclick = closeHelp;
+  $("helpOverlay").addEventListener("click", e => { if (e.target === $("helpOverlay")) closeHelp(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && $("helpOverlay").classList.contains("show")) closeHelp(); });
+  function maybeShowHelpFirstTime(){         // new users with an empty wheel get the help once
+    let seen = false; try { seen = localStorage.getItem(HELP_KEY) === "1"; } catch(e){}
+    if (!seen && state.tasks.length === 0) openHelp();
+  }
+  const editionLabel = TEAM ? "Årshjul team" : "Årshjul enkel";
+  $("helpFoot").textContent = `${editionLabel} · versjon ${VERSION} · © 2026 A. Lindbach · MIT-lisens`;
+  $("verLabel").textContent = `${editionLabel} · versjon ${VERSION} · © 2026 A. Lindbach · MIT-lisens`;
+
+  /* ---------------- Calendar files (.ics) ---------------- */
+  // Reading: only VEVENT. Appointments marked Privat (CLASS:PRIVATE) or Konfidensiell (CLASS:CONFIDENTIAL) are
+  // dropped as soon as they are read – only the number of them is kept, never their title or content.
+  // All times are turned into Norwegian time (Europe/Oslo).
+  const OSLO = "Europe/Oslo";
+  const WIN_TZ = {"W. Europe Standard Time": OSLO, "Romance Standard Time": OSLO, "Central Europe Standard Time": OSLO,
+    "Central European Standard Time": OSLO, "GMT Standard Time": "Europe/London", "Greenwich Standard Time": "UTC", "UTC": "UTC",
+    "FLE Standard Time": "Europe/Helsinki", "E. Europe Standard Time": "Europe/Bucharest", "GTB Standard Time": "Europe/Athens",
+    "Russian Standard Time": "Europe/Moscow", "Eastern Standard Time": "America/New_York", "Central Standard Time": "America/Chicago",
+    "Mountain Standard Time": "America/Denver", "Pacific Standard Time": "America/Los_Angeles", "China Standard Time": "Asia/Shanghai",
+    "Tokyo Standard Time": "Asia/Tokyo", "India Standard Time": "Asia/Kolkata", "AUS Eastern Standard Time": "Australia/Sydney"};
+  const tzOk = tz => { try { new Intl.DateTimeFormat("en", {timeZone: tz}); return true; } catch(e){ return false; } };
+  function resolveTz(raw){                  // → IANA name, or "" for floating / unknown (= Norwegian wall time)
+    if (!raw) return "";
+    let tz = raw.replace(/^"|"$/g, "").replace(/^\/+/, "").trim();
+    if (WIN_TZ[tz]) return WIN_TZ[tz];
+    const m = /\(UTC([+-]\d{2}):?(\d{2})\)/.exec(tz) || /^(?:UTC|GMT)([+-]\d{2}):?(\d{2})$/.exec(tz);
+    if (m){ if (m[1] === "+01" && m[2] === "00") return OSLO; const h = +m[1]; if (!+m[2] && Math.abs(h) <= 14) return h === 0 ? "UTC" : `Etc/GMT${h > 0 ? "-" : "+"}${Math.abs(h)}`; }
+    return tzOk(tz) ? tz : "";
+  }
+  function zoneParts(ms, tz){               // wall clock in tz → [y, m(0-11), d, hh, mm]
+    try {
+      const p = {}; new Intl.DateTimeFormat("en-GB", {timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23"})
+        .formatToParts(new Date(ms)).forEach(x => { p[x.type] = x.value; });
+      return [+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute];
+    } catch(e){ const d = new Date(ms); return [d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()]; }
+  }
+  function zonedToUtc(y, mo, d, h, mi, tz){ // wall clock in tz → UTC ms
+    const guess = Date.UTC(y, mo, d, h, mi);
+    const off = ms => { const p = zoneParts(ms, tz); return Date.UTC(p[0], p[1], p[2], p[3], p[4]) - ms; };
+    let t = guess - off(guess); const o2 = off(t);
+    if (guess - o2 !== t) t = guess - o2;
+    return t;
+  }
+  const pad2 = n => String(n).padStart(2, "0");
+  // → {date: UTC-midnight ms of the Norwegian date, time: "HH:MM" | "", allDay}
+  function icsTime(prop){
+    if (!prop) return null;
+    const v = prop.value.trim();
+    let m = /^(\d{4})(\d{2})(\d{2})$/.exec(v);
+    if (m || (prop.params.VALUE || "").toUpperCase() === "DATE"){
+      m = m || /^(\d{4})(\d{2})(\d{2})/.exec(v); if (!m) return null;
+      return {date: utc(+m[1], +m[2] - 1, +m[3]), time: "", allDay: true};
+    }
+    m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?(Z)?$/i.exec(v); if (!m) return null;
+    const f = [+m[1], +m[2] - 1, +m[3], +m[4], +m[5]];
+    const tz = m[7] ? "UTC" : resolveTz(prop.params.TZID);
+    const p = !tz || tz === OSLO ? f : zoneParts(tz === "UTC" ? Date.UTC(...f) : zonedToUtc(...f, tz), OSLO);
+    return {date: utc(p[0], p[1], p[2]), time: `${pad2(p[3])}:${pad2(p[4])}`, allDay: false};
+  }
+  function icsDuration(v){                  // "PT1H30M", "P1D" → ms
+    const m = /^([+-])?P(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?$/i.exec((v || "").trim()); if (!m) return null;
+    return (m[1] === "-" ? -1 : 1) * (((+m[2] || 0) * 7 + (+m[3] || 0)) * DAY + ((+m[4] || 0) * 60 + (+m[5] || 0)) * 60000 + (+m[6] || 0) * 1000);
+  }
+  const icsText = v => (v || "").replace(/\\[nN]/g, " ").replace(/\\([,;\\])/g, "$1").replace(/\s+/g, " ").trim();
+  function icsLine(raw){                    // NAME;P=1;Q="a:b":value → {name, params, value}
+    let i = 0, q = false; const n = raw.length;
+    for (; i < n; i++){ const c = raw[i]; if (c === '"') q = !q; else if (!q && c === ":") break; }
+    if (i >= n) return null;
+    const head = raw.slice(0, i), value = raw.slice(i + 1), parts = []; let cur = ""; q = false;
+    for (const c of head){ if (c === '"') q = !q; if (c === ";" && !q){ parts.push(cur); cur = ""; } else cur += c; }
+    parts.push(cur);
+    const params = {};
+    parts.slice(1).forEach(p => { const k = p.indexOf("="); if (k > 0) params[p.slice(0, k).toUpperCase()] = p.slice(k + 1).replace(/^"|"$/g, ""); });
+    return {name: parts[0].toUpperCase(), params, value};
+  }
+  // → {ok, events: [{props}], skippedPrivate}
+  function icsParse(text){
+    const lines = text.replace(/\r\n?/g, "\n").replace(/\n[ \t]/g, "").split("\n");
+    const stack = [], events = []; let cur = null, skippedPrivate = 0, ok = false;
+    for (const raw of lines){
+      if (!raw.trim()) continue;
+      const l = icsLine(raw); if (!l) continue;
+      if (l.name === "BEGIN"){
+        const what = l.value.trim().toUpperCase(); stack.push(what);
+        if (what === "VCALENDAR") ok = true;
+        if (what === "VEVENT" && stack.length === 2 && stack[0] === "VCALENDAR") cur = {};
+        continue;
+      }
+      if (l.name === "END"){
+        const what = stack.pop();
+        if (what === "VEVENT" && cur){
+          const cls = (cur.CLASS ? cur.CLASS.value : "").trim().toUpperCase();
+          if (cls === "PRIVATE" || cls === "CONFIDENTIAL") skippedPrivate++;   // nothing else is kept
+          else events.push(cur);
+          cur = null;
+        }
+        continue;
+      }
+      if (cur && stack[stack.length - 1] === "VEVENT"){
+        if (l.name === "EXDATE") (cur.EXDATE = cur.EXDATE || []).push(l);
+        else if (!cur[l.name]) cur[l.name] = l;
+      }
+    }
+    return {ok, events, skippedPrivate};
+  }
+  const BYDAY_CODES = ["MO","TU","WE","TH","FR","SA","SU"];
+  function parseRRule(v){
+    const r = {};
+    v.split(";").forEach(p => { const k = p.indexOf("="); if (k > 0) r[p.slice(0, k).toUpperCase()] = p.slice(k + 1).toUpperCase(); });
+    return r;
+  }
+  const dowOf = ms => (new Date(ms).getUTCDay() + 6) % 7 + 1;
+  // One calendar event → a task for year y, or {skip: reason} / {fail: reason}
+  function eventToTask(ev, y){
+    const title = icsText(ev.SUMMARY && ev.SUMMARY.value) || "(uten tittel)";
+    if (ev["RECURRENCE-ID"]) return {skip: "change"};
+    if ((ev.STATUS ? ev.STATUS.value : "").trim().toUpperCase() === "CANCELLED") return {skip: "cancelled"};
+    const s = icsTime(ev.DTSTART);
+    if (!s) return {fail: "mangler gyldig starttid", title};
+    let e = icsTime(ev.DTEND);
+    if (!e && ev.DURATION){
+      const d = icsDuration(ev.DURATION.value);
+      if (d != null){
+        if (s.allDay) e = {date: s.date + Math.max(DAY, Math.round(d / DAY) * DAY), time: "", allDay: true};
+        else { const [hh, mm] = s.time.split(":").map(Number), end = s.date + (hh * 60 + mm) * 60000 + d, dd = new Date(end);
+               e = {date: utc(dd.getUTCFullYear(), dd.getUTCMonth(), dd.getUTCDate()), time: `${pad2(dd.getUTCHours())}:${pad2(dd.getUTCMinutes())}`, allDay: false}; }
+      }
+    }
+    // last day (inclusive) and end time
+    let last = s.date, timeTo = "";
+    if (s.allDay){ if (e && e.allDay) last = Math.max(s.date, e.date - DAY); }
+    else if (e){
+      if (e.date === s.date) timeTo = e.time > s.time ? e.time : "";
+      else if (e.date > s.date){ last = e.time === "00:00" ? e.date - DAY : e.date; if (last === s.date) timeTo = "23:59"; }
+    }
+    const timeFrom = s.allDay ? "" : s.time;
+    const ys = yearStart(y), ye = yearStart(y + 1);
+    const uidv = ev.UID ? ev.UID.value.trim().slice(0, 300) : "";
+    const base = {title: title.slice(0, 120), icsUid: uidv || null, exdates: !!ev.EXDATE};
+
+    if (!ev.RRULE){
+      if (last < ys || s.date >= ye) return {skip: "outside"};
+      const a = Math.max(s.date, ys), b = Math.min(last, ye - DAY);
+      const weekFrom = weekInYear(a, y), weekTo = weekInYear(b, y);
+      let days = [];
+      if (weekFrom === weekTo && isoWeekOf(a).week === isoWeekOf(b).week && b - a < 7 * DAY) for (let d = a; d <= b; d += DAY) days.push(dowOf(d));
+      days = [...new Set(days)].sort((p, q) => p - q);
+      if (days.length === 7) days = [];                // the whole week = no particular weekday
+      const oneDay = a === b;
+      return {...base, rep: "none", interval: 1, nth: 1, days, weekFrom, weekTo,
+        timeFrom: oneDay ? timeFrom : "", timeTo: oneDay ? timeTo : "", dates: null};
+    }
+
+    const r = parseRRule(ev.RRULE.value), freq = r.FREQ, interval = Math.max(1, +r.INTERVAL || 1);
+    const until = r.UNTIL ? icsTime({value: r.UNTIL, params: {}}) : null, count = r.COUNT ? +r.COUNT : 0;
+    const limit = Math.min(until ? until.date : Infinity, ye - DAY);
+    const byday = r.BYDAY ? r.BYDAY.split(",").map(x => { const m = /^([+-]?\d)?(MO|TU|WE|TH|FR|SA|SU)$/.exec(x.trim()); return m ? {n: m[1] ? +m[1] : 0, d: BYDAY_CODES.indexOf(m[2]) + 1} : null; }) : [];
+    if (byday.some(x => !x)) return {fail: "gjentakelsen kunne ikke leses", title};
+    const dates = []; let n = 0;
+    const add = d => { if (d < s.date || d > limit || (count && n >= count)) return false; n++; dates.push(d); return true; };
+    let rule;
+    if (freq === "DAILY" || freq === "WEEKLY"){
+      if (byday.some(x => x.n)) return {fail: "gjentakelsen kunne ikke leses", title};
+      let days = byday.map(x => x.d);
+      if (freq === "DAILY"){
+        if (interval > 1) return {fail: `gjentas hver ${interval}. dag – årshjulet kan gjenta ukentlig eller månedlig`, title};
+        if (!days.length) days = [1,2,3,4,5,6,7];
+      } else if (!days.length) days = [dowOf(s.date)];
+      if (freq === "WEEKLY" && interval > 4) return {fail: `gjentas hver ${interval}. uke – årshjulet kan gjenta opptil hver 4. uke`, title};
+      days = [...new Set(days)].sort((p, q) => p - q);
+      const step = freq === "DAILY" ? 1 : interval, mon0 = s.date - (dowOf(s.date) - 1) * DAY;
+      for (let k = 0; mon0 + k * 7 * DAY <= limit && (!count || n < count); k += step)
+        for (const d of days) add(mon0 + k * 7 * DAY + (d - 1) * DAY);
+      rule = {rep: "weekly", interval: step, days, nth: 1};
+    } else if (freq === "MONTHLY"){
+      if (interval > 1) return {fail: `gjentas hver ${interval}. måned – årshjulet kan bare gjenta hver måned`, title};
+      let nth, days;
+      if (byday.length && byday.every(x => x.n)){ nth = byday[0].n; if (byday.some(x => x.n !== nth)) return {fail: "gjentakelsen er for sammensatt", title}; days = byday.map(x => x.d); }
+      else if (byday.length && r.BYSETPOS && byday.length === 1){ nth = +r.BYSETPOS; days = [byday[0].d]; }
+      else return {fail: "gjentas på samme dato hver måned – årshjulet kan gjenta for eksempel «første tirsdag»", title};
+      if (![1,2,3,4,-1].includes(nth)) return {fail: "gjentakelsen kunne ikke leses", title};
+      days = [...new Set(days)].sort((p, q) => p - q);
+      const sd = new Date(s.date);
+      for (let yy = sd.getUTCFullYear(), mm = sd.getUTCMonth(); utc(yy, mm, 1) <= limit && (!count || n < count); mm++){
+        if (mm > 11){ mm = 0; yy++; }
+        days.map(d => nthWeekday(yy, mm, d, nth)).sort((p, q) => p - q).forEach(add);
+      }
+      rule = {rep: "monthly", interval: 1, days, nth};
+    } else if (freq === "YEARLY"){
+      if (interval > 1 || r.BYDAY || r.BYMONTHDAY) return {fail: "gjentakelsen er for sammensatt", title};
+      const sd = new Date(s.date);
+      for (let yy = sd.getUTCFullYear(); utc(yy, 0, 1) <= limit && (!count || n < count); yy++) add(utc(yy, sd.getUTCMonth(), sd.getUTCDate()));
+      rule = {rep: "yearly", interval: 1, days: [], nth: 1};
+    } else return {fail: "ukjent type gjentakelse", title};
+
+    const inYear = dates.filter(d => d >= ys && d < ye);
+    if (!inYear.length) return {skip: "outside"};
+    const weekFrom = weekInYear(inYear[0], y), weekTo = weekInYear(inYear[inYear.length - 1], y);
+    if (rule.rep === "yearly"){
+      const d = inYear[0];
+      return {...base, rep: "yearly", interval: 1, nth: 1, days: [dowOf(d)], weekFrom: weekInYear(d, y), weekTo: weekInYear(d, y),
+        timeFrom, timeTo: last === s.date ? timeTo : "", dates: null};
+    }
+    return {...base, ...rule, weekFrom, weekTo, timeFrom, timeTo: last === s.date ? timeTo : "", dates: inYear};
+  }
+
+  /* the import card */
+  let icsPending = null;                    // {file, events, skippedPrivate}
+  const icsErr = m => { $("icsErr").textContent = m || ""; };
+  const ICS_NEW_CAT = "__ics_new__";
+  $("icsBtn").onclick = () => { const c = $("icsCard"); c.classList.toggle("show"); if (!icsPending){ icsErr(""); $("icsMsg").textContent = ""; } };
+  $("closeIcs").onclick = () => $("icsCard").classList.remove("show");
+  $("icsPick").onclick = () => { $("icsFile").value = ""; $("icsFile").click(); };
+  $("icsFile").onchange = async e => {
+    icsErr(""); $("icsMsg").textContent = "";
+    const f = e.target.files[0]; if (!f) return;
+    e.target.value = "";
+    if (f.size > 20 * 1024 * 1024) return icsErr("Filen er for stor (over 20 MB).");
+    let parsed;
+    try { parsed = icsParse(await f.text()); } catch(_){ return icsErr("Filen kunne ikke leses."); }
+    if (!parsed.ok) return icsErr("Dette ser ikke ut som en kalenderfil (.ics).");
+    if (!parsed.events.length && !parsed.skippedPrivate) return icsErr("Fant ingen avtaler i filen.");
+    icsPending = {file: f.name, ...parsed};
+    // pick the year with most appointments, preferring the year on screen
+    const yrs = {};
+    parsed.events.forEach(ev => { const s = icsTime(ev.DTSTART); if (s) { const yy = new Date(s.date).getUTCFullYear(); yrs[yy] = (yrs[yy] || 0) + 1; } });
+    const opts = [...new Set([state.year - 1, state.year, state.year + 1, ...Object.keys(yrs).map(Number)])].filter(y => y >= 1990 && y <= 2100).sort();
+    $("icsYear").innerHTML = opts.map(y => `<option value="${y}">${y}${yrs[y] ? "" : ""}</option>`).join("");
+    $("icsYear").value = String(state.year);
+    const cats = allTypes(), canNew = cats.length < MAX_CATS && firstFreeColor();
+    const cal = cats.find(t => t.name.trim().toLowerCase() === "kalender");
+    $("icsType").innerHTML = cats.map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("")
+      + (canNew && !cal ? `<option value="${ICS_NEW_CAT}">+ Ny kategori «Kalender»</option>` : "");
+    $("icsType").value = cal ? cal.id : (canNew ? ICS_NEW_CAT : (cats[0] ? cats[0].id : ""));
+    $("icsRing").innerHTML = state.rings.slice(0, ringCount()).map((r, i) => `<option value="${i}">${esc(r)}</option>`).join("");
+    $("icsTodo").checked = false;
+    $("icsPreview").style.display = "";
+    renderIcsPreview();
+  };
+  $("icsYear").onchange = () => renderIcsPreview();
+  $("icsCancel").onclick = () => { icsPending = null; $("icsPreview").style.display = "none"; icsErr(""); };
+  const sameRule = (a, b) => ["title","rep","interval","nth","weekFrom","weekTo","timeFrom","timeTo"].every(k => a[k] === b[k]) && a.days.join() === b.days.join();
+  let icsRows = [];
+  function renderIcsPreview(){
+    if (!icsPending) return;
+    const y = +$("icsYear").value, have = tasksOfYear(y);
+    const cnt = {cancelled: 0, change: 0, outside: 0}, fails = [];
+    icsRows = [];
+    const seen = new Set();
+    for (const ev of icsPending.events){
+      const r = eventToTask(ev, y);
+      if (r.skip){ cnt[r.skip]++; continue; }
+      if (r.fail){ fails.push(r); continue; }
+      const key = r.icsUid || "";
+      if (key && seen.has(key)) continue;             // the same appointment twice in the file
+      if (key) seen.add(key);
+      // the same appointment imported before, or a task this wheel exported itself
+      const own = key.endsWith("@arshjul") ? have.find(t => t.id === key.slice(0, -8)) : null;
+      const prev = own || (key ? have.find(t => t.icsUid === key) : null);
+      const status = !prev ? "new" : (own || sameRule(norm({...prev}), norm({...r, year: y}))) ? "same" : "update";
+      // check that the wheel shows the same dates as the calendar
+      let differs = false;
+      if (r.dates){ const occ = occurrences(norm({...r, id: "chk" + icsRows.length, year: y, doneDates: {}})).map(o => o.date); differs = occ.length !== r.dates.length || occ.some((d, i) => d !== r.dates[i]); }
+      icsRows.push({r, prev, status, differs, on: status !== "same"});
+      if (icsRows.length >= 500) break;
+    }
+    icsRows.sort((a, b) => a.r.weekFrom - b.r.weekFrom || (a.r.timeFrom || "").localeCompare(b.r.timeFrom || "") || a.r.title.localeCompare(b.r.title, "no"));
+    const notes = [];
+    if (icsPending.skippedPrivate) notes.push(`<b>${icsPending.skippedPrivate}</b> avtale${icsPending.skippedPrivate === 1 ? "" : "r"} merket privat eller konfidensiell ble ikke tatt med`);
+    if (cnt.outside) notes.push(`${cnt.outside} ligger utenfor ${y}`);
+    if (cnt.cancelled) notes.push(`${cnt.cancelled} er avlyst`);
+    if (cnt.change) notes.push(`${cnt.change} endring${cnt.change === 1 ? "" : "er"} av enkeltmøter i en serie er ikke tatt med`);
+    $("icsInfo").innerHTML = `«${esc(icsPending.file)}»: ${icsRows.length} avtale${icsRows.length === 1 ? "" : "r"} for ${y}.`
+      + (notes.length ? `<div class="sub" style="margin:4px 0 0">${notes.join(" · ")}.</div>` : "");
+    const lbl = {new: "", update: `<em class="tag">oppdateres</em>`, same: `<em class="tag">finnes allerede</em>`};
+    $("icsList").innerHTML = icsRows.length ? icsRows.map((x, i) => {
+      const r = x.r, when = (r.weekFrom === r.weekTo ? `uke ${r.weekFrom}` : `uke ${r.weekFrom}–${r.weekTo}`);
+      const rule = ruleText(norm({...r, year: y, doneDates: {}}));
+      return `<li><label class="inline"><input type="checkbox" data-i="${i}" ${x.on ? "checked" : ""}>
+        <span><b>${esc(r.title)}</b> ${lbl[x.status]}<small>${when}${rule ? " · " + esc(rule) : ""}${x.differs || r.exdates ? " · enkelte datoer kan avvike fra kalenderen" : ""}</small></span></label></li>`;
+    }).join("") : `<li class="empty">Ingen avtaler å hente for ${y}.</li>`;
+    $("icsList").querySelectorAll("input[data-i]").forEach(cb => cb.onchange = () => { icsRows[+cb.dataset.i].on = cb.checked; icsCount(); });
+    $("icsFails").innerHTML = fails.length ? `<details><summary>${fails.length} avtale${fails.length === 1 ? "" : "r"} kunne ikke tolkes</summary><ul>`
+      + fails.slice(0, 50).map(f => `<li><b>${esc(f.title)}</b> – ${esc(f.fail)}</li>`).join("") + `</ul></details>` : "";
+    $("icsAll").checked = icsRows.length > 0 && icsRows.every(x => x.on);
+    icsCount();
+  }
+  function icsCount(){
+    const n = icsRows.filter(x => x.on).length;
+    $("icsGo").textContent = n ? `Legg inn ${n} avtale${n === 1 ? "" : "r"}` : "Legg inn";
+    $("icsGo").disabled = !n || state.readOnly;
+  }
+  $("icsAll").onchange = e => { icsRows.forEach(x => { x.on = e.target.checked; }); $("icsList").querySelectorAll("input[data-i]").forEach(cb => { cb.checked = e.target.checked; }); icsCount(); };
+  $("icsGo").onclick = async () => {
+    icsErr("");
+    const y = +$("icsYear").value, chosen = icsRows.filter(x => x.on);
+    if (!chosen.length) return;
+    let typeId = $("icsType").value;
+    if (typeId === ICS_NEW_CAT){
+      const color = firstFreeColor(); if (!color) return icsErr("Det er ingen ledige farger. Velg en kategori du har.");
+      const ty = {id: "kat-" + uid().slice(0, 8), name: "Kalender", color, createdAt: Date.now()};
+      if (!(await store.putType(ty))) return icsErr("Kategorien kunne ikke lagres.");
+      typeId = ty.id;
+    }
+    if (!typeId) return icsErr("Lag en kategori først.");
+    const ring = +$("icsRing").value || 0, todo = $("icsTodo").checked;
+    $("icsGo").disabled = true;
+    const list = chosen.map(({r, prev}) => {
+      const {dates, exdates, ...fields} = r;
+      if (prev) return {...prev, ...fields, icsUid: prev.icsUid || r.icsUid, recurring: r.rep === "yearly"};   // keep category, ring, ticks
+      const id = uid();
+      return {id, ...fields, typeId, ring, year: y, todo, recurring: r.rep === "yearly", seriesId: r.rep !== "none" ? id : null,
+        done: false, completedAt: null, doneDates: {}, createdAt: Date.now()};
+    });
+    await store.putTasks(list);
+    const nNew = chosen.filter(x => !x.prev).length, nUpd = chosen.length - nNew;
+    icsPending = null; $("icsPreview").style.display = "none";
+    $("icsMsg").textContent = `${nNew} avtale${nNew === 1 ? "" : "r"} lagt inn` + (nUpd ? `, ${nUpd} oppdatert` : "") + ` i «${wheelName()}» for ${y}.`;
+    if (state.year !== y) gotoYear(y); else render();
+  };
+
+  /* writing: the year's tasks as a calendar file */
+  const icsEsc = v => String(v).replace(/\\/g, "\\\\").replace(/;/g, "\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+  function icsFold(line){                   // max 75 bytes per line (RFC 5545)
+    const enc = new TextEncoder(); let out = "", cur = "", bytes = 0;
+    for (const ch of line){
+      const b = enc.encode(ch).length;
+      if (bytes + b > (out ? 74 : 75)){ out += (out ? "\r\n " : "") + cur; cur = ""; bytes = 0; }
+      cur += ch; bytes += b;
+    }
+    return out ? out + "\r\n " + cur : cur;
+  }
+  const icsD = ms => { const d = new Date(ms); return `${d.getUTCFullYear()}${pad2(d.getUTCMonth() + 1)}${pad2(d.getUTCDate())}`; };
+  const icsUtc = ms => { const d = new Date(ms); return `${icsD(ms)}T${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}${pad2(d.getUTCSeconds())}Z`; };
+  const osloUtc = (date, hhmm) => { const d = new Date(date), [h, m] = hhmm.split(":").map(Number); return zonedToUtc(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), h, m, OSLO); };
+  const VTZ_OSLO = ["BEGIN:VTIMEZONE","TZID:Europe/Oslo","BEGIN:DAYLIGHT","TZOFFSETFROM:+0100","TZOFFSETTO:+0200","TZNAME:CEST",
+    "DTSTART:19700329T020000","RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU","END:DAYLIGHT","BEGIN:STANDARD","TZOFFSETFROM:+0200",
+    "TZOFFSETTO:+0100","TZNAME:CET","DTSTART:19701025T030000","RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU","END:STANDARD","END:VTIMEZONE"];
+  function buildIcs(y, withDone){
+    const now = icsUtc(Date.now()), lines = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Arshjul//Arshjul " + VERSION + "//NO","CALSCALE:GREGORIAN",
+      "METHOD:PUBLISH", "X-WR-CALNAME:" + icsEsc(`${wheelName()} ${y}`), ...VTZ_OSLO];
+    let n = 0;
+    const timeEnd = (from, to) => { if (to) return to; const [h, m] = from.split(":").map(Number), e = Math.min(23 * 60 + 59, h * 60 + m + 60); return `${pad2(Math.floor(e / 60))}:${pad2(e % 60)}`; };
+    for (const t of tasksOfYear(y)){
+      if (!withDone && t.done) continue;
+      const ty = typeById(t.typeId);
+      let dates = [], rrule = "";
+      const codes = t.days.map(d => BYDAY_CODES[d - 1]).join(",");
+      if (t.rep === "weekly" || t.rep === "monthly"){
+        const occ = occurrences(t); if (!occ.length) continue;
+        dates = occ.map(o => o.day ? o.date : mondayOfWeek(y, o.week));
+        rrule = t.rep === "weekly" ? `FREQ=WEEKLY;INTERVAL=${t.interval}` + (t.days.length ? `;BYDAY=${codes}` : "")
+              : `FREQ=MONTHLY;BYDAY=${(t.days.length ? t.days : [1]).map(d => t.nth + BYDAY_CODES[d - 1]).join(",")}`;
+      } else if (t.days.length){
+        for (let w = t.weekFrom; w <= t.weekTo; w++) for (const d of t.days){
+          const dt = mondayOfWeek(y, w) + (d - 1) * DAY; if (dt >= yearStart(y) && dt < yearStart(y + 1)) dates.push(dt);
+        }
+        if (!dates.length) continue;
+        // several days in a row within one week without a time (e.g. a conference Tue–Thu): one event spanning the days
+        const span = t.weekFrom === t.weekTo && !t.timeFrom && dates.length > 1 && dates.every((d, i) => !i || d - dates[i - 1] === DAY);
+        if (span) dates = [dates[0], dates[dates.length - 1]];
+        else if (dates.length > 1) rrule = `FREQ=WEEKLY;BYDAY=${codes}`;
+      }
+      // always our own UID – reusing the UID of a meeting that came from Outlook could overwrite the real meeting there
+      const ev = ["BEGIN:VEVENT", "UID:" + `${t.id}@arshjul`, "DTSTAMP:" + now, "SUMMARY:" + icsEsc(t.title),
+        "CATEGORIES:" + icsEsc(ty.name), "DESCRIPTION:" + icsEsc(`Fra årshjulet «${wheelName()}»` + (isTodo(t) ? (t.done ? " – fullført" : " – gjøremål") : ""))];
+      if (!dates.length){
+        // a whole week or more: an all-day event from Monday to the end of the last week, shown as free time
+        const [a] = weekRange(y, t.weekFrom), [, b] = weekRange(y, t.weekTo);
+        ev.push(`DTSTART;VALUE=DATE:${icsD(a)}`, `DTEND;VALUE=DATE:${icsD(b)}`, "TRANSP:TRANSPARENT");
+      } else {
+        const first = dates[0], lastD = dates[dates.length - 1], weekLong = t.rep === "weekly" && !t.days.length;
+        if (t.timeFrom && t.days.length){
+          ev.push(`DTSTART;TZID=Europe/Oslo:${icsD(first)}T${t.timeFrom.replace(":", "")}00`, `DTEND;TZID=Europe/Oslo:${icsD(first)}T${timeEnd(t.timeFrom, t.timeTo).replace(":", "")}00`);
+          if (rrule) rrule += `;UNTIL=${icsUtc(osloUtc(lastD, t.timeFrom))}`;
+        } else {
+          const endEx = rrule ? first + (weekLong ? 7 : 1) * DAY : lastD + DAY;     // without a repeat: first … last day
+          ev.push(`DTSTART;VALUE=DATE:${icsD(first)}`, `DTEND;VALUE=DATE:${icsD(endEx)}`, "TRANSP:TRANSPARENT");
+          if (rrule) rrule += `;UNTIL=${icsD(lastD)}`;
+        }
+        if (rrule) ev.push("RRULE:" + rrule);
+      }
+      ev.push("END:VEVENT");
+      lines.push(...ev); n++;
+    }
+    lines.push("END:VCALENDAR");
+    return {text: lines.map(icsFold).join("\r\n") + "\r\n", count: n};
+  }
+  $("icsExportBtn").onclick = async () => {
+    dlErr(""); dlMsg("");
+    const {text, count} = buildIcs(state.year, $("optIcsDone").checked);
+    if (!count) return dlErr("Det er ingen oppgaver å lagre for " + state.year + ".");
+    const name = `arshjul-${wheelSlug()}-${state.year}.ics`;
+    const res = await saveFile(name, text, "text/calendar");
+    if (res === "busy") return dlErr("Vent litt og prøv igjen.");
+    dlMsg(res === "declined" ? "Nedlastingen ble avbrutt." : `${count} oppgave${count === 1 ? "" : "r"} ${res === "picked" ? "lagret som" : "lastet ned:"} «${savedAs(res, name)}». Åpne filen eller importer den i kalenderen din.`);
+  };
+
+  /* ---------------- Export / import ---------------- */
+  const FILE_APP = "arshjul";
+  const dataErr = m => { $("dataErr").textContent = m || ""; };
+  const dataMsg = m => { $("dataMsg").textContent = m || ""; };
+  $("dataBtn").onclick = () => { const c = $("dataCard"); c.classList.toggle("show"); dataErr(""); dataMsg(""); renderDataCard(); };
+  $("closeData").onclick = () => $("dataCard").classList.remove("show");
+
+  // File format: version 2 = one wheel {wheel, tasks, types, settings}; version 3 = several {wheels: [ … ]}
+  async function buildExport(all){
+    await ensureWheel();
+    const pack = async w => ({wheel: {id: w.id, name: w.name}, ...(await readWheelData(w))});
+    if (!all) return {app: FILE_APP, version: 2, exportedAt: new Date().toISOString(), ...(await pack(state.wheel))};
+    const wheels = [];
+    for (const w of state.wheels) wheels.push(await pack(w));
+    return {app: FILE_APP, version: 3, exportedAt: new Date().toISOString(), wheels};
+  }
+  function renderDataCard(){
+    $("exportOneLabel").textContent = `Dette årshjulet («${wheelName()}»)`;
+    $("exportAllLabel").textContent = `Alle årshjul (${state.wheels.length})`;
+    $("exportAllLabel").closest("label").style.display = state.wheels.length > 1 ? "" : "none";
+    if (state.wheels.length < 2) document.querySelector('input[name="exportWhich"][value="one"]').checked = true;
+  }
+  let lastSavedName = "";
+  const savedAs = (res, name) => res === "picked" ? lastSavedName : name;
+  async function saveFile(filename, text, mime = "application/json"){
+    const inClaude = !!(window.claude && typeof window.claude.use === "function");
+    // Standalone file in Chrome/Edge: a normal "Save as" window where the user picks folder and file name.
+    // The window remembers the last folder per file type (id). Other browsers fall back to a normal download.
+    if (!inClaude && typeof window.showSaveFilePicker === "function"){
+      const ext = filename.slice(filename.lastIndexOf("."));
+      const desc = {".json": "Sikkerhetskopi av årshjul", ".png": "Bilde (PNG)", ".csv": "Tabell for Excel (CSV)", ".ics": "Kalenderfil"}[ext] || "Fil";
+      try {
+        const handle = await window.showSaveFilePicker({suggestedName: filename, id: "arshjul" + ext.replace(".", "-"),
+          startIn: "documents", types: [{description: desc, accept: {[mime]: [ext]}}]});
+        const w = await handle.createWritable();
+        await w.write(text instanceof Blob ? text : new Blob([text], {type: mime}));
+        await w.close();
+        lastSavedName = handle.name;
+        return "picked";
+      } catch(e){
+        if (e && e.name === "AbortError") return "declined";      // the user closed the window
+        // anything else (blocked by policy etc.): fall back to a normal download below
+      }
+    }
+    // Inside Claude: the downloads capability. Otherwise: a normal browser download.
+    if (inClaude){
+      let dl = null; try { dl = await window.claude.use("downloads"); } catch(e){}
+      if (dl){
+        try { await dl.save({filename, data: text}); return "saved"; }
+        catch(e){ if (e && e.code === "declined") return "declined"; if (e && e.code === "rate_limited") return "busy"; }
+      }
+    }
+    const url = URL.createObjectURL(text instanceof Blob ? text : new Blob([text], {type: mime}));
+    const a = document.createElement("a"); a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    return "saved";
+  }
+  $("exportBtn").onclick = async () => {
+    dataErr(""); dataMsg("");
+    const all = state.wheels.length > 1 && document.querySelector('input[name="exportWhich"]:checked').value === "all";
+    const d = new Date(), pad = n => String(n).padStart(2,"0");
+    const stampTxt = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}`;
+    let data;
+    try { data = await buildExport(all); } catch(e){ return dataErr("Sikkerhetskopien kunne ikke lages. Prøv igjen."); }
+    const name = all ? `arshjul-alle-${stampTxt}.json` : `arshjul-${wheelSlug()}-${stampTxt}.json`;
+    const res = await saveFile(name, JSON.stringify(data, null, 1));
+    if (res === "declined") return dataMsg("Lagringen ble avbrutt.");
+    if (res === "busy") return dataErr("Vent litt og prøv igjen.");
+    const what = all ? `Alle ${state.wheels.length} årshjul` : `«${wheelName()}»: ${state.tasks.length} oppgaver og ${state.customTypes.length} kategorier`;
+    dataMsg(`${what} lagret som «${savedAs(res, name)}».` + (res === "picked" ? "" : " Filen ligger der nettleseren lagrer nedlastinger."));
+  };
+
+  /* Import: every wheel in the file goes to the wheel with the same id. A wheel that is not here yet becomes a new tab –
+     unless the file holds one wheel and the open wheel is still completely empty: then that wheel takes it over.
+     Older files without a wheel id go into the open wheel. */
+  let pendingImport = null;
+  $("importBtn").onclick = () => { $("importFile").value = ""; $("importFile").click(); };
+  function importTarget(p, count, index){
+    if (!p.wheel) return {kind: "current", wheel: state.wheel};
+    const ex = state.wheels.find(w => w.id === p.wheel.id);
+    if (ex) return {kind: "existing", wheel: ex};
+    // an untouched, empty wheel takes over the file's wheel (a single wheel, or the first of several when it is the only tab)
+    if (isEmptyWheel() && (count === 1 || (index === 0 && state.wheels.length === 1))) return {kind: "adopt", wheel: state.wheel};
+    return {kind: "new"};
+  }
+  $("importFile").onchange = async e => {
+    dataErr(""); dataMsg("");
+    const f = e.target.files[0]; if (!f) return;
+    e.target.value = "";                    // so picking the same file again works
+    let d;
+    try { d = JSON.parse(await f.text()); } catch(_){ return dataErr("Filen kunne ikke leses. Er det en sikkerhetskopi fra årshjulet?"); }
+    if (!d || d.app !== FILE_APP) return dataErr("Dette ser ikke ut som en sikkerhetskopi fra årshjulet.");
+    const clean = arr => (Array.isArray(arr) ? arr : []).filter(r => r && typeof r.id === "string" && r.id.length < 200);
+    const pack = x => ({
+      wheel: x.wheel && typeof x.wheel.id === "string" && /^[A-Za-z0-9_.~:@+-]{1,60}$/.test(x.wheel.id) ? {id: x.wheel.id, name: String(x.wheel.name || "Årshjul").slice(0,40)} : null,
+      tasks: clean(x.tasks), types: clean(x.types), settings: x.settings || null});
+    let packages;
+    if (Array.isArray(d.wheels)) packages = d.wheels.filter(x => x && Array.isArray(x.tasks) && Array.isArray(x.types)).map(pack);
+    else if (Array.isArray(d.tasks) && Array.isArray(d.types)) packages = [pack(d)];
+    if (!packages || !packages.length) return dataErr("Fant ingen årshjul i filen.");
+    const targets = packages.map((p, i) => importTarget(p, packages.length, i));
+    const newCount = targets.filter(t => t.kind === "new").length;
+    if (state.wheels.length + newCount > MAX_WHEELS) return dataErr(`Filen ville gitt mer enn ${MAX_WHEELS} årshjul. Slett noen først.`);
+    pendingImport = {packages, file: f.name};
+    const when = d.exportedAt ? new Date(d.exportedAt).toLocaleString("no-NO", {dateStyle:"medium", timeStyle:"short"}) : "ukjent tid";
+    const lines = packages.map((p, i) => {
+      const t = targets[i], n = p.tasks.filter(r => !r.deleted).length, label = esc(p.wheel ? p.wheel.name : wheelName());
+      const what = t.kind === "existing" ? (TEAM ? "finnes fra før" : "erstatter det du har")
+                 : t.kind === "adopt" ? "legges inn i dette tomme hjulet"
+                 : t.kind === "current" ? `legges inn i «${esc(wheelName())}» (eldre fil uten hjulnavn)`
+                 : "blir en ny fane";
+      return `<li><b>${label}</b> – ${n} oppgave${n===1?"":"r"} – ${what}</li>`;
+    }).join("");
+    $("importInfo").innerHTML = `<b>${esc(f.name)}</b><br><span style="color:var(--muted)">Lagret ${esc(when)}</span><ul style="margin:6px 0 0;padding-left:18px">${lines}</ul>`;
+    $("importChoice").style.display = "";
+  };
+  $("importCancel").onclick = () => { pendingImport = null; $("importChoice").style.display = "none"; };
+
+  async function runImport(mode){
+    const imp = pendingImport; if (!imp) return;
+    $("importChoice").style.display = "none"; pendingImport = null;
+    const plan = (incoming, current, m) => {
+      const cur = new Map(current.map(r => [r.id, r]));
+      const out = [];
+      for (const r of incoming){
+        const mine = cur.get(r.id);
+        if (m === "replace" || !mine || stamp(r) > stamp(mine)) out.push({...r, updatedAt: stamp(r) || Date.now()});
+      }
+      if (m === "replace"){
+        const ids = new Set(incoming.map(r => r.id));
+        for (const r of current) if (!r.deleted && !ids.has(r.id)) out.push({id: r.id, deleted: true, updatedAt: Date.now()});
+      }
+      return out;
+    };
+    const startId = state.wheel.id, count = imp.packages.length, done = [];
+    let firstId = null;
+    dataMsg("Henter inn …");
+    try {
+      await ensureWheel();
+      for (const [i, p] of imp.packages.entries()){
+        const t = importTarget(p, count, i);
+        let id;
+        if (t.kind === "new"){
+          const w = await store.createWheel(uniqueName(p.wheel.name), p.wheel.id);
+          if (!w) throw new Error("create"); id = w.id;
+        } else if (t.kind === "adopt"){
+          const name = uniqueName(p.wheel.name, state.wheel.id);
+          if (!(await store.adoptIdentity(state.wheel.id, p.wheel.id, name))) throw new Error("adopt");
+          id = p.wheel.id;
+        } else id = t.wheel.id;
+        if (!state.wheel || state.wheel.id !== id) await openWheel(id);
+        const m = (t.kind === "new" || t.kind === "adopt") ? "merge" : mode;   // an empty wheel just takes everything
+        const tr = plan(p.tasks, state.taskRecs, m), ty = plan(p.types, state.typeRecs, m);
+        await store.applyImport(tr, ty);
+        const s = p.settings;
+        if (s && Array.isArray(s.rings) && s.rings.length && (m === "replace" || t.kind !== "existing" || (s.updatedAt || 0) > (state.ringsUpdatedAt || 0)))
+          await store.putRings(s.rings.slice(0,4).map(String), s.updatedAt || Date.now());
+        done.push({name: wheelName(), kind: t.kind, changes: tr.length + ty.length});
+        if (!firstId) firstId = id;
+      }
+    } catch(e){
+      handleWriteError(e);
+      return dataErr("Innhentingen stoppet underveis. Prøv igjen – det som allerede er hentet inn, er beholdt.");
+    }
+    // show the wheel that was open if the file touched it, otherwise the first wheel from the file
+    const showId = count > 1 && state.wheels.some(w => w.id === startId) ? startId : firstId;
+    if (state.wheel.id !== showId) await openWheel(showId);
+    gotoYear(state.year);
+    const word = {existing: TEAM ? (mode === "replace" ? "erstattet" : "slått sammen") : "erstattet", adopt: "hentet inn", current: TEAM && mode !== "replace" ? "slått sammen" : "erstattet", new: "ny fane"};
+    setTimeout(() => {
+      dataMsg("Hentet inn: " + done.map(x => `«${x.name}» (${word[x.kind]}${TEAM && x.kind === "existing" && mode !== "replace" && !x.changes ? ", ingenting nytt" : ""})`).join(", ") + ".");
+      // warn (don't block) if a merge broke the category rules in the wheel that is shown
+      const types = allTypes(), warn = [];
+      if (types.length > MAX_CATS) warn.push(`«${wheelName()}» har nå ${types.length} kategorier (maks ${MAX_CATS})`);
+      const clash = [];
+      types.forEach((a,i) => types.slice(i+1).forEach(b => { if (colorDist(a.color, b.color) < MIN_COLOR_DIST) clash.push(`«${a.name}» og «${b.name}»`); }));
+      if (clash.length) warn.push(`like farger: ${clash.join(", ")}`);
+      if (warn.length) dataErr("Obs: " + warn.join("; ") + ". Rydd under «Kategorier».");
+    }, db ? 600 : 0);
+  }
+  /*@team*/
+  $("importMerge").onclick = () => runImport("merge");
+  /*@/team*/
+  $("importReplace").onclick = () => {
+    if (!TEAM) return runImport("replace");
+    const b = $("importReplace");
+    if (b.dataset.confirm !== "1"){ b.dataset.confirm = "1"; b.textContent = "Bekreft – erstatt alt"; setTimeout(() => { b.dataset.confirm = ""; b.textContent = "Erstatt alt"; }, 4000); return; }
+    b.dataset.confirm = ""; b.textContent = "Erstatt alt";
+    runImport("replace");
+  };
+
+  /* ---------------- Ring settings ---------------- */
+  function renderRingEditor(count){
+    const names = state.rings.slice();
+    let h = "";
+    for (let i = 0; i < count; i++) h += `<label>Ring ${i+1}<input type="text" maxlength="30" data-i="${i}" value="${esc(names[i] || DEFAULT_RINGS[i])}"></label>`;
+    $("ringNames").innerHTML = h;
+  }
+  $("ringsBtn").onclick = () => {
+    const card = $("ringsCard"), show = !card.classList.contains("show");
+    card.classList.toggle("show", show);
+    if (show){ $("ringCount").value = String(ringCount()); renderRingEditor(ringCount()); }
+  };
+  $("ringCount").onchange = e => renderRingEditor(+e.target.value);
+  $("closeRings").onclick = () => $("ringsCard").classList.remove("show");
+  $("saveRings").onclick = async () => {
+    const names = [...$("ringNames").querySelectorAll("input")].map((el,i) => el.value.trim() || DEFAULT_RINGS[i]);
+    await store.putRings(names);
+    $("ringsCard").classList.remove("show");
+  };
+
+  /* ---------------- Render & navigation ---------------- */
+  function render(){
+    $("yearLabel").textContent = state.year;
+    $("ringsBtn").style.display = state.readOnly ? "none" : "";
+    $("catsBtn").style.display = state.readOnly ? "none" : "";
+    $("importBtn").style.display = state.readOnly ? "none" : "";
+    $("wheelBtn").style.display = state.readOnly ? "none" : "";
+    $("icsBtn").style.display = state.readOnly ? "none" : "";
+    renderWheelHeader(); renderWheelCard(); renderDownloadCard();
+    if ($("dataCard").classList.contains("show")) renderDataCard();
+    renderSelects(); renderWheel(); renderLegend(); renderRecurring(); renderPanel(); renderFormMode(); renderCats();
+  }
+  function gotoYear(y){
+    state.year = y; state.editId = null;
+    // the current year opens on today's week; every other year on week 1
+    state.selWeek = (y === THIS_YEAR && today.year === THIS_YEAR) ? today.week : 1;
+    render();
+    $("fFrom").value = state.selWeek; $("fTo").value = state.selWeek;
+  }
+  $("prevYear").onclick = () => gotoYear(state.year - 1);
+  $("nextYear").onclick = () => gotoYear(state.year + 1);
+  $("thisYear").onclick = () => gotoYear(THIS_YEAR);
+
+  initStore();
+})();
+</script>
+</body>
+</html>
