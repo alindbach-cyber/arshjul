@@ -9,8 +9,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Årshjul</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='31' fill='%23303030'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23ffffff' stroke-opacity='.16' stroke-width='11'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%2362b4d0' stroke-width='11' stroke-dasharray='34 86' transform='rotate(-70 32 32)'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23e09a62' stroke-width='11' stroke-dasharray='22 98' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%2386c463' stroke-width='11' stroke-dasharray='14 106' transform='rotate(150 32 32)'/%3E%3Cpath d='M32 3v24' stroke='%23f83030' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>Årshjul<!--@team--> Team<!--@/team--></title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='31' fill='%231f4e79'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23ffffff' stroke-opacity='.22' stroke-width='11'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%235aa0e6' stroke-width='11' stroke-dasharray='34 86' transform='rotate(-70 32 32)'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23f59e0b' stroke-width='11' stroke-dasharray='22 98' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23f472b6' stroke-width='11' stroke-dasharray='14 106' transform='rotate(150 32 32)'/%3E%3Cpath d='M32 3v24' stroke='%23fbbf24' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
   :root{
     --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
@@ -27,21 +27,6 @@
   header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
     padding:18px 28px;border-bottom:1px solid var(--line)}
   h1{font-family:var(--serif);font-weight:650;font-size:26px;margin:0;letter-spacing:-.01em}
-  /* logo: wheel symbol + «Lindbach» + ÅRSHJUL */
-  h1.brand{display:flex;align-items:center;gap:10px;font-weight:400;letter-spacing:0}
-  h1.brand svg{width:42px;height:42px;max-width:none;flex:none}
-  .brand .disc{fill:#303030} .brand .track{stroke:#ffffff;stroke-opacity:.16}
-  .brand .s1{stroke:#62b4d0} .brand .s2{stroke:#e09a62} .brand .s3{stroke:#86c463}
-  .brand .bt{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
-  .brand .bt img{height:22px;width:auto;display:block;margin:0 0 -1px -2px}
-  .brand .bt span{font-family:"Barlow Condensed","Roboto Condensed","Arial Narrow","Helvetica Neue",Arial,sans-serif;font-stretch:condensed;
-    font-weight:700;font-size:27px;letter-spacing:.05em;color:var(--ink)}
-  .brand .bt img.lg-d{display:none}
-  @media (prefers-color-scheme: dark){
-    .brand .disc{fill:#e4eae7} .brand .track{stroke:#303030;stroke-opacity:.14}
-    .brand .s1{stroke:#1d6a84} .brand .s2{stroke:#b9692f} .brand .s3{stroke:#4f8a35}
-    .brand .bt img.lg-l{display:none} .brand .bt img.lg-d{display:block}
-  }
   .hright{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
   .yearnav span{font-family:var(--serif);font-size:22px;min-width:64px;text-align:center;display:inline-block}
   button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);
@@ -113,6 +98,7 @@
   .icslist b{font-weight:500}
   .icslist small{display:block;color:var(--muted);font-size:12px}
   .icslist .tag{font-style:normal;font-size:11px;color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:0 6px;margin-left:4px}
+  .warnbox{padding:12px;border-radius:10px;border:1px solid color-mix(in srgb, var(--today) 45%, var(--line));background:color-mix(in srgb, var(--today) 9%, var(--card));font-size:14px}
   #icsFails{font-size:13px;color:var(--muted);margin-top:8px}
   #icsFails ul{padding-left:18px;margin:6px 0 0}
   .menu{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -143,7 +129,8 @@
   .helpbox .close{position:absolute;top:14px;right:14px}
   .helpbox .foot{margin-top:22px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
   .key{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:2px}
-  header h1{flex:none}
+  header h1{flex:none;display:flex;align-items:center;gap:10px}
+  header h1 .logo{width:30px;height:30px;flex:none;display:block}
   .tabs{flex:1 1 320px;min-width:0;display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:thin;padding:2px 2px 4px}
   .tab{flex:none;white-space:nowrap;border-radius:999px;padding:6px 14px;background:transparent;border-color:transparent;color:var(--muted);font-weight:500}
   .tab:hover{border-color:var(--line);color:var(--ink)}
@@ -222,14 +209,7 @@
 </head>
 <body>
 <header>
-  <h1 class="brand" aria-label="Lindbach Årshjul">
-    <svg viewBox="0 0 64 64" aria-hidden="true"><circle class="disc" cx="32" cy="32" r="31"/><circle class="track" cx="32" cy="32" r="19" fill="none" stroke-width="11"/><circle class="s1" cx="32" cy="32" r="19" fill="none" stroke-width="11" stroke-dasharray="34 86" transform="rotate(-70 32 32)"/><circle class="s2" cx="32" cy="32" r="19" fill="none" stroke-width="11" stroke-dasharray="22 98" transform="rotate(45 32 32)"/><circle class="s3" cx="32" cy="32" r="19" fill="none" stroke-width="11" stroke-dasharray="14 106" transform="rotate(150 32 32)"/><path d="M32 3v24" stroke="#f83030" stroke-width="5" stroke-linecap="round"/></svg>
-    <span class="bt" aria-hidden="true">
-      <img class="lg-l" src="__LOGO_LYS__" alt="" width="54" height="22">
-      <img class="lg-d" src="__LOGO_MORK__" alt="" width="54" height="22">
-      <span>ÅRSHJUL</span>
-    </span>
-  </h1>
+  <h1><svg class="logo" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="31" fill="#1f4e79"/><circle cx="32" cy="32" r="19" fill="none" stroke="#ffffff" stroke-opacity=".22" stroke-width="11"/><circle cx="32" cy="32" r="19" fill="none" stroke="#5aa0e6" stroke-width="11" stroke-dasharray="34 86" transform="rotate(-70 32 32)"/><circle cx="32" cy="32" r="19" fill="none" stroke="#f59e0b" stroke-width="11" stroke-dasharray="22 98" transform="rotate(45 32 32)"/><circle cx="32" cy="32" r="19" fill="none" stroke="#f472b6" stroke-width="11" stroke-dasharray="14 106" transform="rotate(150 32 32)"/><path d="M32 3v24" stroke="#fbbf24" stroke-width="5" stroke-linecap="round"/></svg><span>Årshjul<!--@team--> Team<!--@/team--></span></h1>
   <nav class="tabs" id="tabs" role="tablist" aria-label="Dine årshjul"></nav>
   <div class="hright">
     <span class="yearnav">
@@ -262,7 +242,7 @@
         <button id="ringsBtn" data-card><b>Ringer</b><small>Antall og navn</small></button>
         <!--@enkel--><button id="dataBtn" data-card><b>Sikkerhetskopi</b><small>Lagre eller hente inn alt</small></button><!--@/enkel-->
         <!--@team--><button id="dataBtn" data-card><b>Eksport og import</b><small>Dele og slå sammen</small></button><!--@/team-->
-        <button id="icsBtn" data-card><b>Hent fra kalender</b><small>Avtaler fra Outlook eller Google (.ics)</small></button>
+        <button id="icsBtn" data-card><b>Hent fra kalender</b><small>Enkeltavtaler og møteinnkallinger (.ics)</small></button>
       </div>
       <div class="btnrow" style="margin-top:12px"><button id="closeSettings">Lukk</button></div>
     </div>
@@ -392,10 +372,17 @@
 
     <div class="card" id="icsCard">
       <h3>Hent fra kalender</h3>
-      <p class="sub" style="margin:0 0 12px">Hent avtaler fra en kalenderfil (.ics) fra Outlook, Google eller Teams. Avtaler merket <b>privat</b> eller <b>konfidensiell</b> blir aldri tatt med.</p>
+      <p class="sub" style="margin:0 0 12px">Hent inn en avtale eller møteinnkalling (.ics). Du kan velge flere filer på én gang. Avtaler merket <b>privat</b> eller <b>konfidensiell</b> blir aldri tatt med.</p>
       <div class="btnrow">
-        <button class="primary" id="icsPick">Velg kalenderfil …</button>
-        <input type="file" id="icsFile" accept=".ics,text/calendar" hidden>
+        <button class="primary" id="icsPick">Velg .ics-filer …</button>
+        <input type="file" id="icsFile" accept=".ics,text/calendar" multiple hidden>
+      </div>
+      <div id="icsBig" class="warnbox" style="display:none;margin-top:14px">
+        <div id="icsBigText"></div>
+        <div class="btnrow" style="margin-top:10px">
+          <button id="icsBigGo">Fortsett likevel</button>
+          <button class="primary" id="icsBigStop">Avbryt</button>
+        </div>
       </div>
       <div id="icsPreview" style="display:none;margin-top:14px">
         <div id="icsInfo" style="font-size:14px"></div>
@@ -606,11 +593,12 @@
 
     <h3>Hente avtaler fra kalenderen</h3>
     <ol>
-      <li>Lagre kalenderen din som en .ics-fil. I Outlook: <b>Fil → Lagre kalender</b>. I Google Kalender: <b>Innstillinger → Importer og eksporter → Eksporter</b>. Du kan også lagre en enkelt møteinnkalling som .ics.</li>
-      <li>Gå til <b>Innstillinger → Hent fra kalender</b> og velg filen.</li>
+      <li>Lagre avtalen som en .ics-fil. I Outlook: åpne avtalen og velg <b>Fil → Lagre som → iCalendar (.ics)</b>. For et fast møte åpner du hele serien, ikke bare ett møte. Du kan også bruke .ics-vedlegget i en møteinnkalling.</li>
+      <li>Gå til <b>Innstillinger → Hent fra kalender</b> og velg filen. Har du flere, kan du velge alle på én gang.</li>
       <li>Velg år, kategori og ring. Kryss av for avtalene du vil ha med, og trykk <b>Legg inn</b>.</li>
     </ol>
     <ul>
+      <li><b>Ikke lagre hele kalenderen din.</b> Den kan inneholde personopplysninger. Hent heller de avtalene og møtene som hører hjemme i årshjulet.</li>
       <li><b>Private og konfidensielle avtaler blir aldri hentet.</b> Du ser bare hvor mange som ble hoppet over – aldri hva de handler om.</li>
       <li>Avlyste avtaler blir heller ikke tatt med.</li>
       <li>Avtalene blir hendelser uten avkrysning. Vil du krysse dem av, krysser du av for <b>Skal krysses av</b> før du legger dem inn.</li>
@@ -645,6 +633,7 @@
   /* ---------------- Edition & version (filled in by build.py) ---------------- */
   const EDITION = "__EDITION__";            // "enkel" or "team"
   const TEAM = EDITION === "team";
+  const APP_NAME = TEAM ? "Årshjul Team" : "Årshjul";   // shown in the header and the browser tab
   const VERSION = "__VERSION__";
 
   /* ---------------- Constants ---------------- */
@@ -1832,7 +1821,7 @@
   }
 
   function renderWheelHeader(){
-    document.title = state.wheel ? `Årshjul – ${state.wheel.name}` : "Årshjul";
+    document.title = state.wheel ? `${APP_NAME} – ${state.wheel.name}` : APP_NAME;
     renderTabs();
   }
   function renderWheelCard(force){
@@ -2011,7 +2000,7 @@
     if (!rows.length) return dlErr("Det er ingen oppgaver å laste ned.");
     // semicolon + BOM: opens directly in Norwegian Excel with æ, ø and å intact
     const q = v => /[;"\n\r]/.test(v) ? `"${v.replace(/"/g,'""')}"` : v;
-    const csv = "﻿" + [TABLE_COLS, ...rows.map(r => r.cells)].map(r => r.map(q).join(";")).join("\r\n");
+    const csv = "\ufeff" + [TABLE_COLS, ...rows.map(r => r.cells)].map(r => r.map(q).join(";")).join("\r\n");
     const name = `arshjul-${wheelSlug()}-${state.year}-oppgaver.csv`;
     const res = await saveFile(name, csv, "text/csv");
     if (res === "busy") return dlErr("Vent litt og prøv igjen.");
@@ -2049,7 +2038,7 @@
     let seen = false; try { seen = localStorage.getItem(HELP_KEY) === "1"; } catch(e){}
     if (!seen && state.tasks.length === 0) openHelp();
   }
-  const editionLabel = TEAM ? "Årshjul team" : "Årshjul enkel";
+  const editionLabel = TEAM ? "Årshjul Team" : "Årshjul enkel";
   $("helpFoot").textContent = `${editionLabel} · versjon ${VERSION} · © 2026 A. Lindbach · MIT-lisens`;
   $("verLabel").textContent = `${editionLabel} · versjon ${VERSION} · © 2026 A. Lindbach · MIT-lisens`;
 
@@ -2257,16 +2246,25 @@
   $("icsBtn").onclick = () => { const c = $("icsCard"); c.classList.toggle("show"); if (!icsPending){ icsErr(""); $("icsMsg").textContent = ""; } };
   $("closeIcs").onclick = () => $("icsCard").classList.remove("show");
   $("icsPick").onclick = () => { $("icsFile").value = ""; $("icsFile").click(); };
+  const ICS_BIG = 50;                       // more appointments than this looks like a whole calendar
   $("icsFile").onchange = async e => {
     icsErr(""); $("icsMsg").textContent = "";
-    const f = e.target.files[0]; if (!f) return;
+    const files = [...e.target.files]; if (!files.length) return;
     e.target.value = "";
-    if (f.size > 20 * 1024 * 1024) return icsErr("Filen er for stor (over 20 MB).");
-    let parsed;
-    try { parsed = icsParse(await f.text()); } catch(_){ return icsErr("Filen kunne ikke leses."); }
-    if (!parsed.ok) return icsErr("Dette ser ikke ut som en kalenderfil (.ics).");
-    if (!parsed.events.length && !parsed.skippedPrivate) return icsErr("Fant ingen avtaler i filen.");
-    icsPending = {file: f.name, ...parsed};
+    if (files.length > 100) return icsErr("Velg høyst 100 filer om gangen.");
+    // read every file; appointments from all of them are shown together
+    const events = [], bad = []; let skippedPrivate = 0;
+    for (const f of files){
+      if (f.size > 20 * 1024 * 1024){ bad.push(f.name); continue; }
+      let p;
+      try { p = icsParse(await f.text()); } catch(_){ bad.push(f.name); continue; }
+      if (!p.ok){ bad.push(f.name); continue; }
+      events.push(...p.events); skippedPrivate += p.skippedPrivate;
+    }
+    const badTxt = bad.length ? ` ${bad.length === 1 ? "Denne filen" : "Disse filene"} kunne ikke leses som kalenderfil: ${bad.slice(0, 5).join(", ")}${bad.length > 5 ? " …" : ""}.` : "";
+    if (!events.length && !skippedPrivate) return icsErr((bad.length === files.length ? "Ingen av filene ser ut som en kalenderfil (.ics)." : "Fant ingen avtaler.") + (bad.length === files.length ? "" : badTxt));
+    const parsed = {ok: true, events, skippedPrivate};
+    icsPending = {file: files.length === 1 ? `«${files[0].name}»` : `${files.length} filer`, ...parsed, badTxt};
     // pick the year with most appointments, preferring the year on screen
     const yrs = {};
     parsed.events.forEach(ev => { const s = icsTime(ev.DTSTART); if (s) { const yy = new Date(s.date).getUTCFullYear(); yrs[yy] = (yrs[yy] || 0) + 1; } });
@@ -2280,11 +2278,20 @@
     $("icsType").value = cal ? cal.id : (canNew ? ICS_NEW_CAT : (cats[0] ? cats[0].id : ""));
     $("icsRing").innerHTML = state.rings.slice(0, ringCount()).map((r, i) => `<option value="${i}">${esc(r)}</option>`).join("");
     $("icsTodo").checked = false;
+    if (events.length > ICS_BIG){
+      // a whole calendar may hold personal information: ask before showing anything
+      $("icsBigText").innerHTML = `<b>${events.length} avtaler.</b> Det ser ut som en hel kalender, og den kan inneholde personopplysninger. Vi anbefaler å hente bare enkeltavtaler og møteinnkallinger som hører hjemme i årshjulet.`;
+      $("icsBig").style.display = ""; $("icsPreview").style.display = "none";
+      return;
+    }
+    $("icsBig").style.display = "none";
     $("icsPreview").style.display = "";
     renderIcsPreview();
   };
+  $("icsBigGo").onclick = () => { $("icsBig").style.display = "none"; $("icsPreview").style.display = ""; renderIcsPreview(); };
+  $("icsBigStop").onclick = () => { icsPending = null; $("icsBig").style.display = "none"; $("icsPreview").style.display = "none"; };
   $("icsYear").onchange = () => renderIcsPreview();
-  $("icsCancel").onclick = () => { icsPending = null; $("icsPreview").style.display = "none"; icsErr(""); };
+  $("icsCancel").onclick = () => { icsPending = null; $("icsPreview").style.display = "none"; $("icsBig").style.display = "none"; icsErr(""); };
   const sameRule = (a, b) => ["title","rep","interval","nth","weekFrom","weekTo","timeFrom","timeTo"].every(k => a[k] === b[k]) && a.days.join() === b.days.join();
   let icsRows = [];
   function renderIcsPreview(){
@@ -2316,8 +2323,9 @@
     if (cnt.outside) notes.push(`${cnt.outside} ligger utenfor ${y}`);
     if (cnt.cancelled) notes.push(`${cnt.cancelled} er avlyst`);
     if (cnt.change) notes.push(`${cnt.change} endring${cnt.change === 1 ? "" : "er"} av enkeltmøter i en serie er ikke tatt med`);
-    $("icsInfo").innerHTML = `«${esc(icsPending.file)}»: ${icsRows.length} avtale${icsRows.length === 1 ? "" : "r"} for ${y}.`
-      + (notes.length ? `<div class="sub" style="margin:4px 0 0">${notes.join(" · ")}.</div>` : "");
+    $("icsInfo").innerHTML = `${esc(icsPending.file)}: ${icsRows.length} avtale${icsRows.length === 1 ? "" : "r"} for ${y}.`
+      + (notes.length ? `<div class="sub" style="margin:4px 0 0">${notes.join(" · ")}.</div>` : "")
+      + (icsPending.badTxt ? `<div class="err" style="margin:4px 0 0">${esc(icsPending.badTxt.trim())}</div>` : "");
     const lbl = {new: "", update: `<em class="tag">oppdateres</em>`, same: `<em class="tag">finnes allerede</em>`};
     $("icsList").innerHTML = icsRows.length ? icsRows.map((x, i) => {
       const r = x.r, when = (r.weekFrom === r.weekTo ? `uke ${r.weekFrom}` : `uke ${r.weekFrom}–${r.weekTo}`);

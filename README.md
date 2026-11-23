@@ -1,4 +1,4 @@
-# Lindbach Årshjul
+# Årshjul
 
 Et årshjul for oppgaver som fungerer rett i nettleseren. Året vises som en sirkel med måneder, uker og aktivitetsringer.
 
@@ -6,18 +6,21 @@ Et årshjul for oppgaver som fungerer rett i nettleseren. Året vises som en sir
 
 - Oppgaver på uker, med kategorier og farger
 - Gjentakelser (hver uke, hver måned, hvert år), ukedag og klokkeslett
+- Gjøremål som krysses av, og hendelser som bare vises
 - Statistikk over fullførte og ikke-fullførte oppgaver
 - Flytt oppgaver frem og tilbake
 - Flere årshjul i faner
 - Last ned bilde (PNG), tabell (Excel) og kalenderfil (.ics)
-- Hent avtaler fra Outlook og Google (.ics). Private avtaler blir aldri hentet
+- Hent enkeltavtaler og møteinnkallinger (.ics). Private og konfidensielle avtaler blir aldri hentet
 
 Alt lagres i brukerens egen nettleser. Ingenting sendes til en server.
 
-## Utgaver
+## Bruk
+
+Åpne nettsiden og velg utgave:
 
 - **Årshjul enkel** – for én person, med sikkerhetskopi til fil
-- **Årshjul team** – for flere, med eksport og import som slår sammen endringer
+- **Årshjul Team** – for flere, med eksport og import som slår sammen endringer
 
 Vil du ha appen som én fil på maskinen din? Åpne den på nettsiden og velg *Lagre side som* i nettleseren.
 
@@ -27,9 +30,8 @@ Vil du ha appen som én fil på maskinen din? Åpne den på nettsiden og velg *L
 | --- | --- |
 | `src.html` | Felles kildefil for begge utgavene |
 | `build.py` | Bygger `arshjul-enkel.html` og `arshjul-team.html` fra `src.html` |
-| `logo.json` | Lindbach-logoen (lys og mørk) som bygges inn i appen |
-| `index.html` | Startsiden med logo og valg av utgave |
-| `favicon.svg`, `bilder/` | Ikon og logo til startsiden |
+| `index.html` | Startsiden med valg av utgave |
+| `favicon.svg` | Ikonet |
 | `.github/workflows/pages.yml` | Bygger og publiserer nettsiden automatisk |
 
 ## Slik oppdateres nettsiden

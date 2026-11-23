@@ -2,12 +2,17 @@
 
 Begge utgavene (enkel og team) bygges fra `src.html` med `python3 build.py`.
 
-## Versjon 11 – 21. november 2026
-**Ny logo: Lindbach Årshjul**
-- Ny logo øverst i appen: hjulsymbolet, «Lindbach» i penselskrift og «ÅRSHJUL». Lys og mørk utgave følger nettleserens fargevalg.
-- Nytt favicon i Lindbach-fargene: mørkegrå skive, blå, oransje og grønne felt og rød viser.
-- Startside for GitHub Pages (`index.html`) med logo og valg mellom enkel og team.
-- Ingen endringer i funksjoner eller lagring – oppgavene dine ligger der de lå.
+## Versjon 11 – 22. november 2026
+**Nytt i begge utgaver: ikon, tydelig utgave og tryggere henting fra kalender**
+- Det blå årshjul-ikonet (samme som i nettleserfanen) står nå foran tittelen øverst. Ingen annen logo.
+- Team-utgaven heter «Årshjul Team» øverst og i nettleserfanen, så det synes hvilken utgave som er åpen. Enkel heter fortsatt «Årshjul».
+- Hent fra kalender er laget for enkeltavtaler og møteinnkallinger, ikke hele kalenderen:
+  - Hjelpen forklarer hvordan én avtale eller en hel serie lagres i Outlook (Fil → Lagre som → iCalendar), og at .ics-vedlegg i møteinnkallinger kan brukes. Rådet om å lagre hele kalenderen er fjernet.
+  - Flere .ics-filer kan velges på én gang (opptil 100). Avtalene vises samlet; filer som ikke kan leses, nevnes ved navn.
+  - Inneholder filene mer enn 50 avtaler, vises en advarsel om at det ser ut som en hel kalender som kan inneholde personopplysninger, før noe vises. Man kan avbryte eller fortsette.
+  - Private og konfidensielle avtaler hoppes fortsatt over.
+- GitHub-filene (startside, README og ikon) bruker det blå ikonet og navnet «Årshjul».
+- Ingen endringer i lagring – oppgavene ligger der de lå.
 
 ## Versjon 10 – 21. november 2026
 **Nytt i begge utgaver: kalenderfiler (.ics), gjøremål og hendelser, lisens**

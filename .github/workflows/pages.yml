@@ -31,7 +31,6 @@ jobs:
           mkdir -p _site
           cp dist/arshjul-enkel.html dist/arshjul-team.html _site/
           cp index.html favicon.svg _site/
-          cp -r bilder _site/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
