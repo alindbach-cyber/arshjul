@@ -2,6 +2,8 @@
 
 Et årshjul for oppgaver som fungerer rett i nettleseren. Året vises som en sirkel med måneder, uker og aktivitetsringer.
 
+**Bruk det her:** https://alindbach-cyber.github.io/arshjul/
+
 - Oppgaver på uker, med kategorier og farger
 - Gjentakelser (hver uke, hver måned på samme ukedag eller samme dato, hvert år), ukedag og klokkeslett
 - Gjøremål som krysses av, og hendelser som bare vises
@@ -19,23 +21,29 @@ Alt lagres i brukerens egen nettleser. Ingenting sendes til en server.
 
 Fra versjon 12 er det én app (`arshjul.html`). Gamle lenker til `arshjul-enkel.html` og `arshjul-team.html` sender videre dit.
 
+Vil du ha appen som én fil på maskinen din? Åpne den på nettsiden og velg *Lagre side som* i nettleseren.
+
 ## Filer
 
 | Fil | Hva |
 | --- | --- |
-| `index.html` | Startsiden med valg av utgave |
-| `arshjul.html` | Den ferdige appen (bygges fra `src.html`) |
 | `src.html` | Kildefilen |
-| `build.py` | Bygger `arshjul.html` (og videresendingssider for de gamle filnavnene) |
+| `build.py` | Bygger `arshjul.html` fra `src.html` (og videresendingssider for de gamle filnavnene) |
+| `index.html` | Startsiden |
 | `favicon.svg` | Ikonet |
+| `.github/workflows/pages.yml` | Bygger og publiserer nettsiden automatisk |
 
-## Bygge
+## Slik oppdateres nettsiden
+
+Hver gang noe endres på `main`, bygger GitHub appen og publiserer nettsiden på nytt. Det tar et par minutter. Fremdriften ses under **Actions**.
+
+Bygge selv:
 
 ```
 python3 build.py
 ```
 
-Det lager `dist/arshjul.html` og videresendingssidene `dist/arshjul-enkel.html` og `dist/arshjul-team.html`. På GitHub gjør arbeidsflyten dette automatisk ved hver endring. Se `CHANGELOG.md` for hva som er nytt i hver versjon.
+Det lager `dist/arshjul.html` og videresendingssidene `dist/arshjul-enkel.html` og `dist/arshjul-team.html`. Se `CHANGELOG.md` for hva som er nytt i hver versjon.
 
 ## Lisens
 
