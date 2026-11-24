@@ -21,7 +21,7 @@ Alt lagres i brukerens egen nettleser. Ingenting sendes til en server.
 
 Fra versjon 12 er det én app (`arshjul.html`). Gamle lenker til `arshjul-enkel.html` og `arshjul-team.html` sender videre dit.
 
-Vil du ha appen som én fil på maskinen din? Åpne den på nettsiden og velg *Lagre side som* i nettleseren.
+Vil du ha appen som én fil på maskinen din? Trykk **Last ned arshjul.html** på startsiden, eller hent filen under **Releases** – hver versjon har den ferdige filen vedlagt.
 
 ## Filer
 

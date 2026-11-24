@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write   # lage utgivelser (Releases) med den ferdige appfilen
   pages: write
   id-token: write
 
@@ -34,6 +34,19 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+      # Den ferdige appfilen legges ved utgivelsen for versjonen (f.eks. «Versjon 12»), så den kan lastes ned
+      # som én fil. Finnes utgivelsen fra før, byttes filen ut.
+      - name: Legg den ferdige filen ved utgivelsen
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          V=$(python3 -c "import re;print(re.search(r'VERSION = \"(\\d+)\"', open('build.py').read()).group(1))")
+          awk -v v="## Versjon $V " 'index($0,v)==1{p=1;next} /^## Versjon /{if(p)exit} p' CHANGELOG.md > notes.md
+          if gh release view "v$V" >/dev/null 2>&1; then
+            gh release upload "v$V" dist/arshjul.html --clobber
+          else
+            gh release create "v$V" dist/arshjul.html --title "Versjon $V" --notes-file notes.md --target "$GITHUB_SHA"
+          fi
 
   publiser:
     needs: bygg

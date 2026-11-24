@@ -16,6 +16,7 @@
   - Kalenderfiler: «samme dato hver måned» fra Outlook blir nå hentet inn (`BYMONTHDAY`), også med helgeflytting. Nedlastet kalenderfil skriver regelen slik at Outlook viser de samme datoene – også siste dag i korte måneder og fredag før helg.
   - Månedlige oppgaver du har fra før, er «Samme ukedag» som før.
 - Byggeskriptet lager `dist/arshjul.html` og videresendingssidene. Nettsiden på GitHub har én app i stedet for to valg.
+- Last ned som fil: startsiden har lenken **Last ned arshjul.html**, og den ferdige filen legges automatisk ved hver versjon under *Releases* på GitHub – ingen «Lagre side som» lenger.
 
 ## Versjon 11 – 22. november 2026
 **Nytt i begge utgaver: ikon, tydelig utgave og tryggere henting fra kalender**
