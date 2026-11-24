@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="no">
 <!--
-  Årshjul – versjon __VERSION__ (__EDITION__)
+  Årshjul – versjon __VERSION__
   Copyright (c) 2026 A. Lindbach
   Lisens: MIT – fri bruk, endring og deling, også kommersielt, så lenge denne merknaden følger med.
   Programvaren leveres «som den er», uten garantier av noe slag. Full lisenstekst: LICENSE.
@@ -9,7 +9,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Årshjul<!--@team--> Team<!--@/team--></title>
+<title>Årshjul</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='31' fill='%231f4e79'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23ffffff' stroke-opacity='.22' stroke-width='11'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%235aa0e6' stroke-width='11' stroke-dasharray='34 86' transform='rotate(-70 32 32)'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23f59e0b' stroke-width='11' stroke-dasharray='22 98' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23f472b6' stroke-width='11' stroke-dasharray='14 106' transform='rotate(150 32 32)'/%3E%3Cpath d='M32 3v24' stroke='%23fbbf24' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
   :root{
@@ -209,7 +209,7 @@
 </head>
 <body>
 <header>
-  <h1><svg class="logo" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="31" fill="#1f4e79"/><circle cx="32" cy="32" r="19" fill="none" stroke="#ffffff" stroke-opacity=".22" stroke-width="11"/><circle cx="32" cy="32" r="19" fill="none" stroke="#5aa0e6" stroke-width="11" stroke-dasharray="34 86" transform="rotate(-70 32 32)"/><circle cx="32" cy="32" r="19" fill="none" stroke="#f59e0b" stroke-width="11" stroke-dasharray="22 98" transform="rotate(45 32 32)"/><circle cx="32" cy="32" r="19" fill="none" stroke="#f472b6" stroke-width="11" stroke-dasharray="14 106" transform="rotate(150 32 32)"/><path d="M32 3v24" stroke="#fbbf24" stroke-width="5" stroke-linecap="round"/></svg><span>Årshjul<!--@team--> Team<!--@/team--></span></h1>
+  <h1><svg class="logo" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="31" fill="#1f4e79"/><circle cx="32" cy="32" r="19" fill="none" stroke="#ffffff" stroke-opacity=".22" stroke-width="11"/><circle cx="32" cy="32" r="19" fill="none" stroke="#5aa0e6" stroke-width="11" stroke-dasharray="34 86" transform="rotate(-70 32 32)"/><circle cx="32" cy="32" r="19" fill="none" stroke="#f59e0b" stroke-width="11" stroke-dasharray="22 98" transform="rotate(45 32 32)"/><circle cx="32" cy="32" r="19" fill="none" stroke="#f472b6" stroke-width="11" stroke-dasharray="14 106" transform="rotate(150 32 32)"/><path d="M32 3v24" stroke="#fbbf24" stroke-width="5" stroke-linecap="round"/></svg><span>Årshjul</span></h1>
   <nav class="tabs" id="tabs" role="tablist" aria-label="Dine årshjul"></nav>
   <div class="hright">
     <span class="yearnav">
@@ -240,8 +240,7 @@
         <button id="wheelBtn" data-card><b>Dette årshjulet</b><small>Navn eller slett</small></button>
         <button id="catsBtn" data-card><b>Kategorier</b><small>Navn og farger</small></button>
         <button id="ringsBtn" data-card><b>Ringer</b><small>Antall og navn</small></button>
-        <!--@enkel--><button id="dataBtn" data-card><b>Sikkerhetskopi</b><small>Lagre eller hente inn alt</small></button><!--@/enkel-->
-        <!--@team--><button id="dataBtn" data-card><b>Eksport og import</b><small>Dele og slå sammen</small></button><!--@/team-->
+        <button id="dataBtn" data-card><b>Sikkerhetskopi og deling</b><small>Lagre, hente inn og slå sammen</small></button>
         <button id="icsBtn" data-card><b>Hent fra kalender</b><small>Enkeltavtaler og møteinnkallinger (.ics)</small></button>
       </div>
       <div class="btnrow" style="margin-top:12px"><button id="closeSettings">Lukk</button></div>
@@ -319,14 +318,8 @@
     </div>
 
     <div class="card" id="dataCard">
-      <!--@team-->
-      <h3>Eksport og import</h3>
-      <p class="sub" style="margin:0 0 12px">Lagre alt – oppgaver, kategorier og ringer – i en datafil, eller hent inn en fil. Import slår sammen med det du har, så to personer kan dele samme fil.</p>
-      <!--@/team-->
-      <!--@enkel-->
-      <h3>Sikkerhetskopi</h3>
-      <p class="sub" style="margin:0 0 12px">Lagre alt – oppgaver, kategorier og ringer – i en fil på maskinen din. Filen kan hentes inn igjen senere, eller på en annen maskin.</p>
-      <!--@/enkel-->
+      <h3>Sikkerhetskopi og deling</h3>
+      <p class="sub" style="margin:0 0 12px">Lagre alt – oppgaver, kategorier og ringer – i en fil på maskinen din. Filen kan hentes inn igjen senere, på en annen maskin, eller deles med andre som bruker samme årshjul.</p>
       <div class="exportwhich">
         <label class="inline"><input type="radio" name="exportWhich" value="one" checked> <span id="exportOneLabel">Dette årshjulet</span></label>
         <label class="inline"><input type="radio" name="exportWhich" value="all"> <span id="exportAllLabel">Alle årshjul</span></label>
@@ -338,26 +331,16 @@
       </div>
       <div id="importChoice" style="display:none;margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:10px">
         <div id="importInfo" style="font-size:14px;margin-bottom:10px"></div>
-        <!--@team-->
-        <div class="btnrow">
+                <div class="btnrow">
           <button class="primary" id="importMerge">Slå sammen</button>
           <button id="importReplace">Erstatt alt</button>
           <button id="importCancel">Avbryt</button>
         </div>
-        <div class="sub" style="margin:8px 0 0"><b>Slå sammen</b> beholder begges endringer – nyeste versjon av hver oppgave vinner, og slettinger følger med. <b>Erstatt alt</b> gjør årshjulene likt filen. Årshjul som ikke finnes fra før, blir lagt til som nye faner.</div>
-        <!--@/team-->
-        <!--@enkel-->
-        <div class="sub" style="margin:0 0 10px">Årshjul som finnes fra før, blir erstattet med innholdet i filen. Det som ligger der nå, forsvinner. Andre årshjul i filen blir lagt til som nye faner.</div>
-        <div class="btnrow">
-          <button class="primary" id="importReplace">Erstatt med filen</button>
-          <button id="importCancel">Avbryt</button>
-        </div>
-        <!--@/enkel-->
-      </div>
+        <div class="sub" style="margin:8px 0 0"><b>Slå sammen</b> beholder det du har og legger til det som er nytt i filen – er samme oppgave endret begge steder, vinner den nyeste. Bruk det når dere deler et årshjul. <b>Erstatt alt</b> gjør årshjulene helt like filen – bruk det når du vil gjenopprette fra en sikkerhetskopi. Årshjul som ikke finnes fra før, blir lagt til som nye faner.</div>
+              </div>
       <div class="err" id="dataErr" style="margin-top:10px"></div>
       <div class="sub" id="dataMsg" style="margin:10px 0 0;color:var(--ink)"></div>
-      <!--@team-->
-      <details style="margin-top:12px;font-size:13px;color:var(--muted)">
+            <details style="margin-top:12px;font-size:13px;color:var(--muted)">
         <summary style="cursor:pointer">Slik deler to personer samme årshjul</summary>
         <ol style="padding-left:18px;margin:8px 0 0">
           <li>Før du starter: importer den nyeste filen fra den andre («Slå sammen»).</li>
@@ -366,8 +349,7 @@
         </ol>
         <p style="margin:6px 0 0">Har dere endret hver deres oppgaver samtidig, beholdes begge. Har dere endret <i>samme</i> oppgave, vinner den som ble endret sist.</p>
       </details>
-      <!--@/team-->
-      <div class="btnrow" style="margin-top:12px"><button id="closeData">Lukk</button></div>
+            <div class="btnrow" style="margin-top:12px"><button id="closeData">Lukk</button></div>
     </div>
 
     <div class="card" id="icsCard">
@@ -469,14 +451,27 @@
               <option value="yearly">Hvert år</option>
             </select>
           </label>
+          <label id="fModeWrap">Hver måned på
+            <select id="fMonthMode">
+              <option value="weekday">Samme ukedag</option>
+              <option value="date">Samme dato</option>
+            </select>
+          </label>
+        </div>
+        <div class="row" id="fMonthRow">
           <label id="fNthWrap">Hvilken i måneden
             <select id="fNth">
               <option value="1">Første</option><option value="2">Andre</option><option value="3">Tredje</option>
               <option value="4">Fjerde</option><option value="-1">Siste</option>
             </select>
           </label>
+          <label id="fMonthDayWrap">Dato
+            <select id="fMonthDay"></select>
+          </label>
+          <span></span>
         </div>
-        <div>
+        <label class="inline" id="fWeekendWrap"><input type="checkbox" id="fWeekend"> Flytt til fredag før hvis datoen er lørdag eller søndag</label>
+        <div id="fDaysWrap">
           <div class="flabel">Ukedag <span id="fDaysHint">(valgfritt – uten ukedag gjelder oppgaven hele uka)</span></div>
           <div class="days" id="fDays">
             <button type="button" data-d="1">Man</button><button type="button" data-d="2">Tir</button><button type="button" data-d="3">Ons</button>
@@ -538,7 +533,8 @@
     <ul>
       <li><b>Gjentakelse:</b> velg hver uke, hver 2., 3. eller 4. uke, hver måned eller hvert år.</li>
       <li><b>Ukedag:</b> klikk på dagene oppgaven gjelder, for eksempel <b>Tir</b> for ledermøtet. Da kan du også fylle inn klokkeslett.</li>
-      <li><b>Hver måned:</b> velg ukedag og hvilken i måneden – for eksempel <i>første tirsdag i måneden</i> eller <i>siste fredag i måneden</i>.</li>
+      <li><b>Hver måned:</b> velg <b>Samme ukedag</b> for for eksempel <i>første tirsdag i måneden</i> eller <i>siste fredag i måneden</i>, eller <b>Samme dato</b> for for eksempel <i>den 20. hver måned</i> eller <i>siste dag i måneden</i>.</li>
+      <li><b>Samme dato:</b> finnes ikke datoen i en måned (for eksempel den 31. i april), brukes siste dag i måneden. Kryss av for <b>Flytt til fredag før</b> hvis det som skjer på datoen – for eksempel lønnskjøring – flyttes til fredagen før når datoen er en lørdag eller søndag. Helligdager er ikke med.</li>
       <li>Under skjemaet ser du hvordan regelen blir, og hvor mange ganger den gjentas.</li>
       <li><b>Faste møter</b> (hver uke eller hver måned) vises som små streker i en smal stripe rett innenfor ukenumrene. Klikk på en strek for å se den uka.</li>
     </ul>
@@ -604,26 +600,23 @@
       <li>Avtalene blir hendelser uten avkrysning. Vil du krysse dem av, krysser du av for <b>Skal krysses av</b> før du legger dem inn.</li>
       <li>Klokkeslett vises i norsk tid, også for møter som er satt opp i en annen tidssone.</li>
       <li>Henter du samme fil igjen senere, blir avtaler som er endret, oppdatert – du får ikke dobbelt opp.</li>
-      <li>Noen gjentakelser kan ikke vises i årshjulet, for eksempel «den 15. hver måned» eller «hver 3. dag». De står i en egen liste, så du ser hva som ikke ble med.</li>
+      <li>Noen gjentakelser kan ikke vises i årshjulet, for eksempel «hver 2. måned» eller «hver 3. dag». De står i en egen liste, så du ser hva som ikke ble med.</li>
     </ul>
 
-    <!--@enkel-->
     <h3>Hvor lagres oppgavene?</h3>
     <p>Oppgavene lagres automatisk i nettleseren på denne maskinen. Ingenting sendes til andre. Det betyr også at oppgavene kan forsvinne hvis noen tømmer nettleserens data.</p>
-    <p><b>Ta en sikkerhetskopi av og til:</b> <b>Innstillinger → Sikkerhetskopi → Lagre sikkerhetskopi</b>. Du velger om du vil lagre årshjulet du har åpent, eller alle årshjulene. Filen kan hentes inn igjen senere, eller på en annen maskin. Hvert årshjul havner da i sin egen fane.</p>
+    <p><b>Ta en sikkerhetskopi av og til:</b> <b>Innstillinger → Sikkerhetskopi og deling → Lagre sikkerhetskopi</b>. Du velger om du vil lagre årshjulet du har åpent, eller alle årshjulene. Filen kan hentes inn igjen senere, eller på en annen maskin, med <b>Hent inn fra fil → Erstatt alt</b>. Hvert årshjul havner da i sin egen fane.</p>
     <p><b>Hvor havner filen?</b> I Chrome og Edge får du et «Lagre som»-vindu der du velger mappe selv, for eksempel OneDrive. Neste gang foreslås samme mappe. I andre nettlesere havner filen der nettleseren lagrer nedlastinger. Vil du velge sted også der, kan du slå på at nettleseren skal spørre hvor filer skal lagres. Det finner du i nettleserens innstillinger under <b>Nedlastinger</b>.</p>
-    <!--@/enkel-->
-    <!--@team-->
+
     <h3>Dele årshjulet med andre</h3>
     <ol>
-      <li>Før du starter: hent inn den nyeste filen fra de andre under <b>Innstillinger → Eksport og import</b>, og velg <b>Slå sammen</b>.</li>
+      <li>Før du starter: hent inn den nyeste filen fra de andre under <b>Innstillinger → Sikkerhetskopi og deling → Hent inn fra fil</b>, og velg <b>Slå sammen</b>.</li>
       <li>Gjør endringene dine.</li>
       <li>Trykk <b>Lagre sikkerhetskopi</b> og del filen, for eksempel i en felles mappe.</li>
     </ol>
     <p>Endringer fra flere personer blir slått sammen. Har to endret samme oppgave, vinner den som ble endret sist.</p>
     <p>Hvert årshjul har sin egen ID. Når du henter inn en fil, havner hvert årshjul i sin egen fane – så teamets hjul og HRs hjul blandes aldri.</p>
-    <!--@/team-->
-
+    
     <div class="foot" id="helpFoot"></div>
   </div>
 </div>
@@ -631,9 +624,7 @@
 <script>
 (() => {
   /* ---------------- Edition & version (filled in by build.py) ---------------- */
-  const EDITION = "__EDITION__";            // "enkel" or "team"
-  const TEAM = EDITION === "team";
-  const APP_NAME = TEAM ? "Årshjul Team" : "Årshjul";   // shown in the header and the browser tab
+  const APP_NAME = "Årshjul";              // shown in the header and the browser tab
   const VERSION = "__VERSION__";
 
   /* ---------------- Constants ---------------- */
@@ -788,6 +779,9 @@
     return {...t, weekFrom: from, weekTo: to, ring: Math.max(0, Math.min(3, t.ring || 0)), todo, done: todo && !!t.done,
       rep: repv, recurring: repv === "yearly", interval: Math.max(1, Math.min(4, +t.interval || 1)), days,
       nth: [1,2,3,4,-1].includes(+t.nth) ? +t.nth : 1, timeFrom: tf, timeTo: tt,
+      // monthly on the same date (version 12): 1–31, -1 = last day of the month; 0 = "same weekday" (n-th weekday)
+      monthDay: repv === "monthly" && (+t.monthDay === -1 || (+t.monthDay >= 1 && +t.monthDay <= 31)) ? +t.monthDay : 0,
+      weekendShift: !!t.weekendShift,
       doneDates: t.doneDates && typeof t.doneDates === "object" ? t.doneDates : {}};
   }
   const tasksOfYear = y => state.tasks.filter(t => t.year === y).map(norm);
@@ -797,7 +791,8 @@
       done:!!t.done, todo: t.todo !== false, recurring: repv === "yearly", seriesId:t.seriesId || null, createdAt:t.createdAt || Date.now(),
       completedAt:t.completedAt || null, updatedAt: Date.now(),
       rep: repv, interval: t.interval || 1, days: t.days || [], nth: t.nth || 1,
-      timeFrom: t.timeFrom || "", timeTo: t.timeTo || "", doneDates: t.doneDates || {}, icsUid: t.icsUid || null};
+      timeFrom: t.timeFrom || "", timeTo: t.timeTo || "", doneDates: t.doneDates || {}, icsUid: t.icsUid || null,
+      monthDay: repv === "monthly" ? (+t.monthDay || 0) : 0, weekendShift: repv === "monthly" && !!t.monthDay && !!t.weekendShift};
   }
   // the date of the n-th (1–4, or -1 = last) weekday d (1–7) in month m of year y
   function nthWeekday(y, m, d, nth){
@@ -808,6 +803,14 @@
     const last = utc(y, m + 1, 1) - DAY, dow = (new Date(last).getUTCDay() + 6) % 7 + 1;
     return last - ((dow - d + 7) % 7) * DAY;
   }
+  // Day md (1–31, -1 = last) of month m; a date the month does not have becomes its last day.
+  // With shift, a Saturday or Sunday moves back to the Friday before.
+  function monthDayDate(y, m, md, shift){
+    const last = new Date(utc(y, m + 1, 1) - DAY).getUTCDate();
+    let dt = utc(y, m, md === -1 ? last : Math.min(md, last));
+    if (shift){ const dow = (new Date(dt).getUTCDay() + 6) % 7 + 1; if (dow > 5) dt -= (dow - 5) * DAY; }
+    return dt;
+  }
   // The week a date belongs to in year y. Dates at the very start/end of the calendar year that ISO places
   // in the neighbouring year (e.g. 1–3 Jan 2027 = week 53 of 2026) count as week 1 / the last week of y.
   function weekInYear(ms, y){ const iw = isoWeekOf(ms); return iw.year === y ? iw.week : (iw.year < y ? 1 : weeksInYear(y)); }
@@ -815,7 +818,7 @@
   // (memoised per task version, since the wheel, panel and summary all ask for them)
   const occCache = new Map();
   function occurrences(t){
-    const sig = [t.id, t.year, t.rep, t.interval, t.nth, t.weekFrom, t.weekTo, t.days.join("")].join("|");
+    const sig = [t.id, t.year, t.rep, t.interval, t.nth, t.weekFrom, t.weekTo, t.days.join(""), t.monthDay || 0, t.weekendShift ? 1 : 0].join("|");
     if (occCache.has(sig)) return occCache.get(sig);
     const y = t.year, out = [];
     if (t.rep === "weekly"){
@@ -830,6 +833,13 @@
           if (week < t.weekFrom || week > t.weekTo || (week - t.weekFrom) % t.interval) continue;
           out.push({key: dateKey(dt), date: dt, week, day: d});
         }
+      }
+    } else if (t.rep === "monthly" && t.monthDay){
+      for (let m = 0; m < 12; m++){
+        const dt = monthDayDate(y, m, t.monthDay, t.weekendShift);
+        if (dt < yearStart(y) || dt >= yearStart(y + 1)) continue;   // e.g. moved back into last year
+        const week = weekInYear(dt, y);
+        if (week >= t.weekFrom && week <= t.weekTo) out.push({key: dateKey(dt), date: dt, week, day: (new Date(dt).getUTCDay() + 6) % 7 + 1});
       }
     } else if (t.rep === "monthly"){
       const days = t.days.length ? t.days : [1];
@@ -852,6 +862,9 @@
       const every = t.interval === 1 ? "Hver" : `Hver ${t.interval}. uke:`;
       if (!t.days.length) return (t.interval === 1 ? "Hver uke" : `Hver ${t.interval}. uke`) + tm;
       return t.interval === 1 ? `Hver ${daysText(t.days)}${tm}` : `${every} ${daysText(t.days)}${tm}`;
+    }
+    if (t.rep === "monthly" && t.monthDay){
+      return (t.monthDay === -1 ? "Siste dag i måneden" : `Den ${t.monthDay}. hver måned`) + (t.weekendShift ? " (fredag før hvis helg)" : "") + tm;
     }
     if (t.rep === "monthly"){
       const n = NTH_NAMES[t.nth]; const days = t.days.length ? t.days : [1];
@@ -1568,14 +1581,20 @@
 
   /* repeats in the form: Gjentakelse, Hvilken i måneden, Ukedag, Fra/Til kl. */
   let formDays = new Set();
+  $("fMonthDay").innerHTML = Array.from({length: 31}, (_, i) => `<option value="${i + 1}">${i + 1}.</option>`).join("") + `<option value="-1">Siste dag</option>`;
+  const dateMode = () => $("fRep").value === "monthly" && $("fMonthMode").value === "date";
   function readRule(){
-    const v = $("fRep").value, repv = v.startsWith("w") ? "weekly" : v;
-    return {rep: repv, interval: repv === "weekly" ? +v.slice(1) : 1, days: [...formDays].sort((a, b) => a - b),
-      nth: +$("fNth").value, timeFrom: formDays.size ? $("fTimeFrom").value : "", timeTo: formDays.size ? $("fTimeTo").value : ""};
+    const v = $("fRep").value, repv = v.startsWith("w") ? "weekly" : v, byDate = dateMode(), timed = byDate || formDays.size;
+    return {rep: repv, interval: repv === "weekly" ? +v.slice(1) : 1, days: byDate ? [] : [...formDays].sort((a, b) => a - b),
+      nth: +$("fNth").value, monthDay: byDate ? +$("fMonthDay").value : 0, weekendShift: byDate && $("fWeekend").checked,
+      timeFrom: timed ? $("fTimeFrom").value : "", timeTo: timed ? $("fTimeTo").value : ""};
   }
   function writeRule(t){                   // t: a normalised task, or null for an empty form
     $("fRep").value = !t || t.rep === "none" ? "none" : t.rep === "weekly" ? "w" + t.interval : t.rep;
     $("fNth").value = String(t ? t.nth : 1);
+    $("fMonthMode").value = t && t.monthDay ? "date" : "weekday";
+    $("fMonthDay").value = String(t && t.monthDay ? t.monthDay : 1);
+    $("fWeekend").checked = !!(t && t.weekendShift);
     formDays = new Set(t ? t.days : []);
     $("fTimeFrom").value = t ? t.timeFrom : ""; $("fTimeTo").value = t ? t.timeTo : "";
     $("fErr").textContent = "";
@@ -1584,12 +1603,18 @@
   function renderRuleControls(){
     const r = readRule(), series = r.rep === "weekly" || r.rep === "monthly";
     $("fDays").querySelectorAll("button").forEach(b => { const on = formDays.has(+b.dataset.d); b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
-    $("fNthWrap").style.visibility = r.rep === "monthly" ? "" : "hidden";
-    $("fTimeRow").style.display = formDays.size ? "" : "none";
+    const monthly = r.rep === "monthly", byDate = dateMode();
+    $("fModeWrap").style.visibility = monthly ? "" : "hidden";
+    $("fMonthRow").style.display = monthly ? "" : "none";
+    $("fNthWrap").style.display = monthly && !byDate ? "" : "none";
+    $("fMonthDayWrap").style.display = byDate ? "" : "none";
+    $("fWeekendWrap").style.display = byDate ? "" : "none";
+    $("fDaysWrap").style.display = byDate ? "none" : "";
+    $("fTimeRow").style.display = formDays.size || byDate ? "" : "none";
     $("fRingWrap").style.visibility = series ? "hidden" : "";
     $("fDaysHint").textContent = r.rep === "monthly" ? "(velg minst én)" : "(valgfritt – uten ukedag gjelder oppgaven hele uka)";
     let hint = "";
-    if (r.rep === "monthly" && !formDays.size) hint = "Velg ukedag – for eksempel tirsdag for «første tirsdag i måneden».";
+    if (r.rep === "monthly" && !byDate && !formDays.size) hint = "Velg ukedag – for eksempel tirsdag for «første tirsdag i måneden».";
     else if (series || formDays.size){
       const tmp = norm({year: state.year, weekFrom: +$("fFrom").value || 1, weekTo: +$("fTo").value || 1, ...r});
       hint = ruleText(tmp);
@@ -1607,7 +1632,7 @@
     if ((r.rep === "weekly" || r.rep === "monthly") && $("fFrom").value === $("fTo").value) $("fTo").value = String(weeksInYear(state.year));
     $("fErr").textContent = ""; renderRuleControls();
   };
-  ["fNth", "fTimeFrom", "fTimeTo"].forEach(id => $(id).addEventListener("change", renderRuleControls));
+  ["fNth", "fTimeFrom", "fTimeTo", "fMonthMode", "fMonthDay", "fWeekend"].forEach(id => $(id).addEventListener("change", renderRuleControls));
 
   /* new category inline in the task form */
   let newColor = null;
@@ -1663,7 +1688,7 @@
     let from = +$("fFrom").value, to = +$("fTo").value;
     if (from > to) [from, to] = [to, from];
     const rule = readRule(), fErr = m => { $("fErr").textContent = m; };
-    if (rule.rep === "monthly" && !rule.days.length) return fErr("Velg ukedag for månedlig gjentakelse – for eksempel tirsdag.");
+    if (rule.rep === "monthly" && !rule.monthDay && !rule.days.length) return fErr("Velg ukedag for månedlig gjentakelse – for eksempel tirsdag.");
     if (rule.timeTo && !rule.timeFrom) return fErr("Fyll inn fra-klokkeslett, eller ta bort til-klokkeslettet.");
     if (rule.timeTo && rule.timeTo < rule.timeFrom) return fErr("Til-klokkeslettet må være etter fra-klokkeslettet.");
     fErr("");
@@ -1970,8 +1995,10 @@
       .sort((a,b) => a.weekFrom - b.weekFrom || a.weekTo - b.weekTo || a.title.localeCompare(b.title, "no"))
       .map(t => {
         const ty = typeById(t.typeId);
-        const dayTime = t.days.length ? t.days.map(d => DAY_SHORT[d-1]).join(", ") + (t.timeFrom ? ` ${t.timeFrom}${t.timeTo ? "–" + t.timeTo : ""}` : "") : "";
+        const tmTxt = t.timeFrom ? `${t.timeFrom}${t.timeTo ? "–" + t.timeTo : ""}` : "";
+        const dayTime = t.days.length ? t.days.map(d => DAY_SHORT[d-1]).join(", ") + (tmTxt ? " " + tmTxt : "") : (t.monthDay ? tmTxt : "");
         const repTxt = t.rep === "weekly" ? (t.interval === 1 ? "Hver uke" : `Hver ${t.interval}. uke`)
+                     : t.rep === "monthly" && t.monthDay ? ruleText(t, true)
                      : t.rep === "monthly" ? `${NTH_NAMES[t.nth][0].toUpperCase() + NTH_NAMES[t.nth].slice(1)} ${t.days.map(d => DAY_NAMES[d-1]).join("/")} i måneden`
                      : t.rep === "yearly" ? "Hvert år" : "";
         let status = t.done ? "Fullført" : "Ikke fullført", doneDate = t.done && t.completedAt ? fmtLocalDate(t.completedAt) : "";
@@ -2038,9 +2065,8 @@
     let seen = false; try { seen = localStorage.getItem(HELP_KEY) === "1"; } catch(e){}
     if (!seen && state.tasks.length === 0) openHelp();
   }
-  const editionLabel = TEAM ? "Årshjul Team" : "Årshjul enkel";
-  $("helpFoot").textContent = `${editionLabel} · versjon ${VERSION} · © 2026 A. Lindbach · MIT-lisens`;
-  $("verLabel").textContent = `${editionLabel} · versjon ${VERSION} · © 2026 A. Lindbach · MIT-lisens`;
+  $("helpFoot").textContent = `${APP_NAME} · versjon ${VERSION} · © 2026 A. Lindbach · MIT-lisens`;
+  $("verLabel").textContent = `${APP_NAME} · versjon ${VERSION} · © 2026 A. Lindbach · MIT-lisens`;
 
   /* ---------------- Calendar files (.ics) ---------------- */
   // Reading: only VEVENT. Appointments marked Privat (CLASS:PRIVATE) or Konfidensiell (CLASS:CONFIDENTIAL) are
@@ -2210,17 +2236,39 @@
     } else if (freq === "MONTHLY"){
       if (interval > 1) return {fail: `gjentas hver ${interval}. måned – årshjulet kan bare gjenta hver måned`, title};
       let nth, days;
-      if (byday.length && byday.every(x => x.n)){ nth = byday[0].n; if (byday.some(x => x.n !== nth)) return {fail: "gjentakelsen er for sammensatt", title}; days = byday.map(x => x.d); }
+      const bmd = r.BYMONTHDAY ? r.BYMONTHDAY.split(",").map(Number) : [];
+      const isWeekdays = byday.length === 5 && byday.every(x => !x.n && x.d <= 5);
+      const sorted = bmd.slice().sort((p, q) => p - q);
+      const run = sorted.every((x, i) => !i || x === sorted[i - 1] + 1) && (sorted[0] > 0 || sorted[sorted.length - 1] === -1);
+      const lastPos = r.BYSETPOS === "-1";
+      // the same date every month: BYMONTHDAY=20; "the 20th, or the last day if the month is shorter": a run of days
+      // with BYSETPOS=-1; with BYDAY=MO–FR as well: "the 20th, or the Friday before if it is a weekend" (as this app writes it)
+      if (bmd.length && (!byday.length || isWeekdays) && (bmd.length === 1 ? !byday.length || lastPos : run && lastPos && sorted.length <= 6)){
+        const shift = byday.length > 0, md = sorted[sorted.length - 1];
+        if (!(md === -1 || (md >= 1 && md <= 31))) return {fail: "gjentakelsen kunne ikke leses", title};
+        const sd = new Date(s.date);
+        for (let yy = sd.getUTCFullYear(), mm = sd.getUTCMonth(); utc(yy, mm, 1) <= limit && (!count || n < count); mm++){
+          if (mm > 11){ mm = 0; yy++; }
+          const lastDay = new Date(utc(yy, mm + 1, 1) - DAY).getUTCDate();
+          // RFC 5545: dates the month does not have are skipped; BYSETPOS=-1 takes the last that is left
+          const cand = sorted.map(x => x < 0 ? lastDay + 1 + x : x).filter(x => x >= 1 && x <= lastDay).map(x => utc(yy, mm, x)).filter(d => !shift || dowOf(d) <= 5);
+          if (cand.length) add(cand[cand.length - 1]);
+        }
+        rule = {rep: "monthly", interval: 1, days: [], nth: 1, monthDay: md, weekendShift: shift};
+      } else if (bmd.length) return {fail: "gjentas på flere datoer i måneden – årshjulet kan bare én dato", title};
+      else if (byday.length && byday.every(x => x.n)){ nth = byday[0].n; if (byday.some(x => x.n !== nth)) return {fail: "gjentakelsen er for sammensatt", title}; days = byday.map(x => x.d); }
       else if (byday.length && r.BYSETPOS && byday.length === 1){ nth = +r.BYSETPOS; days = [byday[0].d]; }
-      else return {fail: "gjentas på samme dato hver måned – årshjulet kan gjenta for eksempel «første tirsdag»", title};
-      if (![1,2,3,4,-1].includes(nth)) return {fail: "gjentakelsen kunne ikke leses", title};
-      days = [...new Set(days)].sort((p, q) => p - q);
-      const sd = new Date(s.date);
-      for (let yy = sd.getUTCFullYear(), mm = sd.getUTCMonth(); utc(yy, mm, 1) <= limit && (!count || n < count); mm++){
-        if (mm > 11){ mm = 0; yy++; }
-        days.map(d => nthWeekday(yy, mm, d, nth)).sort((p, q) => p - q).forEach(add);
+      else return {fail: "gjentakelsen er for sammensatt", title};
+      if (!rule){
+        if (![1,2,3,4,-1].includes(nth)) return {fail: "gjentakelsen kunne ikke leses", title};
+        days = [...new Set(days)].sort((p, q) => p - q);
+        const sd = new Date(s.date);
+        for (let yy = sd.getUTCFullYear(), mm = sd.getUTCMonth(); utc(yy, mm, 1) <= limit && (!count || n < count); mm++){
+          if (mm > 11){ mm = 0; yy++; }
+          days.map(d => nthWeekday(yy, mm, d, nth)).sort((p, q) => p - q).forEach(add);
+        }
+        rule = {rep: "monthly", interval: 1, days, nth};
       }
-      rule = {rep: "monthly", interval: 1, days, nth};
     } else if (freq === "YEARLY"){
       if (interval > 1 || r.BYDAY || r.BYMONTHDAY) return {fail: "gjentakelsen er for sammensatt", title};
       const sd = new Date(s.date);
@@ -2292,7 +2340,7 @@
   $("icsBigStop").onclick = () => { icsPending = null; $("icsBig").style.display = "none"; $("icsPreview").style.display = "none"; };
   $("icsYear").onchange = () => renderIcsPreview();
   $("icsCancel").onclick = () => { icsPending = null; $("icsPreview").style.display = "none"; $("icsBig").style.display = "none"; icsErr(""); };
-  const sameRule = (a, b) => ["title","rep","interval","nth","weekFrom","weekTo","timeFrom","timeTo"].every(k => a[k] === b[k]) && a.days.join() === b.days.join();
+  const sameRule = (a, b) => ["title","rep","interval","nth","weekFrom","weekTo","timeFrom","timeTo","monthDay","weekendShift"].every(k => a[k] === b[k]) && a.days.join() === b.days.join();
   let icsRows = [];
   function renderIcsPreview(){
     if (!icsPending) return;
@@ -2390,6 +2438,21 @@
   const VTZ_OSLO = ["BEGIN:VTIMEZONE","TZID:Europe/Oslo","BEGIN:DAYLIGHT","TZOFFSETFROM:+0100","TZOFFSETTO:+0200","TZNAME:CEST",
     "DTSTART:19700329T020000","RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU","END:DAYLIGHT","BEGIN:STANDARD","TZOFFSETFROM:+0200",
     "TZOFFSETTO:+0100","TZNAME:CET","DTSTART:19701025T030000","RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU","END:STANDARD","END:VTIMEZONE"];
+  // "Den 20. hver måned" → BYMONTHDAY=20. A date that not every month has (29–31) is written as a run of days
+  // with BYSETPOS=-1, so short months get their last day (as in the wheel) instead of being skipped.
+  // With the weekend shift, BYDAY=MO–FR is added: the last weekday of the run – the date, or the Friday before.
+  // (For the 1st and 2nd the Friday before lies in the previous month, which a calendar rule cannot say –
+  // those are written without the shift.)
+  function monthDayRule(t){
+    const md = t.monthDay, shift = t.weekendShift && !(md > 0 && md < 3);
+    const range = (a, b) => Array.from({length: b - a + 1}, (_, i) => a + i).join(",");
+    let set;
+    if (md === -1) set = shift ? "-3,-2,-1" : "-1";
+    else if (md >= 29) set = range(shift ? 26 : 28, md);
+    else set = shift ? range(md - 2, md) : String(md);
+    const multi = set.includes(",");
+    return `FREQ=MONTHLY;BYMONTHDAY=${set}` + (shift ? ";BYDAY=MO,TU,WE,TH,FR" : "") + (multi ? ";BYSETPOS=-1" : "");
+  }
   function buildIcs(y, withDone){
     const now = icsUtc(Date.now()), lines = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Arshjul//Arshjul " + VERSION + "//NO","CALSCALE:GREGORIAN",
       "METHOD:PUBLISH", "X-WR-CALNAME:" + icsEsc(`${wheelName()} ${y}`), ...VTZ_OSLO];
@@ -2404,6 +2467,7 @@
         const occ = occurrences(t); if (!occ.length) continue;
         dates = occ.map(o => o.day ? o.date : mondayOfWeek(y, o.week));
         rrule = t.rep === "weekly" ? `FREQ=WEEKLY;INTERVAL=${t.interval}` + (t.days.length ? `;BYDAY=${codes}` : "")
+              : t.monthDay ? monthDayRule(t)
               : `FREQ=MONTHLY;BYDAY=${(t.days.length ? t.days : [1]).map(d => t.nth + BYDAY_CODES[d - 1]).join(",")}`;
       } else if (t.days.length){
         for (let w = t.weekFrom; w <= t.weekTo; w++) for (const d of t.days){
@@ -2424,7 +2488,7 @@
         ev.push(`DTSTART;VALUE=DATE:${icsD(a)}`, `DTEND;VALUE=DATE:${icsD(b)}`, "TRANSP:TRANSPARENT");
       } else {
         const first = dates[0], lastD = dates[dates.length - 1], weekLong = t.rep === "weekly" && !t.days.length;
-        if (t.timeFrom && t.days.length){
+        if (t.timeFrom && (t.days.length || t.monthDay)){
           ev.push(`DTSTART;TZID=Europe/Oslo:${icsD(first)}T${t.timeFrom.replace(":", "")}00`, `DTEND;TZID=Europe/Oslo:${icsD(first)}T${timeEnd(t.timeFrom, t.timeTo).replace(":", "")}00`);
           if (rrule) rrule += `;UNTIL=${icsUtc(osloUtc(lastD, t.timeFrom))}`;
         } else {
@@ -2558,7 +2622,7 @@
     const when = d.exportedAt ? new Date(d.exportedAt).toLocaleString("no-NO", {dateStyle:"medium", timeStyle:"short"}) : "ukjent tid";
     const lines = packages.map((p, i) => {
       const t = targets[i], n = p.tasks.filter(r => !r.deleted).length, label = esc(p.wheel ? p.wheel.name : wheelName());
-      const what = t.kind === "existing" ? (TEAM ? "finnes fra før" : "erstatter det du har")
+      const what = t.kind === "existing" ? "finnes fra før"
                  : t.kind === "adopt" ? "legges inn i dette tomme hjulet"
                  : t.kind === "current" ? `legges inn i «${esc(wheelName())}» (eldre fil uten hjulnavn)`
                  : "blir en ny fane";
@@ -2619,9 +2683,9 @@
     const showId = count > 1 && state.wheels.some(w => w.id === startId) ? startId : firstId;
     if (state.wheel.id !== showId) await openWheel(showId);
     gotoYear(state.year);
-    const word = {existing: TEAM ? (mode === "replace" ? "erstattet" : "slått sammen") : "erstattet", adopt: "hentet inn", current: TEAM && mode !== "replace" ? "slått sammen" : "erstattet", new: "ny fane"};
+    const word = {existing: mode === "replace" ? "erstattet" : "slått sammen", adopt: "hentet inn", current: mode !== "replace" ? "slått sammen" : "erstattet", new: "ny fane"};
     setTimeout(() => {
-      dataMsg("Hentet inn: " + done.map(x => `«${x.name}» (${word[x.kind]}${TEAM && x.kind === "existing" && mode !== "replace" && !x.changes ? ", ingenting nytt" : ""})`).join(", ") + ".");
+      dataMsg("Hentet inn: " + done.map(x => `«${x.name}» (${word[x.kind]}${x.kind === "existing" && mode !== "replace" && !x.changes ? ", ingenting nytt" : ""})`).join(", ") + ".");
       // warn (don't block) if a merge broke the category rules in the wheel that is shown
       const types = allTypes(), warn = [];
       if (types.length > MAX_CATS) warn.push(`«${wheelName()}» har nå ${types.length} kategorier (maks ${MAX_CATS})`);
@@ -2631,11 +2695,8 @@
       if (warn.length) dataErr("Obs: " + warn.join("; ") + ". Rydd under «Kategorier».");
     }, db ? 600 : 0);
   }
-  /*@team*/
-  $("importMerge").onclick = () => runImport("merge");
-  /*@/team*/
-  $("importReplace").onclick = () => {
-    if (!TEAM) return runImport("replace");
+    $("importMerge").onclick = () => runImport("merge");
+    $("importReplace").onclick = () => {
     const b = $("importReplace");
     if (b.dataset.confirm !== "1"){ b.dataset.confirm = "1"; b.textContent = "Bekreft – erstatt alt"; setTimeout(() => { b.dataset.confirm = ""; b.textContent = "Erstatt alt"; }, 4000); return; }
     b.dataset.confirm = ""; b.textContent = "Erstatt alt";

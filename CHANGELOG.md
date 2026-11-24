@@ -1,6 +1,21 @@
 # Årshjul – endringslogg
 
-Begge utgavene (enkel og team) bygges fra `src.html` med `python3 build.py`.
+Årshjulet bygges fra `src.html` med `python3 build.py`. Fra versjon 12 er det én utgave; versjon 6–11 fantes som «enkel» og «team».
+
+## Versjon 12 – 24. november 2026
+**Én felles versjon, og samme dato hver måned**
+- Enkel og team er slått sammen til én app: **Årshjul** (`arshjul.html`). Den kan alt begge kunne.
+  - Oppgavene blir liggende når du bytter fil – samme lagring og samme dataformat som før.
+  - Gamle lenker og bokmerker til `arshjul-enkel.html` og `arshjul-team.html` sender deg videre til `arshjul.html`.
+  - Innstillinger → **Sikkerhetskopi og deling**: lagre sikkerhetskopi, og hent inn fra fil med **Slå sammen** (når dere deler et årshjul) eller **Erstatt alt** (når du gjenoppretter). Teksten forklarer når du bruker hva.
+  - Hjelpen har både «Hvor lagres oppgavene?» og «Dele årshjulet med andre».
+- Hver måned på **samme dato**, f.eks. lønnskjøring den 20. Under «Hver måned» velger du **Samme ukedag** (som før, f.eks. første tirsdag) eller **Samme dato** (1.–31. eller siste dag i måneden).
+  - En dato som ikke finnes i en måned (f.eks. den 31. i april) blir siste dag i måneden.
+  - **Flytt til fredag før hvis datoen er lørdag eller søndag** (av som standard). Helligdager er ikke med.
+  - Klokkeslett, merker i hjulet, avkrysning per gang, ukesoversikt og tabell virker som for de andre faste oppgavene.
+  - Kalenderfiler: «samme dato hver måned» fra Outlook blir nå hentet inn (`BYMONTHDAY`), også med helgeflytting. Nedlastet kalenderfil skriver regelen slik at Outlook viser de samme datoene – også siste dag i korte måneder og fredag før helg.
+  - Månedlige oppgaver du har fra før, er «Samme ukedag» som før.
+- Byggeskriptet lager `dist/arshjul.html` og videresendingssidene. Nettsiden på GitHub har én app i stedet for to valg.
 
 ## Versjon 11 – 22. november 2026
 **Nytt i begge utgaver: ikon, tydelig utgave og tryggere henting fra kalender**

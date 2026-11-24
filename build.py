@@ -1,35 +1,39 @@
 #!/usr/bin/env python3
-"""Bygger de to utgavene av årshjulet fra én felles kildefil.
+"""Bygger årshjulet fra kildefilen.
 
-    python3 build.py            -> dist/arshjul-enkel.html og dist/arshjul-team.html
+    python3 build.py            -> dist/arshjul.html
 
-Merking i src.html:
-  HTML:      <!--@team--> ... <!--@/team-->     <!--@enkel--> ... <!--@/enkel-->
-  JS / CSS:  /*@team*/ ... /*@/team*/           /*@enkel*/ ... /*@/enkel*/
-Blokker for den andre utgaven fjernes helt; merkene for egen utgave fjernes.
-Plassholdere: __EDITION__ (enkel/team) og __VERSION__.
+Fra versjon 12 finnes det bare én utgave (enkel og team er slått sammen).
+Byggeskriptet lager i tillegg to små videresendingssider med de gamle filnavnene
+(arshjul-enkel.html og arshjul-team.html), så gamle lenker og bokmerker fortsatt virker.
+Plassholder i src.html: __VERSION__.
 """
 import re, sys, pathlib
 
-VERSION = "11"
-EDITIONS = ("enkel", "team")
+VERSION = "12"
 HERE = pathlib.Path(__file__).resolve().parent
+OLD_NAMES = ("arshjul-enkel.html", "arshjul-team.html")
+
+REDIRECT = """<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<title>Årshjul</title>
+<meta http-equiv="refresh" content="0; url=arshjul.html">
+<script>location.replace("arshjul.html" + location.hash);</script>
+</head>
+<body>
+<p>Årshjulet har flyttet til <a href="arshjul.html">arshjul.html</a>. Oppgavene dine ligger der fortsatt.</p>
+</body>
+</html>
+"""
 
 
-def build(src: str, edition: str) -> str:
-    out = src
-    for other in EDITIONS:
-        if other == edition:
-            # keep the content, drop only the markers
-            out = re.sub(rf"<!--@{other}-->\n?|<!--@/{other}-->\n?", "", out)
-            out = re.sub(rf"/\*@{other}\*/\n?|/\*@/{other}\*/\n?", "", out)
-        else:
-            out = re.sub(rf"[ \t]*<!--@{other}-->.*?<!--@/{other}-->\n?", "", out, flags=re.S)
-            out = re.sub(rf"[ \t]*/\*@{other}\*/.*?/\*@/{other}\*/\n?", "", out, flags=re.S)
-    out = out.replace("__EDITION__", edition).replace("__VERSION__", VERSION)
-    leftovers = re.findall(r"<!--@/?\w+-->|/\*@/?\w+\*/|__EDITION__|__VERSION__", out)
+def build(src: str) -> str:
+    out = src.replace("__VERSION__", VERSION)
+    leftovers = re.findall(r"<!--@/?\w+-->|/\*@/?\w+\*/|__(?:VERSION|EDITION)__", out)
     if leftovers:
-        sys.exit(f"Uparrede merker i {edition}: {leftovers[:5]}")
+        sys.exit(f"Rester av gamle merker eller plassholdere: {leftovers[:5]}")
     return out
 
 
@@ -37,11 +41,12 @@ def main():
     src = (HERE / "src.html").read_text(encoding="utf-8")
     dist = HERE / "dist"
     dist.mkdir(exist_ok=True)
-    for ed in EDITIONS:
-        html = build(src, ed)
-        path = dist / f"arshjul-{ed}.html"
-        path.write_text(html, encoding="utf-8")
-        print(f"{path.name}: {len(html):,} tegn")
+    html = build(src)
+    (dist / "arshjul.html").write_text(html, encoding="utf-8")
+    print(f"arshjul.html: {len(html):,} tegn")
+    for name in OLD_NAMES:
+        (dist / name).write_text(REDIRECT, encoding="utf-8")
+    print("videresending: " + ", ".join(OLD_NAMES))
 
 
 if __name__ == "__main__":

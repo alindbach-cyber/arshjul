@@ -2,10 +2,8 @@
 
 Et årshjul for oppgaver som fungerer rett i nettleseren. Året vises som en sirkel med måneder, uker og aktivitetsringer.
 
-**Bruk det her:** https://alindbach-cyber.github.io/arshjul/
-
 - Oppgaver på uker, med kategorier og farger
-- Gjentakelser (hver uke, hver måned, hvert år), ukedag og klokkeslett
+- Gjentakelser (hver uke, hver måned på samme ukedag eller samme dato, hvert år), ukedag og klokkeslett
 - Gjøremål som krysses av, og hendelser som bare vises
 - Statistikk over fullførte og ikke-fullførte oppgaver
 - Flytt oppgaver frem og tilbake
@@ -17,34 +15,27 @@ Alt lagres i brukerens egen nettleser. Ingenting sendes til en server.
 
 ## Bruk
 
-Åpne nettsiden og velg utgave:
+Åpne nettsiden og trykk **Åpne årshjulet**. Samme app passer både for én person og for flere som deler et årshjul: sikkerhetskopi til fil, og innhenting som enten slår sammen endringer eller erstatter alt.
 
-- **Årshjul enkel** – for én person, med sikkerhetskopi til fil
-- **Årshjul Team** – for flere, med eksport og import som slår sammen endringer
-
-Vil du ha appen som én fil på maskinen din? Åpne den på nettsiden og velg *Lagre side som* i nettleseren.
+Fra versjon 12 er det én app (`arshjul.html`). Gamle lenker til `arshjul-enkel.html` og `arshjul-team.html` sender videre dit.
 
 ## Filer
 
 | Fil | Hva |
 | --- | --- |
-| `src.html` | Felles kildefil for begge utgavene |
-| `build.py` | Bygger `arshjul-enkel.html` og `arshjul-team.html` fra `src.html` |
 | `index.html` | Startsiden med valg av utgave |
+| `arshjul.html` | Den ferdige appen (bygges fra `src.html`) |
+| `src.html` | Kildefilen |
+| `build.py` | Bygger `arshjul.html` (og videresendingssider for de gamle filnavnene) |
 | `favicon.svg` | Ikonet |
-| `.github/workflows/pages.yml` | Bygger og publiserer nettsiden automatisk |
 
-## Slik oppdateres nettsiden
-
-Hver gang noe endres på `main`, bygger GitHub begge utgavene og publiserer nettsiden på nytt. Det tar et par minutter. Fremdriften ses under **Actions**.
-
-Bygge selv:
+## Bygge
 
 ```
 python3 build.py
 ```
 
-Det lager `dist/arshjul-enkel.html` og `dist/arshjul-team.html`. Se `CHANGELOG.md` for hva som er nytt i hver versjon.
+Det lager `dist/arshjul.html` og videresendingssidene `dist/arshjul-enkel.html` og `dist/arshjul-team.html`. På GitHub gjør arbeidsflyten dette automatisk ved hver endring. Se `CHANGELOG.md` for hva som er nytt i hver versjon.
 
 ## Lisens
 

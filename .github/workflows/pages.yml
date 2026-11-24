@@ -1,4 +1,4 @@
-# Bygger enkel- og team-utgaven fra src.html og publiserer nettsiden på GitHub Pages.
+# Bygger årshjulet fra src.html og publiserer nettsiden på GitHub Pages.
 # Kjører hver gang noe endres på main, og kan startes for hånd under Actions.
 name: Bygg og publiser
 
@@ -24,12 +24,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Bygg begge utgavene
+      - name: Bygg årshjulet
         run: python3 build.py
       - name: Sett sammen nettsiden
         run: |
           mkdir -p _site
-          cp dist/arshjul-enkel.html dist/arshjul-team.html _site/
+          cp dist/arshjul.html dist/arshjul-enkel.html dist/arshjul-team.html _site/
           cp index.html favicon.svg _site/
       - uses: actions/upload-pages-artifact@v3
         with:
