@@ -692,7 +692,7 @@
     ringsUpdatedAt: 0,
     wheel: null,                      // {id, name} – the årshjul that is open
     wheels: [],                       // all årshjul
-    cloud: false,
+    /*@claude*/cloud: false,/*@/claude*/
     rings: DEFAULT_RINGS.slice(),
     hidden: new Set(),
     editId: null,
@@ -730,8 +730,8 @@
       return `<button type="button" class="sw ${conflict ? 'used' : ''} ${c === selected ? 'sel' : ''}" data-c="${c}" style="background:${c}"
         title="${conflict ? 'Brukes av ' + esc(conflict.name) : 'Velg farge'}" ${conflict ? 'aria-disabled="true"' : ''}></button>`;
     }).join("");
-    const custom = selected && !PALETTE.includes(selected) ? selected : "#888888";
-    h += `<input type="color" class="sw-custom" value="${custom}" title="Egen farge">`;
+    const custom = selected && !PALETTE.includes(selected) ? safeColor(selected) : "#888888";
+    h += `<input type="color" class="sw-custom" value="${esc(custom)}" title="Egen farge">`;
     return h;
   }
   function wireSwatches(container, exceptId, onPick, onError){
@@ -879,18 +879,63 @@
   // Every record carries updatedAt. Deletions are kept as small "tombstones" ({id, deleted:true, updatedAt})
   // so that a deletion travels with an export and wins over an older copy when two files are merged.
   const stamp = r => r.updatedAt || r.createdAt || 0;
+  /* ---------------- Cleaning of data from outside (version 13) ----------------
+     Everything that comes from a file (import) is checked field by field: wrong types are corrected, unknown fields
+     dropped, colours must be "#rrggbb". The same light check runs every time data is loaded, so data saved by an
+     older version – or a manipulated backup imported before version 13 – can never end up as code in the page. */
+  const HEX_RE = /^#[0-9a-f]{6}$/i;
+  const NO_COLOR = "#9ca3af";
+  const safeColor = c => typeof c === "string" && HEX_RE.test(c) ? c.toLowerCase() : NO_COLOR;
+  const ID_RE = /^[A-Za-z0-9_.~:@+-]{1,200}$/;
+  const okId = v => typeof v === "string" && ID_RE.test(v);
+  const cleanStr = (v, max) => (typeof v === "string" ? v : typeof v === "number" && Number.isFinite(v) ? String(v) : "").replace(/[\u0000-\u001f\u007f]/g, " ").slice(0, max);
+  const cleanInt = (v, lo, hi, def) => { const n = Number(v); return v !== null && v !== "" && Number.isFinite(n) ? Math.min(hi, Math.max(lo, Math.round(n))) : def; };
+  const cleanTime = v => { const n = Number(v); return Number.isFinite(n) && n > 0 && n < 8.64e15 ? n : 0; };
+  const DONE_KEY_RE = /^(\d{4}-\d{2}-\d{2}|w\d{1,2})$/;
+  function importTask(r){                   // one task (or deletion marker) from a file → a clean record, or null
+    if (!r || typeof r !== "object" || !okId(r.id)) return null;
+    if (r.deleted) return {id: r.id, deleted: true, updatedAt: cleanTime(r.updatedAt)};
+    const rep = ["weekly","monthly","yearly","none"].includes(r.rep) ? r.rep : (r.recurring ? "yearly" : "none");
+    const t = {id: r.id, title: cleanStr(r.title, 120).trim() || "(uten tittel)", typeId: okId(r.typeId) ? r.typeId : "",
+      ring: cleanInt(r.ring, 0, 3, 0), year: cleanInt(r.year, 1900, 2200, THIS_YEAR),
+      done: r.done === true, todo: r.todo !== false, recurring: rep === "yearly", seriesId: okId(r.seriesId) ? r.seriesId : null,
+      createdAt: cleanTime(r.createdAt) || Date.now(), completedAt: cleanTime(r.completedAt) || null, updatedAt: cleanTime(r.updatedAt),
+      rep, interval: cleanInt(r.interval, 1, 4, 1),
+      days: [...new Set((Array.isArray(r.days) ? r.days : []).map(Number).filter(d => Number.isInteger(d) && d >= 1 && d <= 7))].sort((a, b) => a - b),
+      nth: [1,2,3,4,-1].includes(Number(r.nth)) ? Number(r.nth) : 1,
+      timeFrom: TIME_RE.test(r.timeFrom) ? r.timeFrom : "", timeTo: TIME_RE.test(r.timeTo) ? r.timeTo : "",
+      doneDates: {}, icsUid: cleanStr(r.icsUid, 300) || null,
+      monthDay: Number(r.monthDay) === -1 ? -1 : cleanInt(r.monthDay, 0, 31, 0), weekendShift: r.weekendShift === true};
+    // older files have a month instead of weeks
+    if (r.weekFrom != null || r.weekTo != null){ t.weekFrom = cleanInt(r.weekFrom, 1, 53, 1); t.weekTo = cleanInt(r.weekTo, 1, 53, t.weekFrom); }
+    else t.month = cleanInt(r.month, 0, 11, 0);
+    if (r.doneDates && typeof r.doneDates === "object" && !Array.isArray(r.doneDates))
+      Object.keys(r.doneDates).filter(k => DONE_KEY_RE.test(k)).slice(0, 800).forEach(k => { const v = cleanTime(r.doneDates[k]); if (v) t.doneDates[k] = v; });
+    return t;
+  }
+  function importType(r){                   // one category (or deletion marker) from a file
+    if (!r || typeof r !== "object" || !okId(r.id)) return null;
+    if (r.deleted) return {id: r.id, deleted: true, updatedAt: cleanTime(r.updatedAt)};
+    return {id: r.id, name: cleanStr(r.name, 40).trim() || "Kategori", color: HEX_RE.test(r.color) ? r.color.toLowerCase() : null,   // null: given a free colour below
+      createdAt: cleanTime(r.createdAt) || Date.now(), updatedAt: cleanTime(r.updatedAt)};
+  }
+  const cleanRings = rings => (Array.isArray(rings) ? rings : []).slice(0, 4).map((r, i) => cleanStr(r, 30).trim() || DEFAULT_RINGS[i]);
   function syncLive(){
-    state.tasks = state.taskRecs.filter(r => !r.deleted);
-    state.customTypes = state.typeRecs.filter(r => !r.deleted);
+    // light check on every load: text stays text, colours stay colours (see above)
+    state.tasks = state.taskRecs.filter(r => r && !r.deleted).map(r => typeof r.title === "string" ? r : {...r, title: cleanStr(r.title, 120)});
+    state.customTypes = state.typeRecs.filter(r => r && !r.deleted)
+      .map(r => typeof r.name === "string" && HEX_RE.test(r.color) ? r : {...r, name: cleanStr(r.name, 40) || "Kategori", color: safeColor(r.color)});
   }
 
-  /* ---------------- Storage: Claude db when available, else this browser ---------------- */
-  // Several årshjul ("wheels"), each {id, name, createdAt}.
-  //  - Standalone file: the list in localStorage, each wheel's data under its own key.
-  //  - Inside Claude: the list in the db document "settings/wheels". The first wheel ("root") keeps its data
-  //    where earlier versions stored it (tasks, types, settings/main) – nothing is moved. Other wheels live
-  //    under w/<id>/tasks, w/<id>/types and w/<id>/settings/main.
-  const LS_OLD = "arshjul.v1", LS_WHEELS = "arshjul.wheels", LS_CUR = "arshjul.current", LS_CLOUD_CUR = "arshjul.cloud.current";
+  /* ---------------- Storage: this browser ---------------- */
+  // Several årshjul ("wheels"), each {id, name, createdAt}: the list in localStorage, each wheel's data under its own key.
+  /*@claude*/
+  // Claude edition (arshjul-claude.html, built from the parts marked @claude): the list in the db document
+  // "settings/wheels". The first wheel ("root") keeps its data where earlier versions stored it (tasks, types,
+  // settings/main) – nothing is moved. Other wheels live under w/<id>/tasks, w/<id>/types and w/<id>/settings/main.
+  /*@/claude*/
+  const LS_OLD = "arshjul.v1", LS_WHEELS = "arshjul.wheels", LS_CUR = "arshjul.current";
+  /*@claude*/const LS_CLOUD_CUR = "arshjul.cloud.current";/*@/claude*/
   const MAX_WHEELS = 20;
   const dataKey = id => "arshjul.w." + id;
   const lsGet = k => { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch(e){ return null; } };
@@ -902,7 +947,7 @@
     while (state.wheels.some(w => w.id !== exceptId && sameName(w.name, name))) name = `${name0} (${n++})`;
     return name;
   }
-  let db = null;
+  /*@claude*/let db = null;/*@/claude*/
   function resetWheelState(){
     state.taskRecs = []; state.typeRecs = []; state.rings = DEFAULT_RINGS.slice(); state.ringsUpdatedAt = 0;
     state.hidden = new Set(); state.editId = null; syncLive();
@@ -933,8 +978,8 @@
       resetWheelState();
       const d = lsGet(dataKey(w.id));
       if (d){
-        state.taskRecs = d.tasks || []; state.typeRecs = d.types || [];
-        if (d.rings && d.rings.length){ state.rings = d.rings; state.ringsUpdatedAt = d.ringsUpdatedAt || 0; }
+        state.taskRecs = Array.isArray(d.tasks) ? d.tasks : []; state.typeRecs = Array.isArray(d.types) ? d.types : [];
+        if (Array.isArray(d.rings) && d.rings.length){ state.rings = cleanRings(d.rings); state.ringsUpdatedAt = d.ringsUpdatedAt || 0; }
         syncLive();
       }
     },
@@ -944,10 +989,12 @@
     },
     save(){
       if (!state.wheel) return;
-      lsSet(dataKey(state.wheel.id), {tasks:state.taskRecs, types:state.typeRecs, rings:state.rings, ringsUpdatedAt:state.ringsUpdatedAt});
+      if (!lsSet(dataKey(state.wheel.id), {tasks:state.taskRecs, types:state.typeRecs, rings:state.rings, ringsUpdatedAt:state.ringsUpdatedAt}))
+        setStatus("Endringen kunne ikke lagres – lagringsplassen i nettleseren kan være full. Ta en sikkerhetskopi.");
     }
   };
 
+  /*@claude*/
   const cloud = {
     registry: null,      // list from settings/wheels (null until the first wheel is created or renamed)
     legacy: null,        // settings/wheel: name and id of the first wheel, as earlier versions stored it
@@ -1023,81 +1070,88 @@
     if (w) state.wheel = {...w};
     else if (list.length) openWheel(list[0].id).then(() => gotoYear(state.year));   // removed on another device
   }
+  /*@/claude*/
   function readWheelData(w){
     if (state.wheel && w.id === state.wheel.id) return Promise.resolve({tasks: state.taskRecs, types: state.typeRecs, settings: {rings: state.rings, updatedAt: state.ringsUpdatedAt || 0}});
-    return db ? cloud.readData(w) : Promise.resolve(local.readData(w.id));
+    /*@claude*/if (db) return cloud.readData(w);/*@/claude*/
+    return Promise.resolve(local.readData(w.id));
   }
   // open a wheel; resolves when its data is loaded
   function openWheel(id){
     const w = state.wheels.find(x => x.id === id); if (!w) return Promise.resolve();
-    if (!db){ local.open(id); return Promise.resolve(); }
-    return cloud.open(w);
+    /*@claude*/if (db) return cloud.open(w);/*@/claude*/
+    local.open(id); return Promise.resolve();
   }
 
   function handleWriteError(e){
-    if (e && e.code === "invalid_argument"){ state.readOnly = true; setStatus("Du har bare lesetilgang til dette årshjulet."); render(); }
-    else if (e && e.code === "quota_exceeded") setStatus("Lagringsplassen er full – slett noen gamle oppgaver.");
+    /*@claude*/if (e && e.code === "invalid_argument"){ state.readOnly = true; setStatus("Du har bare lesetilgang til dette årshjulet."); render(); return; }/*@/claude*/
+    if (e && e.code === "quota_exceeded") setStatus("Lagringsplassen er full – slett noen gamle oppgaver.");
     else setStatus("Kunne ikke lagre endringen. Prøv igjen.");
   }
   const upsert = (arr, rec) => { const i = arr.findIndex(x => x.id === rec.id); if (i >= 0) arr[i] = rec; else arr.push(rec); };
-  async function writeRec(coll, rec){       // one record into the open wheel → db or local arrays (no render)
-    if (db){ await db.collection(cloud.prefix(state.wheel) + coll).doc(rec.id).set(rec); return; }
+  async function writeRec(coll, rec){       // one record into the open wheel (no render)
+    /*@claude*/if (db){ await db.collection(cloud.prefix(state.wheel) + coll).doc(rec.id).set(rec); return; }/*@/claude*/
     upsert(coll === "tasks" ? state.taskRecs : state.typeRecs, rec);
+  }
+  // after a write to this browser: save and redraw
+  function savedLocally(){
+    /*@claude*/if (db) return;   // Claude edition: the live update saves and redraws/*@/claude*/
+    syncLive(); local.save(); render();
   }
   const store = {
     async putTask(t){
       try { await writeRec("tasks", stripTask(t)); } catch(e){ handleWriteError(e); return; }
-      if (!db){ syncLive(); local.save(); render(); }
+      savedLocally();
     },
     async putTasks(list){                    // many at once (calendar import): one save and one redraw
       try { for (const t of list) await writeRec("tasks", stripTask(t)); } catch(e){ handleWriteError(e); }
-      if (!db){ syncLive(); local.save(); render(); }
+      savedLocally();
     },
     async deleteTask(id){
       try { await writeRec("tasks", {id, deleted:true, updatedAt: Date.now()}); } catch(e){ handleWriteError(e); return; }
-      if (!db){ syncLive(); local.save(); render(); }
+      savedLocally();
     },
     async putType(ty){
-      ty = {id: ty.id, name: ty.name, color: ty.color, createdAt: ty.createdAt || Date.now(), updatedAt: Date.now()};
+      ty = {id: ty.id, name: ty.name, color: safeColor(ty.color), createdAt: ty.createdAt || Date.now(), updatedAt: Date.now()};
       try { await writeRec("types", ty); } catch(e){ handleWriteError(e); return false; }
-      if (!db){ syncLive(); local.save(); render(); }
+      savedLocally();
       return true;
     },
     async deleteType(id){
       try { await writeRec("types", {id, deleted:true, updatedAt: Date.now()}); } catch(e){ handleWriteError(e); return; }
-      if (!db){ syncLive(); local.save(); render(); }
+      savedLocally();
     },
     async putRings(rings, updatedAt){
       const at = updatedAt || Date.now();
-      if (db){ try { await db.doc(cloud.prefix(state.wheel) + "settings/main").set({rings, updatedAt: at}); } catch(e){ handleWriteError(e); } }
-      else { state.rings = rings; state.ringsUpdatedAt = at; local.save(); render(); }
+      /*@claude*/if (db){ try { await db.doc(cloud.prefix(state.wheel) + "settings/main").set({rings, updatedAt: at}); } catch(e){ handleWriteError(e); } return; }/*@/claude*/
+      state.rings = rings; state.ringsUpdatedAt = at; local.save(); render();
     },
     // ----- the list of wheels -----
     async createWheel(name, id){
       const w = {id: id || newWheelId(), name, createdAt: Date.now()};
-      if (db){ try { await cloud.persist([...state.wheels, w]); } catch(e){ handleWriteError(e); return null; } }
-      else local.setList([...local.list(), w]);
+      /*@claude*/if (db){ try { await cloud.persist([...state.wheels, w]); } catch(e){ handleWriteError(e); return null; } return w; }/*@/claude*/
+      local.setList([...local.list(), w]);
       return w;
     },
     async renameWheel(id, name){
       const list = state.wheels.map(w => w.id === id ? {...w, name} : w);
-      if (db){ try { await cloud.persist(list); } catch(e){ handleWriteError(e); return false; } }
-      else { local.setList(list.map(({id, name, createdAt}) => ({id, name, createdAt}))); }
+      /*@claude*/if (db){ try { await cloud.persist(list); } catch(e){ handleWriteError(e); return false; } } else/*@/claude*/
+      { local.setList(list.map(({id, name, createdAt}) => ({id, name, createdAt}))); }
       if (state.wheel && state.wheel.id === id) state.wheel.name = name;
       render(); return true;
     },
     async deleteWheel(id){
       const w = state.wheels.find(x => x.id === id); if (!w || state.wheels.length < 2) return false;
       const rest = state.wheels.filter(x => x.id !== id);
-      if (db){ try { await cloud.wipe(w); await cloud.persist(rest); } catch(e){ handleWriteError(e); return false; } }
-      else { local.setList(rest.map(({id, name, createdAt}) => ({id, name, createdAt}))); try { localStorage.removeItem(dataKey(id)); } catch(e){} }
+      /*@claude*/if (db){ try { await cloud.wipe(w); await cloud.persist(rest); } catch(e){ handleWriteError(e); return false; } return true; }/*@/claude*/
+      local.setList(rest.map(({id, name, createdAt}) => ({id, name, createdAt}))); try { localStorage.removeItem(dataKey(id)); } catch(e){}
       return true;
     },
     // an empty wheel takes over the name and id of an imported file
     async adoptIdentity(oldId, newId, name){
       const list = state.wheels.map(w => w.id === oldId ? {...w, id: newId, name, unsaved: false} : w);
-      if (db){ try { await cloud.persist(list); } catch(e){ handleWriteError(e); return false; } }
-      else {
+      /*@claude*/if (db){ try { await cloud.persist(list); } catch(e){ handleWriteError(e); return false; } } else/*@/claude*/
+      {
         const d = lsGet(dataKey(oldId));
         local.setList(list.map(({id, name, createdAt}) => ({id, name, createdAt})));
         if (d) lsSet(dataKey(newId), d);
@@ -1112,18 +1166,24 @@
       let n = 0;
       for (const r of typeRecs){ await writeRec("types", r); n++; }
       for (const r of taskRecs){ await writeRec("tasks", r); n++; }
-      if (!db){ syncLive(); local.save(); render(); }
+      savedLocally();
       return n;
     }
   };
 
   async function initStore(){
-    let d = null;
+    /*@claude*/
     if (window.claude && typeof window.claude.use === "function"){
       render();
+      let d = null;
       try { d = await window.claude.use("db"); } catch(e){ d = null; }
+      if (d) return initCloud(d);
     }
-    if (!d){ local.init(); render(); setStatus("Lagres i denne nettleseren."); maybeShowHelpFirstTime(); return; }
+    /*@/claude*/
+    local.init(); render(); setStatus("Lagres i denne nettleseren."); maybeShowHelpFirstTime();
+  }
+  /*@claude*/
+  function initCloud(d){
     db = d;
     state.cloud = true;
     setStatus("Henter årshjul …");
@@ -1151,6 +1211,7 @@
       seen.leg = true; afterMeta();
     }, () => { seen.leg = true; afterMeta(); });
   }
+  /*@/claude*/
 
   /* ---------------- Wheel geometry ---------------- */
   const C = 360, R_OUT = 344, R_MONTH_IN = 314, R_WEEK_IN = 288, R_HUB = 92, RING_GAP = 3;
@@ -1774,8 +1835,8 @@
   const isEmptyWheel = () => state.taskRecs.length === 0 && state.typeRecs.length === 0;   // nothing at all, not even deletions
   const wErr = m => { $("wheelErr").textContent = m || ""; };
   const wMsg = m => { $("wheelMsg").textContent = m || ""; };
-  async function ensureWheel(){            // Claude: the first wheel gets a stored id the first time it is needed
-    if (db && state.wheel && state.wheel.unsaved){ try { await cloud.persist(state.wheels); } catch(e){ handleWriteError(e); } }
+  async function ensureWheel(){
+    /*@claude*/if (db && state.wheel && state.wheel.unsaved){ try { await cloud.persist(state.wheels); } catch(e){ handleWriteError(e); } }   // the first wheel gets a stored id the first time it is needed/*@/claude*/
     return state.wheel;
   }
   async function switchWheel(id){
@@ -2516,6 +2577,7 @@
 
   /* ---------------- Export / import ---------------- */
   const FILE_APP = "arshjul";
+  const IMPORT_MAX_BYTES = 10 * 1024 * 1024, IMPORT_MAX_TASKS = 20000, IMPORT_MAX_TYPES = 500;
   const dataErr = m => { $("dataErr").textContent = m || ""; };
   const dataMsg = m => { $("dataMsg").textContent = m || ""; };
   $("dataBtn").onclick = () => { const c = $("dataCard"); c.classList.toggle("show"); dataErr(""); dataMsg(""); renderDataCard(); };
@@ -2539,10 +2601,10 @@
   let lastSavedName = "";
   const savedAs = (res, name) => res === "picked" ? lastSavedName : name;
   async function saveFile(filename, text, mime = "application/json"){
-    const inClaude = !!(window.claude && typeof window.claude.use === "function");
+    /*@claude*/const inClaude = !!(window.claude && typeof window.claude.use === "function");/*@/claude*/
     // Standalone file in Chrome/Edge: a normal "Save as" window where the user picks folder and file name.
     // The window remembers the last folder per file type (id). Other browsers fall back to a normal download.
-    if (!inClaude && typeof window.showSaveFilePicker === "function"){
+    if (/*@claude*/!inClaude && /*@/claude*/typeof window.showSaveFilePicker === "function"){
       const ext = filename.slice(filename.lastIndexOf("."));
       const desc = {".json": "Sikkerhetskopi av årshjul", ".png": "Bilde (PNG)", ".csv": "Tabell for Excel (CSV)", ".ics": "Kalenderfil"}[ext] || "Fil";
       try {
@@ -2558,7 +2620,8 @@
         // anything else (blocked by policy etc.): fall back to a normal download below
       }
     }
-    // Inside Claude: the downloads capability. Otherwise: a normal browser download.
+    /*@claude*/
+    // Claude edition: the downloads capability
     if (inClaude){
       let dl = null; try { dl = await window.claude.use("downloads"); } catch(e){}
       if (dl){
@@ -2566,6 +2629,8 @@
         catch(e){ if (e && e.code === "declined") return "declined"; if (e && e.code === "rate_limited") return "busy"; }
       }
     }
+    /*@/claude*/
+    // a normal browser download
     const url = URL.createObjectURL(text instanceof Blob ? text : new Blob([text], {type: mime}));
     const a = document.createElement("a"); a.href = url; a.download = filename;
     document.body.appendChild(a); a.click(); a.remove();
@@ -2604,15 +2669,29 @@
     dataErr(""); dataMsg("");
     const f = e.target.files[0]; if (!f) return;
     e.target.value = "";                    // so picking the same file again works
+    if (f.size > IMPORT_MAX_BYTES) return dataErr("Filen er for stor til å være en sikkerhetskopi fra årshjulet.");
     let d;
     try { d = JSON.parse(await f.text()); } catch(_){ return dataErr("Filen kunne ikke leses. Er det en sikkerhetskopi fra årshjulet?"); }
-    if (!d || d.app !== FILE_APP) return dataErr("Dette ser ikke ut som en sikkerhetskopi fra årshjulet.");
-    const clean = arr => (Array.isArray(arr) ? arr : []).filter(r => r && typeof r.id === "string" && r.id.length < 200);
-    const pack = x => ({
-      wheel: x.wheel && typeof x.wheel.id === "string" && /^[A-Za-z0-9_.~:@+-]{1,60}$/.test(x.wheel.id) ? {id: x.wheel.id, name: String(x.wheel.name || "Årshjul").slice(0,40)} : null,
-      tasks: clean(x.tasks), types: clean(x.types), settings: x.settings || null});
+    if (!d || typeof d !== "object" || d.app !== FILE_APP) return dataErr("Dette ser ikke ut som en sikkerhetskopi fra årshjulet.");
+    // every record is checked field by field (version 13); what cannot be used is left out
+    // a category whose colour was not a valid colour code gets a palette colour no other category in the file uses
+    const withColors = types => types.map((t, i) => {
+      if (t.deleted || t.color) return t;
+      const taken = types.filter((o, j) => j !== i && !o.deleted && o.color).map(o => o.color);
+      const color = PALETTE.find(c => taken.every(o => colorDist(o, c) >= MIN_COLOR_DIST)) || NO_COLOR;
+      t.color = color; return t;
+    });
+    const clean = (arr, fn, max) => (Array.isArray(arr) ? arr : []).slice(0, max).map(fn).filter(Boolean);
+    const pack = x => {
+      const s = x.settings && typeof x.settings === "object" ? x.settings : null;
+      return {
+        wheel: x.wheel && typeof x.wheel.id === "string" && /^[A-Za-z0-9_.~:@+-]{1,60}$/.test(x.wheel.id)
+          ? {id: x.wheel.id, name: cleanStr(x.wheel.name, 40).trim() || "Årshjul"} : null,
+        tasks: clean(x.tasks, importTask, IMPORT_MAX_TASKS), types: withColors(clean(x.types, importType, IMPORT_MAX_TYPES)),
+        settings: s && Array.isArray(s.rings) && s.rings.length ? {rings: cleanRings(s.rings), updatedAt: cleanTime(s.updatedAt)} : null};
+    };
     let packages;
-    if (Array.isArray(d.wheels)) packages = d.wheels.filter(x => x && Array.isArray(x.tasks) && Array.isArray(x.types)).map(pack);
+    if (Array.isArray(d.wheels)) packages = d.wheels.slice(0, MAX_WHEELS).filter(x => x && Array.isArray(x.tasks) && Array.isArray(x.types)).map(pack);
     else if (Array.isArray(d.tasks) && Array.isArray(d.types)) packages = [pack(d)];
     if (!packages || !packages.length) return dataErr("Fant ingen årshjul i filen.");
     const targets = packages.map((p, i) => importTarget(p, packages.length, i));
@@ -2693,7 +2772,7 @@
       types.forEach((a,i) => types.slice(i+1).forEach(b => { if (colorDist(a.color, b.color) < MIN_COLOR_DIST) clash.push(`«${a.name}» og «${b.name}»`); }));
       if (clash.length) warn.push(`like farger: ${clash.join(", ")}`);
       if (warn.length) dataErr("Obs: " + warn.join("; ") + ". Rydd under «Kategorier».");
-    }, db ? 600 : 0);
+    }, /*@claude*/db ? 600 : /*@/claude*/0);
   }
     $("importMerge").onclick = () => runImport("merge");
     $("importReplace").onclick = () => {

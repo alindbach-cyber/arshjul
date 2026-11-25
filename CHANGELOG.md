@@ -2,6 +2,18 @@
 
 Årshjulet bygges fra `src.html` med `python3 build.py`. Fra versjon 12 er det én utgave; versjon 6–11 fantes som «enkel» og «team».
 
+## Versjon 13 – 25. november 2026
+**Sikkerhet: tryggere innhenting av sikkerhetskopier, og ingen Claude-kode i filen som legges ut**
+- Sikkerhetskopier som hentes inn, sjekkes nå felt for felt. Tidligere ble bare ID-ene sjekket, og en manipulert sikkerhetskopi kunne få nettleseren til å kjøre kode når man åpnet fargevalget under Kategorier (funnet i en ekstern sikkerhetsgjennomgang, S01).
+  - Farger godtas bare som fargekoder (`#rrggbb`). En kategori med ugyldig farge får en ledig farge fra paletten.
+  - Navn og titler må være tekst og har en maksimal lengde. Uker, ringer, ukedager, klokkeslett og avkrysninger må ha gyldige verdier. Felt appen ikke kjenner, tas ikke med.
+  - Filer over 10 MB avvises.
+  - Den samme kontrollen kjøres hver gang data lastes. Data som ble hentet inn før versjon 13, kan derfor ikke lenger kjøre kode.
+  - Feil datatyper i en fil (f.eks. et tall der det skal stå et navn) får ikke lenger appen til å stoppe.
+  - Vanlige sikkerhetskopier hentes inn akkurat som før.
+- Blir lagringsplassen i nettleseren full, sier appen fra i stedet for å la endringen forsvinne i stillhet.
+- `arshjul.html` på nettsiden og under Releases har ikke lenger kode for Claude. Byggeskriptet lager i tillegg `dist/arshjul-claude.html` med skylagring for artefakten i Claude. Den koden er merket med `@claude` i `src.html`, og bygget stopper hvis noe av den havner i `arshjul.html`.
+
 ## Versjon 12 – 24. november 2026
 **Én felles versjon, og samme dato hver måned**
 - Enkel og team er slått sammen til én app: **Årshjul** (`arshjul.html`). Den kan alt begge kunne.

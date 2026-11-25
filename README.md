@@ -28,7 +28,7 @@ Vil du ha appen som én fil på maskinen din? Trykk **Last ned arshjul.html** p�
 | Fil | Hva |
 | --- | --- |
 | `src.html` | Kildefilen |
-| `build.py` | Bygger `arshjul.html` fra `src.html` (og videresendingssider for de gamle filnavnene) |
+| `build.py` | Bygger `arshjul.html` fra `src.html`, en egen utgave for Claude (`arshjul-claude.html`) og videresendingssider for de gamle filnavnene |
 | `index.html` | Startsiden |
 | `favicon.svg` | Ikonet |
 | `.github/workflows/pages.yml` | Bygger og publiserer nettsiden automatisk |
@@ -43,7 +43,7 @@ Bygge selv:
 python3 build.py
 ```
 
-Det lager `dist/arshjul.html` og videresendingssidene `dist/arshjul-enkel.html` og `dist/arshjul-team.html`. Se `CHANGELOG.md` for hva som er nytt i hver versjon.
+Det lager `dist/arshjul.html` (appen som legges ut), `dist/arshjul-claude.html` (samme app med skylagring i Claude) og videresendingssidene `dist/arshjul-enkel.html` og `dist/arshjul-team.html`. Kode som bare brukes i Claude, er merket med `/*@claude*/ … /*@/claude*/` i `src.html` og tas ikke med i `arshjul.html`. Se `CHANGELOG.md` for hva som er nytt i hver versjon.
 
 ## Lisens
 
