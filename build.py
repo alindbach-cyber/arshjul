@@ -12,7 +12,7 @@ Plassholder i src.html: __VERSION__.
 """
 import re, sys, pathlib
 
-VERSION = "13"
+VERSION = "14"
 HERE = pathlib.Path(__file__).resolve().parent
 OLD_NAMES = ("arshjul-enkel.html", "arshjul-team.html")
 

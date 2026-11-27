@@ -17,7 +17,7 @@ Alt lagres i brukerens egen nettleser. Ingenting sendes til en server.
 
 ## Bruk
 
-Åpne nettsiden og trykk **Åpne årshjulet**. Samme app passer både for én person og for flere som deler et årshjul: sikkerhetskopi til fil, og innhenting som enten slår sammen endringer eller erstatter alt.
+Åpne nettsiden og trykk **Åpne årshjulet**. Samme app passer både for én person og for flere som deler et årshjul: sikkerhetskopi til fil (i Chrome og Edge lagres det rett i den samme filen, også en felles fil), og innhenting som enten slår sammen endringer eller erstatter alt.
 
 Fra versjon 12 er det én app (`arshjul.html`). Gamle lenker til `arshjul-enkel.html` og `arshjul-team.html` sender videre dit.
 

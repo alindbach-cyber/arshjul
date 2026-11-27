@@ -2,6 +2,20 @@
 
 Årshjulet bygges fra `src.html` med `python3 build.py`. Fra versjon 12 er det én utgave; versjon 6–11 fantes som «enkel» og «team».
 
+## Versjon 14 – 27. november 2026
+**Sikkerhetskopien lagres i samme fil, og klikk på måned viser riktig måned**
+- **Lagre sikkerhetskopi** skriver nå over «filen du jobber i» i stedet for å lage en ny fil hver gang (Chrome og Edge). Det blir ikke lenger mange versjoner i en delt mappe.
+  - Filen du jobber i er den du sist lagret til eller hentet inn fra. Vinduet viser hvilken fil det lagres til («Lagres til: arshjul-team.json»).
+  - Første gang får du et «Lagre som»-vindu. **Lagre som ny fil …** lager en egen kopi, og den blir filen du jobber i.
+  - Når du henter inn en fil, blir den filen du jobber i. Endringene kan da lagres rett tilbake i den delte filen.
+  - Fast filnavn uten dato: `arshjul-<navn på hjulet>.json`, eller `arshjul-alle.json` for alle hjul. Tidspunktet står inne i filen og vises når du henter den inn.
+  - Har noen andre lagret i filen siden du hentet den inn eller lagret sist, sier appen fra før den lagrer: **Slå sammen og lagre** (anbefalt), **Lagre som ny fil** eller **Avbryt**.
+  - Eldre filer med dato i navnet kan hentes inn som før. Første gang du lagrer til en slik fil, spør appen om den skal lagre under det nye faste navnet. Den gamle filen blir liggende som den er.
+  - Appen husker filen også etter at nettleseren er startet på nytt. Nettleseren spør da én gang om appen fortsatt får lagre i filen. Er filen flyttet eller slettet, får du beskjed og kan lagre som ny fil.
+  - Firefox og Safari kan ikke skrive over en fil. Der lastes filen ned på nytt hver gang, men med samme navn, og vinduet sier fra om det. Claude-utgaven lagrer som før.
+  - Hjelpen er oppdatert («Hvor lagres oppgavene?» og «Dele årshjulet med andre»).
+- **Rettet:** Klikk på en måned i ytterringen viste noen ganger forrige måned (f.eks. mai, august og oktober i 2027). Det skjedde når måneden begynner midt i en uke. Nå åpnes den første uka som hører til måneden. «Fra uke» og «Til uke» dekker fortsatt hele måneden.
+
 ## Versjon 13 – 25. november 2026
 **Sikkerhet: tryggere innhenting av sikkerhetskopier, og ingen Claude-kode i filen som legges ut**
 - Sikkerhetskopier som hentes inn, sjekkes nå felt for felt. Tidligere ble bare ID-ene sjekket, og en manipulert sikkerhetskopi kunne få nettleseren til å kjøre kode når man åpnet fargevalget under Kategorier (funnet i en ekstern sikkerhetsgjennomgang, S01).

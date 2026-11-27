@@ -324,10 +324,16 @@
         <label class="inline"><input type="radio" name="exportWhich" value="one" checked> <span id="exportOneLabel">Dette årshjulet</span></label>
         <label class="inline"><input type="radio" name="exportWhich" value="all"> <span id="exportAllLabel">Alle årshjul</span></label>
       </div>
+      <div class="sub" id="linkedInfo" style="margin:0 0 10px;color:var(--ink)"></div>
       <div class="btnrow">
         <button class="primary" id="exportBtn">Lagre sikkerhetskopi</button>
+        <button id="exportNewBtn">Lagre som ny fil …</button>
         <button id="importBtn">Hent inn fra fil …</button>
         <input type="file" id="importFile" accept=".json,application/json" hidden>
+      </div>
+      <div id="saveAsk" style="display:none;margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:10px">
+        <div id="saveAskInfo" style="font-size:14px;margin-bottom:10px"></div>
+        <div class="btnrow" id="saveAskBtns"></div>
       </div>
       <div id="importChoice" style="display:none;margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:10px">
         <div id="importInfo" style="font-size:14px;margin-bottom:10px"></div>
@@ -343,11 +349,11 @@
             <details style="margin-top:12px;font-size:13px;color:var(--muted)">
         <summary style="cursor:pointer">Slik deler to personer samme årshjul</summary>
         <ol style="padding-left:18px;margin:8px 0 0">
-          <li>Før du starter: importer den nyeste filen fra den andre («Slå sammen»).</li>
+          <li>Legg filen i en felles mappe, og hent den inn med «Hent inn fra fil» og «Slå sammen».</li>
           <li>Gjør endringene dine.</li>
-          <li>Eksporter og del filen (e-post, Teams, felles mappe).</li>
+          <li>Trykk «Lagre sikkerhetskopi». I Chrome og Edge lagres endringene rett tilbake i den samme filen.</li>
         </ol>
-        <p style="margin:6px 0 0">Har dere endret hver deres oppgaver samtidig, beholdes begge. Har dere endret <i>samme</i> oppgave, vinner den som ble endret sist.</p>
+        <p style="margin:6px 0 0">Har noen andre lagret i filen siden du hentet den inn, får du beskjed og kan slå sammen før du lagrer. Har dere endret hver deres oppgaver, beholdes begge. Har dere endret <i>samme</i> oppgave, vinner den som ble endret sist.</p>
       </details>
             <div class="btnrow" style="margin-top:12px"><button id="closeData">Lukk</button></div>
     </div>
@@ -606,15 +612,18 @@
     <h3>Hvor lagres oppgavene?</h3>
     <p>Oppgavene lagres automatisk i nettleseren på denne maskinen. Ingenting sendes til andre. Det betyr også at oppgavene kan forsvinne hvis noen tømmer nettleserens data.</p>
     <p><b>Ta en sikkerhetskopi av og til:</b> <b>Innstillinger → Sikkerhetskopi og deling → Lagre sikkerhetskopi</b>. Du velger om du vil lagre årshjulet du har åpent, eller alle årshjulene. Filen kan hentes inn igjen senere, eller på en annen maskin, med <b>Hent inn fra fil → Erstatt alt</b>. Hvert årshjul havner da i sin egen fane.</p>
-    <p><b>Hvor havner filen?</b> I Chrome og Edge får du et «Lagre som»-vindu der du velger mappe selv, for eksempel OneDrive. Neste gang foreslås samme mappe. I andre nettlesere havner filen der nettleseren lagrer nedlastinger. Vil du velge sted også der, kan du slå på at nettleseren skal spørre hvor filer skal lagres. Det finner du i nettleserens innstillinger under <b>Nedlastinger</b>.</p>
+    <p><b>Hvor havner filen?</b> I Chrome og Edge får du et «Lagre som»-vindu første gang, og du velger mappe selv, for eksempel OneDrive. Etter det lagrer <b>Lagre sikkerhetskopi</b> rett i den samme filen – du får ikke en ny fil hver gang. Vinduet viser hvilken fil det lagres til. Vil du ha en egen kopi, trykker du <b>Lagre som ny fil</b>. Har du startet nettleseren på nytt, spør den om årshjulet fortsatt får lagre i filen – trykk <b>Tillat</b>.</p>
+    <p>I andre nettlesere, for eksempel Firefox og Safari, lastes filen ned på nytt hver gang og havner der nettleseren lagrer nedlastinger. Filnavnet er det samme hver gang, men nettleseren kan legge til et tall i navnet hvis filen finnes fra før.</p>
 
     <h3>Dele årshjulet med andre</h3>
     <ol>
-      <li>Før du starter: hent inn den nyeste filen fra de andre under <b>Innstillinger → Sikkerhetskopi og deling → Hent inn fra fil</b>, og velg <b>Slå sammen</b>.</li>
+      <li>Legg filen i en felles mappe, for eksempel i Teams eller OneDrive.</li>
+      <li>Før du starter: hent inn filen under <b>Innstillinger → Sikkerhetskopi og deling → Hent inn fra fil</b>, og velg <b>Slå sammen</b>. Da blir dette filen du jobber i.</li>
       <li>Gjør endringene dine.</li>
-      <li>Trykk <b>Lagre sikkerhetskopi</b> og del filen, for eksempel i en felles mappe.</li>
+      <li>Trykk <b>Lagre sikkerhetskopi</b>. I Chrome og Edge lagres endringene rett tilbake i den felles filen.</li>
     </ol>
-    <p>Endringer fra flere personer blir slått sammen. Har to endret samme oppgave, vinner den som ble endret sist.</p>
+    <p>Har noen andre lagret i filen siden du hentet den inn, sier årshjulet fra før det lagrer. Velg <b>Slå sammen og lagre</b>, så kommer både deres og dine endringer med. Har to endret samme oppgave, vinner den som ble endret sist.</p>
+    <p>Filnavnet har ikke lenger dato i seg, for eksempel <b>arshjul-team.json</b>. Tidspunktet står inne i filen og vises når du henter den inn. Eldre filer med dato i navnet kan fortsatt hentes inn.</p>
     <p>Hvert årshjul har sin egen ID. Når du henter inn en fil, havner hvert årshjul i sin egen fane – så teamets hjul og HRs hjul blandes aldri.</p>
     
     <div class="foot" id="helpFoot"></div>
@@ -1400,7 +1409,11 @@
   }
   function selectMonth(m){
     const [a, b] = monthWeeks(state.year, m);
-    state.selWeek = Math.min(Math.max(a, state.year === today.year && monthOfWeek(state.year, today.week) === m ? today.week : a), b);
+    // the first week that belongs to the month (its Thursday is in it) – the very first week touching the month
+    // can belong mostly to the previous month, and then the panel showed that month instead (fixed in version 14)
+    let first = a;
+    while (first < b && monthOfWeek(state.year, first) !== m) first++;
+    state.selWeek = state.year === today.year && monthOfWeek(state.year, today.week) === m ? today.week : first;
     resetFormForNew();
     renderSelects(); $("fFrom").value = a; $("fTo").value = b;
     render();
@@ -2597,11 +2610,13 @@
     $("exportAllLabel").textContent = `Alle årshjul (${state.wheels.length})`;
     $("exportAllLabel").closest("label").style.display = state.wheels.length > 1 ? "" : "none";
     if (state.wheels.length < 2) document.querySelector('input[name="exportWhich"][value="one"]').checked = true;
+    hideAsk(); renderLinked();
   }
-  let lastSavedName = "";
+  let lastSavedName = "", lastSavedHandle = null;
   const savedAs = (res, name) => res === "picked" ? lastSavedName : name;
   async function saveFile(filename, text, mime = "application/json"){
     /*@claude*/const inClaude = !!(window.claude && typeof window.claude.use === "function");/*@/claude*/
+    lastSavedHandle = null;
     // Standalone file in Chrome/Edge: a normal "Save as" window where the user picks folder and file name.
     // The window remembers the last folder per file type (id). Other browsers fall back to a normal download.
     if (/*@claude*/!inClaude && /*@/claude*/typeof window.showSaveFilePicker === "function"){
@@ -2613,7 +2628,7 @@
         const w = await handle.createWritable();
         await w.write(text instanceof Blob ? text : new Blob([text], {type: mime}));
         await w.close();
-        lastSavedName = handle.name;
+        lastSavedName = handle.name; lastSavedHandle = handle;
         return "picked";
       } catch(e){
         if (e && e.name === "AbortError") return "declined";      // the user closed the window
@@ -2637,26 +2652,178 @@
     setTimeout(() => URL.revokeObjectURL(url), 2000);
     return "saved";
   }
-  $("exportBtn").onclick = async () => {
-    dataErr(""); dataMsg("");
-    const all = state.wheels.length > 1 && document.querySelector('input[name="exportWhich"]:checked').value === "all";
-    const d = new Date(), pad = n => String(n).padStart(2,"0");
-    const stampTxt = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}`;
-    let data;
-    try { data = await buildExport(all); } catch(e){ return dataErr("Sikkerhetskopien kunne ikke lages. Prøv igjen."); }
-    const name = all ? `arshjul-alle-${stampTxt}.json` : `arshjul-${wheelSlug()}-${stampTxt}.json`;
-    const res = await saveFile(name, JSON.stringify(data, null, 1));
+  /* ---------------- The file you work in (version 14) ----------------
+     Chrome/Edge (standalone file and web page): "Lagre sikkerhetskopi" writes back to the same file – the one last
+     saved to or imported from. One linked file per scope: "w:<wheel id>" for one wheel, "all" for all wheels.
+     The file handles are kept in IndexedDB so they survive a restart (the browser then asks for access again).
+     Other browsers (and the Claude edition) download a new file each time, with a fixed name. */
+  const inClaudeNow = () => /*@claude*/!!(window.claude && typeof window.claude.use === "function") || /*@/claude*/false;
+  const canLink = !inClaudeNow() && typeof window.showSaveFilePicker === "function" && typeof window.indexedDB !== "undefined";
+  const links = new Map();
+  let linkIdb = null;
+  const openLinkIdb = () => linkIdb || (linkIdb = new Promise((res, rej) => {
+    const r = indexedDB.open("arshjul-files", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("links");
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  }));
+  async function linkStore(mode, fn){
+    const conn = await openLinkIdb();
+    return new Promise((res, rej) => {
+      const tx = conn.transaction("links", mode), rq = fn(tx.objectStore("links"));
+      tx.oncomplete = () => res(rq ? rq.result : undefined); tx.onerror = () => rej(tx.error);
+    });
+  }
+  async function setLink(key, rec){
+    rec.key = key; links.set(key, rec);
+    try { await linkStore("readwrite", st => st.put(rec, key)); } catch(e){}
+  }
+  async function dropLink(key){
+    links.delete(key);
+    try { await linkStore("readwrite", st => st.delete(key)); } catch(e){}
+  }
+  if (canLink) linkStore("readonly", st => st.getAll()).then(list => {
+    for (const r of list || []) if (r && r.key && r.handle) links.set(r.key, r);
+    if ($("dataCard").classList.contains("show")) renderLinked();
+  }).catch(() => {});
+
+  const currentAll = () => state.wheels.length > 1 && document.querySelector('input[name="exportWhich"]:checked').value === "all";
+  const scopeKey = all => all ? "all" : "w:" + state.wheel.id;
+  const backupName = all => all ? "arshjul-alle.json" : `arshjul-${wheelSlug()}.json`;
+  const datedName = n => /\d{4}-\d{2}-\d{2}/.test(n);
+  const whatTxt = all => all ? `Alle ${state.wheels.length} årshjul` : `«${wheelName()}»: ${state.tasks.length} oppgaver og ${state.customTypes.length} kategorier`;
+  function renderLinked(){
+    $("exportNewBtn").style.display = canLink ? "" : "none";
+    const el = $("linkedInfo");
+    if (!canLink){
+      el.textContent = inClaudeNow() ? "" : "Denne nettleseren lagrer en ny fil i nedlastingsmappen hver gang. I Chrome og Edge lagres det rett i den samme filen.";
+      el.style.display = el.textContent ? "" : "none";
+      return;
+    }
+    el.style.display = "";
+    const rec = links.get(scopeKey(currentAll()));
+    el.innerHTML = rec ? `Lagres til: <b>${esc(rec.handle.name)}</b>`
+      : "Første gang velger du hvor filen skal ligge. Etter det lagres det rett i den samme filen.";
+  }
+  document.querySelectorAll('input[name="exportWhich"]').forEach(r => r.addEventListener("change", () => { hideAsk(); renderLinked(); }));
+
+  function hideAsk(){ $("saveAsk").style.display = "none"; }
+  function ask(html, buttons){
+    $("saveAskInfo").innerHTML = html;
+    const row = $("saveAskBtns"); row.innerHTML = "";
+    for (const b of buttons){
+      const el = document.createElement("button");
+      el.textContent = b.label; if (b.primary) el.className = "primary";
+      el.onclick = () => { hideAsk(); if (b.fn) b.fn(); };
+      row.appendChild(el);
+    }
+    $("saveAsk").style.display = "";
+  }
+  async function permitted(h){
+    const o = {mode: "readwrite"};
+    try {
+      if (await h.queryPermission(o) === "granted") return true;
+      return await h.requestPermission(o) === "granted";
+    } catch(e){ return false; }
+  }
+  async function makeText(all){
+    try { return JSON.stringify(await buildExport(all), null, 1); }
+    catch(e){ dataErr("Sikkerhetskopien kunne ikke lages. Prøv igjen."); return null; }
+  }
+  async function writeHandle(h, text){
+    const w = await h.createWritable();
+    await w.write(new Blob([text], {type: "application/json"}));
+    await w.close();
+    return (await h.getFile()).lastModified;
+  }
+
+  // a new file: "Save as" window in Chrome/Edge (the new file becomes the file you work in), a download elsewhere
+  async function saveNew(all, key){
+    const text = await makeText(all); if (text == null) return;
+    const name = backupName(all);
+    const res = await saveFile(name, text);
     if (res === "declined") return dataMsg("Lagringen ble avbrutt.");
     if (res === "busy") return dataErr("Vent litt og prøv igjen.");
-    const what = all ? `Alle ${state.wheels.length} årshjul` : `«${wheelName()}»: ${state.tasks.length} oppgaver og ${state.customTypes.length} kategorier`;
-    dataMsg(`${what} lagret som «${savedAs(res, name)}».` + (res === "picked" ? "" : " Filen ligger der nettleseren lagrer nedlastinger."));
-  };
+    if (res === "picked" && canLink && lastSavedHandle){
+      let lm = 0; try { lm = (await lastSavedHandle.getFile()).lastModified; } catch(e){}
+      await setLink(key, {handle: lastSavedHandle, lastModified: lm, datedOk: false});
+      renderLinked();
+    }
+    dataMsg(`${whatTxt(all)} lagret som «${savedAs(res, name)}».` + (res === "picked" ? "" : " Filen ligger der nettleseren lagrer nedlastinger."));
+  }
+
+  // the file you work in: check access, that it still exists, old dated name, and changes made by others
+  async function saveToLinked(all, key, rec, opts = {}){
+    const h = rec.handle;
+    if (!(await permitted(h)))
+      return ask(`Årshjulet fikk ikke lov til å lagre i <b>${esc(h.name)}</b>. Trykk «Prøv igjen» og velg <b>Tillat</b> når nettleseren spør.`, [
+        {label: "Prøv igjen", primary: true, fn: () => saveToLinked(all, key, rec, opts)},
+        {label: "Lagre som ny fil …", fn: () => saveNew(all, key)},
+        {label: "Avbryt"}]);
+    let file;
+    try { file = await h.getFile(); }
+    catch(e){
+      await dropLink(key); renderLinked();
+      return ask(`Fant ikke filen <b>${esc(h.name)}</b>. Den kan være flyttet, slettet eller ha fått nytt navn.`, [
+        {label: "Lagre som ny fil …", primary: true, fn: () => saveNew(all, key)},
+        {label: "Avbryt"}]);
+    }
+    if (!rec.datedOk && !opts.datedDone && datedName(h.name))
+      return ask(`<b>${esc(h.name)}</b> har dato i navnet. Det er fra en eldre versjon av årshjulet. Nå brukes ett fast filnavn, og tidspunktet står inne i filen. Den gamle filen blir liggende som den er.`, [
+        {label: `Lagre som ${backupName(all)} …`, primary: true, fn: () => saveNew(all, key)},
+        {label: "Lagre i denne filen", fn: async () => { rec.datedOk = true; await setLink(key, rec); saveToLinked(all, key, rec, {...opts, datedDone: true}); }},
+        {label: "Avbryt"}]);
+    if (file.lastModified !== rec.lastModified)
+      return ask(`Filen <b>${esc(h.name)}</b> er endret av noen andre siden du hentet den inn eller lagret den sist.`, [
+        {label: "Slå sammen og lagre", primary: true, fn: () => mergeAndSave(all, key, rec, file)},
+        {label: "Lagre som ny fil …", fn: () => saveNew(all, key)},
+        {label: "Avbryt"}]);
+    const text = await makeText(all); if (text == null) return;
+    try { rec.lastModified = await writeHandle(h, text); }
+    catch(e){ return dataErr(`Kunne ikke lagre i «${h.name}». Prøv igjen, eller velg «Lagre som ny fil».`); }
+    await setLink(key, rec); renderLinked();
+    dataMsg(`${whatTxt(all)} lagret i «${h.name}».`);
+  }
+
+  // someone else saved to the file: bring their changes in (the normal merge), then save
+  async function mergeAndSave(all, key, rec, file){
+    let parsed;
+    try { parsed = file.size > IMPORT_MAX_BYTES ? {error: "Filen er for stor."} : parseBackup(JSON.parse(await file.text())); }
+    catch(e){ parsed = {error: "Filen kunne ikke leses."}; }
+    if (parsed.error) return dataErr(`Kunne ikke slå sammen med «${rec.handle.name}»: ${parsed.error} Velg «Lagre som ny fil» for å ta vare på endringene dine.`);
+    const r = await runImport("merge", {packages: parsed.packages, file: file.name});
+    if (!r) return;
+    if (!all && state.wheel.id !== key.slice(2) && state.wheels.some(w => w.id === key.slice(2))) await openWheel(key.slice(2));
+    rec.lastModified = file.lastModified;
+    await saveToLinked(all, key, rec, {datedDone: true});
+  }
+
+  async function exportBackup(asNew){
+    dataErr(""); dataMsg(""); hideAsk();
+    const all = currentAll(), key = scopeKey(all);
+    const rec = canLink && !asNew ? links.get(key) : null;
+    return rec ? saveToLinked(all, key, rec) : saveNew(all, key);
+  }
+  $("exportBtn").onclick = () => exportBackup(false);
+  $("exportNewBtn").onclick = () => exportBackup(true);
 
   /* Import: every wheel in the file goes to the wheel with the same id. A wheel that is not here yet becomes a new tab –
      unless the file holds one wheel and the open wheel is still completely empty: then that wheel takes it over.
      Older files without a wheel id go into the open wheel. */
   let pendingImport = null;
-  $("importBtn").onclick = () => { $("importFile").value = ""; $("importFile").click(); };
+  $("importBtn").onclick = async () => {
+    dataErr(""); dataMsg(""); hideAsk();
+    if (canLink && typeof window.showOpenFilePicker === "function"){
+      let hs = null;
+      try { hs = await window.showOpenFilePicker({id: "arshjul-json", startIn: "documents",
+        types: [{description: "Sikkerhetskopi av årshjul", accept: {"application/json": [".json"]}}]}); }
+      catch(e){ if (e && e.name === "AbortError") return; }
+      if (hs && hs[0]){
+        let f; try { f = await hs[0].getFile(); } catch(e){ return dataErr("Filen kunne ikke leses."); }
+        return readImportFile(f, hs[0]);
+      }
+    }
+    $("importFile").value = ""; $("importFile").click();
+  };
   function importTarget(p, count, index){
     if (!p.wheel) return {kind: "current", wheel: state.wheel};
     const ex = state.wheels.find(w => w.id === p.wheel.id);
@@ -2665,14 +2832,24 @@
     if (isEmptyWheel() && (count === 1 || (index === 0 && state.wheels.length === 1))) return {kind: "adopt", wheel: state.wheel};
     return {kind: "new"};
   }
-  $("importFile").onchange = async e => {
+  $("importFile").onchange = e => {
     dataErr(""); dataMsg("");
     const f = e.target.files[0]; if (!f) return;
     e.target.value = "";                    // so picking the same file again works
+    readImportFile(f, null);
+  };
+  async function readImportFile(f, handle){
     if (f.size > IMPORT_MAX_BYTES) return dataErr("Filen er for stor til å være en sikkerhetskopi fra årshjulet.");
     let d;
     try { d = JSON.parse(await f.text()); } catch(_){ return dataErr("Filen kunne ikke leses. Er det en sikkerhetskopi fra årshjulet?"); }
-    if (!d || typeof d !== "object" || d.app !== FILE_APP) return dataErr("Dette ser ikke ut som en sikkerhetskopi fra årshjulet.");
+    const parsed = parseBackup(d);
+    if (parsed.error) return dataErr(parsed.error);
+    const packages = parsed.packages, targets = packages.map((p, i) => importTarget(p, packages.length, i));
+    pendingImport = {packages, file: f.name, handle, lastModified: f.lastModified, multi: Array.isArray(d.wheels)};
+    showImportInfo(f.name, d.exportedAt, packages, targets);
+  }
+  function parseBackup(d){
+    if (!d || typeof d !== "object" || d.app !== FILE_APP) return {error: "Dette ser ikke ut som en sikkerhetskopi fra årshjulet."};
     // every record is checked field by field (version 13); what cannot be used is left out
     // a category whose colour was not a valid colour code gets a palette colour no other category in the file uses
     const withColors = types => types.map((t, i) => {
@@ -2693,12 +2870,14 @@
     let packages;
     if (Array.isArray(d.wheels)) packages = d.wheels.slice(0, MAX_WHEELS).filter(x => x && Array.isArray(x.tasks) && Array.isArray(x.types)).map(pack);
     else if (Array.isArray(d.tasks) && Array.isArray(d.types)) packages = [pack(d)];
-    if (!packages || !packages.length) return dataErr("Fant ingen årshjul i filen.");
-    const targets = packages.map((p, i) => importTarget(p, packages.length, i));
-    const newCount = targets.filter(t => t.kind === "new").length;
-    if (state.wheels.length + newCount > MAX_WHEELS) return dataErr(`Filen ville gitt mer enn ${MAX_WHEELS} årshjul. Slett noen først.`);
-    pendingImport = {packages, file: f.name};
-    const when = d.exportedAt ? new Date(d.exportedAt).toLocaleString("no-NO", {dateStyle:"medium", timeStyle:"short"}) : "ukjent tid";
+    if (!packages || !packages.length) return {error: "Fant ingen årshjul i filen."};
+    const newCount = packages.filter((p, i) => importTarget(p, packages.length, i).kind === "new").length;
+    if (state.wheels.length + newCount > MAX_WHEELS) return {error: `Filen ville gitt mer enn ${MAX_WHEELS} årshjul. Slett noen først.`};
+    return {packages};
+  }
+  function showImportInfo(fileName, exportedAt, packages, targets){
+    const t0 = exportedAt ? new Date(exportedAt) : null;
+    const when = t0 && !isNaN(t0) ? t0.toLocaleString("no-NO", {dateStyle:"medium", timeStyle:"short"}) : "ukjent tid";
     const lines = packages.map((p, i) => {
       const t = targets[i], n = p.tasks.filter(r => !r.deleted).length, label = esc(p.wheel ? p.wheel.name : wheelName());
       const what = t.kind === "existing" ? "finnes fra før"
@@ -2707,13 +2886,13 @@
                  : "blir en ny fane";
       return `<li><b>${label}</b> – ${n} oppgave${n===1?"":"r"} – ${what}</li>`;
     }).join("");
-    $("importInfo").innerHTML = `<b>${esc(f.name)}</b><br><span style="color:var(--muted)">Lagret ${esc(when)}</span><ul style="margin:6px 0 0;padding-left:18px">${lines}</ul>`;
+    $("importInfo").innerHTML = `<b>${esc(fileName)}</b><br><span style="color:var(--muted)">Lagret ${esc(when)}</span><ul style="margin:6px 0 0;padding-left:18px">${lines}</ul>`;
     $("importChoice").style.display = "";
-  };
+  }
   $("importCancel").onclick = () => { pendingImport = null; $("importChoice").style.display = "none"; };
 
-  async function runImport(mode){
-    const imp = pendingImport; if (!imp) return;
+  async function runImport(mode, imp){
+    if (!imp) return false;
     $("importChoice").style.display = "none"; pendingImport = null;
     const plan = (incoming, current, m) => {
       const cur = new Map(current.map(r => [r.id, r]));
@@ -2756,7 +2935,8 @@
       }
     } catch(e){
       handleWriteError(e);
-      return dataErr("Innhentingen stoppet underveis. Prøv igjen – det som allerede er hentet inn, er beholdt.");
+      dataErr("Innhentingen stoppet underveis. Prøv igjen – det som allerede er hentet inn, er beholdt.");
+      return false;
     }
     // show the wheel that was open if the file touched it, otherwise the first wheel from the file
     const showId = count > 1 && state.wheels.some(w => w.id === startId) ? startId : firstId;
@@ -2773,13 +2953,25 @@
       if (clash.length) warn.push(`like farger: ${clash.join(", ")}`);
       if (warn.length) dataErr("Obs: " + warn.join("; ") + ". Rydd under «Kategorier».");
     }, /*@claude*/db ? 600 : /*@/claude*/0);
+    return {firstId};
   }
-    $("importMerge").onclick = () => runImport("merge");
+  // an import picked with the "Open" window links the file: changes can then be saved back to it
+  async function importAndLink(mode){
+    const imp = pendingImport;
+    const r = await runImport(mode, imp);
+    if (!r || !imp.handle || !canLink) return;
+    const all = imp.multi && state.wheels.length > 1;
+    document.querySelector(`input[name="exportWhich"][value="${all ? "all" : "one"}"]`).checked = true;
+    if (!all && state.wheel.id !== r.firstId && state.wheels.some(w => w.id === r.firstId)) await openWheel(r.firstId);
+    await setLink(all ? "all" : "w:" + r.firstId, {handle: imp.handle, lastModified: imp.lastModified, datedOk: false});
+    renderDataCard();
+  }
+    $("importMerge").onclick = () => importAndLink("merge");
     $("importReplace").onclick = () => {
     const b = $("importReplace");
     if (b.dataset.confirm !== "1"){ b.dataset.confirm = "1"; b.textContent = "Bekreft – erstatt alt"; setTimeout(() => { b.dataset.confirm = ""; b.textContent = "Erstatt alt"; }, 4000); return; }
     b.dataset.confirm = ""; b.textContent = "Erstatt alt";
-    runImport("replace");
+    importAndLink("replace");
   };
 
   /* ---------------- Ring settings ---------------- */
